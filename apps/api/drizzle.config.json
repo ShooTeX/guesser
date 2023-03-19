@@ -1,4 +1,4 @@
 {
   "out": "./drizzle",
-  "schema": "./src/db"
+  "schema": "./src/database"
 }
