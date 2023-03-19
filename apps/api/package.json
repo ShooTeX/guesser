@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "npx tsx watch .",
-    "lint": "npx eslint .",
+    "lint": "eslint .",
     "build": "npx esbuild . --bundle --minify --platform=node --outfile=dist/main.js --target=node16"
   },
   "keywords": [],
@@ -14,7 +14,6 @@
   "dependencies": {
     "@fastify/websocket": "^7.1.2",
     "@trpc/server": "^10.14.0",
-    "@typescript-eslint/parser": "^5.54.1",
     "fastify": "^4.14.1",
     "get-port": "^6.1.2",
     "znv": "^0.3.2",
@@ -23,8 +22,9 @@
   "devDependencies": {
     "@types/node": "^18.14.6",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
+    "@typescript-eslint/parser": "^5.55.0",
     "esbuild": "^0.17.11",
-    "eslint": "^8.30.0",
+    "eslint": "8.36.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-unicorn": "^45.0.2",
