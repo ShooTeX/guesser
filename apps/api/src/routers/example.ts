@@ -1,4 +1,4 @@
-import { publicProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { newQuestionSchema, questions } from "../database/schema";
 import { nanoid } from "nanoid";
 
@@ -11,7 +11,7 @@ export const exampleRouter = router({
   getQuestions: publicProcedure.query(({ ctx }) => {
     return ctx.database.select().from(questions);
   }),
-  test: publicProcedure.query(({ ctx }) => {
+  test: protectedProcedure.query(({ ctx }) => {
     return ctx.auth;
   }),
 });
