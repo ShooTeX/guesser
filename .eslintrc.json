@@ -1,0 +1,16 @@
+{
+  "plugins": [
+    "turbo"
+  ],
+  "rules": {
+    "turbo/no-undeclared-env-vars": [
+      "error",
+      {
+        "allowList": [
+          "^VERCEL_URL$",
+          "^PORT$"
+        ]
+      }
+    ]
+  }
+}
