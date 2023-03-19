@@ -11,4 +11,7 @@ export const exampleRouter = router({
   getQuestions: publicProcedure.query(({ ctx }) => {
     return ctx.database.select().from(questions);
   }),
+  test: publicProcedure.query(({ ctx }) => {
+    return ctx.auth;
+  }),
 });

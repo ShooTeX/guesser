@@ -7,6 +7,7 @@ import { createContext } from "./trpc";
 import ws from "@fastify/websocket";
 import getPort from "get-port";
 import { PORT } from "./environment";
+import { clerkPlugin } from "@clerk/fastify";
 
 const server = fastify({
   maxParamLength: 5000,
@@ -14,6 +15,8 @@ const server = fastify({
 });
 
 void server.register(ws);
+
+void server.register(clerkPlugin);
 
 void server.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
