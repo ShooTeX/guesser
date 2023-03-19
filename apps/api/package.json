@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@clerk/fastify": "^0.1.14",
+    "@fastify/cors": "^8.2.1",
     "@fastify/websocket": "^7.1.2",
     "@trpc/server": "^10.14.0",
     "drizzle-orm": "^0.22.0",

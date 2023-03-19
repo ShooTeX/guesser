@@ -6,8 +6,9 @@ import { appRouter } from "./router";
 import { createContext } from "./trpc";
 import ws from "@fastify/websocket";
 import getPort from "get-port";
-import { PORT } from "./environment";
+import { CLIENT_ORIGIN, PORT } from "./environment";
 import { clerkPlugin } from "@clerk/fastify";
+import cors from "@fastify/cors";
 
 const server = fastify({
   maxParamLength: 5000,
@@ -17,6 +18,11 @@ const server = fastify({
 void server.register(ws);
 
 void server.register(clerkPlugin);
+
+void server.register(cors, {
+  origin: CLIENT_ORIGIN,
+  allowedHeaders: ["Authorization"],
+});
 
 void server.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
