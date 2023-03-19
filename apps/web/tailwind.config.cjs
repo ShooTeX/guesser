@@ -1,12 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
-    './app/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    container: {
+      center: true,
+      padding: "1.5rem",
+      screens: {
+        "2xl": "1360px",
+      },
+    },
     extend: {
       keyframes: {
         "accordion-down": {
@@ -25,4 +28,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
