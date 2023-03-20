@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "df1571c1-b5ca-4363-97ce-baa3c4c45527",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "e31e30d1-735d-43d0-ac0b-516afead0b0a",
+  "prevId": "df1571c1-b5ca-4363-97ce-baa3c4c45527",
   "tables": {
     "playlists": {
       "name": "playlists",
@@ -33,7 +33,7 @@
           "name": "id",
           "type": "varchar(21)",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "question": {

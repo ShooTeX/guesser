@@ -1,0 +1,1 @@
+ALTER TABLE questions MODIFY COLUMN `id` varchar(21);
