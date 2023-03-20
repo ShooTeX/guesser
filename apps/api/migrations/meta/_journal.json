@@ -1,12 +1,12 @@
 {
   "version": "5",
-  "dialect": "pg",
+  "dialect": "mysql",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1679268183306,
-      "tag": "0000_big_spiral"
+      "when": 1679342651455,
+      "tag": "0000_jazzy_gwen_stacy"
     }
   ]
 }
