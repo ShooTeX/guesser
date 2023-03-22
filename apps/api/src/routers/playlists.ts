@@ -2,7 +2,7 @@ import { z } from "znv";
 import { playlists } from "../database/schema";
 import { protectedProcedure, router } from "../trpc";
 import { nanoid } from "nanoid";
-import { eq } from "drizzle-orm/expressions";
+import { and, eq } from "drizzle-orm/expressions";
 import { TRPCError } from "@trpc/server";
 
 export const playlistSchema = z.object({
@@ -20,7 +20,6 @@ export const editPlaylistSchema = playlistSchema.pick({ id: true }).extend({
 
 export const deletePlaylistSchema = playlistSchema.pick({ id: true });
 
-// FIXME: verify if it belongs to user aswell
 export const playlistsRouter = router({
   createPlaylist: protectedProcedure
     .output(playlistSchema)
@@ -37,7 +36,9 @@ export const playlistsRouter = router({
       const result = await ctx.database
         .select()
         .from(playlists)
-        .where(eq(playlists.id, id));
+        .where(
+          and(eq(playlists.id, id), eq(playlists.userId, ctx.auth.userId))
+        );
 
       if (!result[0]) {
         throw new TRPCError({
@@ -55,12 +56,16 @@ export const playlistsRouter = router({
       await ctx.database
         .update(playlists)
         .set(input.input)
-        .where(eq(playlists.id, input.id));
+        .where(
+          and(eq(playlists.id, input.id), eq(playlists.userId, ctx.auth.userId))
+        );
 
       const result = await ctx.database
         .select()
         .from(playlists)
-        .where(eq(playlists.id, input.id));
+        .where(
+          and(eq(playlists.id, input.id), eq(playlists.userId, ctx.auth.userId))
+        );
 
       if (!result[0]) {
         throw new TRPCError({
@@ -75,7 +80,11 @@ export const playlistsRouter = router({
     .output(playlistSchema.pick({ id: true }))
     .input(deletePlaylistSchema)
     .query(async ({ ctx, input }) => {
-      await ctx.database.delete(playlists).where(eq(playlists.id, input.id));
+      await ctx.database
+        .delete(playlists)
+        .where(
+          and(eq(playlists.id, input.id), eq(playlists.userId, ctx.auth.userId))
+        );
 
       return { id: input.id };
     }),
