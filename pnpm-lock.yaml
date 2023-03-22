@@ -79,6 +79,7 @@ importers:
       '@clerk/nextjs': ^4.11.11
       '@guesser/api': workspace:*
       '@radix-ui/react-label': ^2.0.1
+      '@radix-ui/react-separator': ^1.0.2
       '@tanstack/react-query': ^4.28.0
       '@total-typescript/ts-reset': ^0.4.2
       '@trpc/client': ^10.17.0
@@ -115,6 +116,7 @@ importers:
       '@clerk/nextjs': 4.11.11_ld2jel3hspngo3u5lti2kgl2sq
       '@guesser/api': link:../../packages/api
       '@radix-ui/react-label': 2.0.1_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-separator': 1.0.2_biqbaboplfbrettd7655fr4n2y
       '@tanstack/react-query': 4.28.0_biqbaboplfbrettd7655fr4n2y
       '@trpc/client': 10.17.0_@trpc+server@10.16.0
       '@trpc/next': 10.17.0_dhgg3qytp4jx7vfwyy3uy7pncq
@@ -875,6 +877,18 @@ packages:
     dependencies:
       '@babel/runtime': 7.21.0
       '@radix-ui/react-slot': 1.0.1_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@radix-ui/react-separator/1.0.2_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-lZoAG/rS2jzb/OSvyBrpN3dmikw20ewmWx1GkM1VldbDyD0DACCbH9LIXSrqyS/2mE1VYKOHmyq5W90Dx4ryqA==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    dependencies:
+      '@babel/runtime': 7.21.0
+      '@radix-ui/react-primitive': 1.0.2_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false
