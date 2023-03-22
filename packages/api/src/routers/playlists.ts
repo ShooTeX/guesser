@@ -1,9 +1,9 @@
 import { z } from "znv";
 import { playlists } from "../database/schema";
-import { protectedProcedure, router } from "../trpc";
 import { nanoid } from "nanoid";
 import { and, eq } from "drizzle-orm/expressions";
 import { TRPCError } from "@trpc/server";
+import { protectedProcedure, router } from "../create-router";
 
 export const playlistSchema = z.object({
   id: z.string().length(21),

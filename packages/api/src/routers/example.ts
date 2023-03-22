@@ -1,4 +1,4 @@
-import { protectedProcedure, publicProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "../create-router";
 import { questions } from "../database/schema";
 
 export const exampleRouter = router({

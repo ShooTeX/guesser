@@ -1,6 +1,6 @@
 import { observable } from "@trpc/server/observable";
-import { exampleRouter } from "./routers/example";
-import { publicProcedure, router } from "./trpc";
+import { publicProcedure, router } from "../create-router";
+import { exampleRouter } from "./example";
 
 export const appRouter = router({
   example: exampleRouter,
