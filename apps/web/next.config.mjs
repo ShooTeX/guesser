@@ -6,5 +6,14 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  redirects() {
+    return [
+      {
+        source: "/dashboard",
+        destination: "/dashboard/playlists",
+        permanent: true,
+      },
+    ];
+  },
 };
 export default config;

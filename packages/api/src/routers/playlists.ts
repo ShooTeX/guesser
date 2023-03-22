@@ -20,7 +20,23 @@ export const editPlaylistSchema = playlistSchema.pick({ id: true }).extend({
 
 export const deletePlaylistSchema = playlistSchema.pick({ id: true });
 
+export const getPlaylistsSchema = playlistSchema.pick({ id: true });
+
 export const playlistsRouter = router({
+  get: protectedProcedure
+    .output(z.array(playlistSchema))
+    .input(getPlaylistsSchema.optional())
+    .query(({ ctx, input }) => {
+      return ctx.database
+        .select()
+        .from(playlists)
+        .where(
+          and(
+            eq(playlists.userId, ctx.auth.userId),
+            ...(input?.id ? [eq(playlists.id, input.id)] : [])
+          )
+        );
+    }),
   create: protectedProcedure
     .output(playlistSchema)
     .input(createPlaylistSchema)
