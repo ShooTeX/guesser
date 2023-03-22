@@ -1,9 +1,13 @@
 import { Button } from "@/components/ui/button";
+import { api } from "@/lib/trpc";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { HelpCircle, List, Play, Plus } from "lucide-react";
 
 const Dashboard = () => {
   const { user } = useUser();
+
+  const hello = api.example.test.useQuery();
+
   if (!user) {
     return;
   }
@@ -68,6 +72,7 @@ const Dashboard = () => {
             </h3>
             <p className="mt-2 mb-4 text-sm text-slate-500 dark:text-slate-400">
               You have no playlists. Add one below.
+              {hello.data?.user?.id}
             </p>
             <Button>
               <Plus className="h-4 w-4" />
@@ -81,4 +86,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-

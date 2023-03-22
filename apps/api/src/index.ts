@@ -20,7 +20,7 @@ void server.register(clerkPlugin);
 
 void server.register(cors, {
   origin: CLIENT_ORIGIN,
-  allowedHeaders: ["Authorization"],
+  allowedHeaders: ["Authorization", "content-type"],
 });
 
 void server.register(fastifyTRPCPlugin, {

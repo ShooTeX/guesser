@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Inter as FontSans } from "next/font/google";
+import { api } from "@/lib/trpc";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -10,7 +11,7 @@ const fontSans = FontSans({
   display: "swap",
 });
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <style jsx global>{`
@@ -26,3 +27,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </>
   );
 }
+
+export default api.withTRPC(App);

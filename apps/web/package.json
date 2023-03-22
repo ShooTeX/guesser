@@ -10,6 +10,12 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.11.11",
+    "@guesser/api": "workspace:*",
+    "@tanstack/react-query": "^4.28.0",
+    "@trpc/client": "^10.17.0",
+    "@trpc/next": "^10.17.0",
+    "@trpc/react-query": "^10.17.0",
+    "@trpc/server": "^10.14.0",
     "autoprefixer": "10.4.14",
     "class-variance-authority": "^0.4.0",
     "clsx": "^1.2.1",
@@ -22,8 +28,9 @@
     "tailwind-merge": "^1.10.0",
     "tailwindcss": "3.2.7",
     "tailwindcss-animate": "^1.0.5",
+    "typescript-cookie": "^1.0.5",
     "znv": "^0.3.2",
-    "zod": "^3.21.2"
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "^0.4.2",
