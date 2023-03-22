@@ -1,10 +1,6 @@
-import { protectedProcedure, publicProcedure, router } from "../create-router";
-import { questions } from "../database/schema";
+import { protectedProcedure, router } from "../create-router";
 
 export const exampleRouter = router({
-  getQuestions: publicProcedure.query(({ ctx }) => {
-    return ctx.database.select().from(questions);
-  }),
   test: protectedProcedure.query(({ ctx }) => {
     return ctx.auth;
   }),

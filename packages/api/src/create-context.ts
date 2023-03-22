@@ -1,7 +1,7 @@
 import { getAuth } from "@clerk/fastify";
 import type { inferAsyncReturnType } from "@trpc/server";
 import type { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
-import { database } from "./database";
+import { database } from "@guesser/database";
 
 export function createContext({ req, res: __ }: CreateFastifyContextOptions) {
   const auth = getAuth(req);

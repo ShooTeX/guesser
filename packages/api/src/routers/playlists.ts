@@ -1,5 +1,5 @@
 import { z } from "znv";
-import { playlists } from "../database/schema";
+import { playlists } from "@guesser/database";
 import { nanoid } from "nanoid";
 import { and, eq } from "drizzle-orm/expressions";
 import { TRPCError } from "@trpc/server";
