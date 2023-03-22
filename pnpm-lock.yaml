@@ -145,26 +145,35 @@ importers:
 
   packages/api:
     specifiers:
+      '@clerk/fastify': ^0.1.14
       '@guesser/database': workspace:*
+      '@planetscale/database': ^1.6.0
       '@trpc/server': ^10.14.0
       '@types/node': ^18.14.6
       '@typescript-eslint/eslint-plugin': ^5.54.1
       '@typescript-eslint/parser': ^5.55.0
+      drizzle-kit: 0.17.0
       drizzle-orm: ^0.22.0
       eslint: 8.36.0
       eslint-config-prettier: ^8.6.0
       eslint-plugin-prettier: ^4.2.1
       eslint-plugin-unicorn: ^45.0.2
       eslint-plugin-unused-imports: ^2.0.0
+      fastify: ^4.14.1
+      fastify-plugin: ^4.5.0
       nanoid: ^4.0.1
       prettier: ^2.8.4
       typescript: ^4.9.5
       znv: ^0.3.2
       zod: ^3.21.2
     dependencies:
+      '@clerk/fastify': 0.1.14_4dizkosqff5lgpqgrm57u7bxpm
       '@guesser/database': link:../database
+      '@planetscale/database': 1.6.0
       '@trpc/server': 10.16.0
-      drizzle-orm: 0.22.0
+      drizzle-orm: 0.22.0_yjazpptyy5hkedviejakk766iq
+      fastify: 4.14.1
+      fastify-plugin: 4.5.0
       nanoid: 4.0.1
       znv: 0.3.2_zod@3.21.4
       zod: 3.21.4
@@ -172,6 +181,7 @@ importers:
       '@types/node': 18.15.3
       '@typescript-eslint/eslint-plugin': 5.55.0_342y7v4tc7ytrrysmit6jo4wri
       '@typescript-eslint/parser': 5.55.0_vgl77cfdswitgr47lm5swmv43m
+      drizzle-kit: 0.17.0
       eslint: 8.36.0
       eslint-config-prettier: 8.7.0_eslint@8.36.0
       eslint-plugin-prettier: 4.2.1_eqzx3hpkgx5nnvxls3azrcc7dm
@@ -1912,54 +1922,6 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm/0.22.0:
-    resolution: {integrity: sha512-oZ/CNbv3NXoCxmBWTPNAZHZkuzhacT+eXM0ywemkHSTiqEJe79VQ1jvGVd0fQthfOt1UHRMuAW0CeIizhQpb2Q==}
-    peerDependencies:
-      '@aws-sdk/client-rds-data': '>=3 <4'
-      '@cloudflare/workers-types': '>=3'
-      '@neondatabase/serverless': '>=0.1 <0.2'
-      '@planetscale/database': '>=1 <2'
-      '@types/better-sqlite3': '*'
-      '@types/pg': '*'
-      '@types/sql.js': '*'
-      better-sqlite3: '>=7 <9'
-      bun-types: '*'
-      mysql2: '>=2 <3'
-      pg: '>=8 <9'
-      postgres: '>=3 <4'
-      sql.js: '>=1 <2'
-      sqlite3: '>=5 <6'
-    peerDependenciesMeta:
-      '@aws-sdk/client-rds-data':
-        optional: true
-      '@cloudflare/workers-types':
-        optional: true
-      '@neondatabase/serverless':
-        optional: true
-      '@planetscale/database':
-        optional: true
-      '@types/better-sqlite3':
-        optional: true
-      '@types/pg':
-        optional: true
-      '@types/sql.js':
-        optional: true
-      better-sqlite3:
-        optional: true
-      bun-types:
-        optional: true
-      mysql2:
-        optional: true
-      pg:
-        optional: true
-      postgres:
-        optional: true
-      sql.js:
-        optional: true
-      sqlite3:
-        optional: true
-    dev: false
-
   /drizzle-orm/0.22.0_7wrgmb4pybenke4ozfnne7qf3u:
     resolution: {integrity: sha512-oZ/CNbv3NXoCxmBWTPNAZHZkuzhacT+eXM0ywemkHSTiqEJe79VQ1jvGVd0fQthfOt1UHRMuAW0CeIizhQpb2Q==}
     peerDependencies:
@@ -2009,6 +1971,56 @@ packages:
     dependencies:
       '@planetscale/database': 1.6.0
       mysql2: 3.2.0
+    dev: false
+
+  /drizzle-orm/0.22.0_yjazpptyy5hkedviejakk766iq:
+    resolution: {integrity: sha512-oZ/CNbv3NXoCxmBWTPNAZHZkuzhacT+eXM0ywemkHSTiqEJe79VQ1jvGVd0fQthfOt1UHRMuAW0CeIizhQpb2Q==}
+    peerDependencies:
+      '@aws-sdk/client-rds-data': '>=3 <4'
+      '@cloudflare/workers-types': '>=3'
+      '@neondatabase/serverless': '>=0.1 <0.2'
+      '@planetscale/database': '>=1 <2'
+      '@types/better-sqlite3': '*'
+      '@types/pg': '*'
+      '@types/sql.js': '*'
+      better-sqlite3: '>=7 <9'
+      bun-types: '*'
+      mysql2: '>=2 <3'
+      pg: '>=8 <9'
+      postgres: '>=3 <4'
+      sql.js: '>=1 <2'
+      sqlite3: '>=5 <6'
+    peerDependenciesMeta:
+      '@aws-sdk/client-rds-data':
+        optional: true
+      '@cloudflare/workers-types':
+        optional: true
+      '@neondatabase/serverless':
+        optional: true
+      '@planetscale/database':
+        optional: true
+      '@types/better-sqlite3':
+        optional: true
+      '@types/pg':
+        optional: true
+      '@types/sql.js':
+        optional: true
+      better-sqlite3:
+        optional: true
+      bun-types:
+        optional: true
+      mysql2:
+        optional: true
+      pg:
+        optional: true
+      postgres:
+        optional: true
+      sql.js:
+        optional: true
+      sqlite3:
+        optional: true
+    dependencies:
+      '@planetscale/database': 1.6.0
     dev: false
 
   /drizzle-zod/0.1.3_l7y4f4mwoozutro6ehovtnmqxq:

@@ -1,9 +1,9 @@
 import { z } from "znv";
-import { playlists } from "@guesser/database";
 import { nanoid } from "nanoid";
 import { and, eq } from "drizzle-orm/expressions";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure, router } from "../create-router";
+import { playlists } from "../database/schema";
 
 export const playlistSchema = z.object({
   id: z.string().length(21),
@@ -21,7 +21,7 @@ export const editPlaylistSchema = playlistSchema.pick({ id: true }).extend({
 export const deletePlaylistSchema = playlistSchema.pick({ id: true });
 
 export const playlistsRouter = router({
-  createPlaylist: protectedProcedure
+  create: protectedProcedure
     .output(playlistSchema)
     .input(createPlaylistSchema)
     .query(async ({ ctx, input }) => {
@@ -49,7 +49,7 @@ export const playlistsRouter = router({
 
       return result[0];
     }),
-  editPlaylist: protectedProcedure
+  edit: protectedProcedure
     .output(playlistSchema)
     .input(editPlaylistSchema)
     .query(async ({ ctx, input }) => {
@@ -76,7 +76,7 @@ export const playlistsRouter = router({
 
       return result[0];
     }),
-  deletePlaylist: protectedProcedure
+  delete: protectedProcedure
     .output(playlistSchema.pick({ id: true }))
     .input(deletePlaylistSchema)
     .query(async ({ ctx, input }) => {
