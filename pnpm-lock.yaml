@@ -78,6 +78,7 @@ importers:
     specifiers:
       '@clerk/nextjs': ^4.11.11
       '@guesser/api': workspace:*
+      '@hookform/resolvers': ^3.0.0
       '@radix-ui/react-label': ^2.0.1
       '@radix-ui/react-separator': ^1.0.2
       '@tanstack/react-query': ^4.28.0
@@ -117,6 +118,7 @@ importers:
     dependencies:
       '@clerk/nextjs': 4.11.11_ld2jel3hspngo3u5lti2kgl2sq
       '@guesser/api': link:../../packages/api
+      '@hookform/resolvers': 3.0.0_react-hook-form@7.43.7
       '@radix-ui/react-label': 2.0.1_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-separator': 1.0.2_biqbaboplfbrettd7655fr4n2y
       '@tanstack/react-query': 4.28.0_biqbaboplfbrettd7655fr4n2y
@@ -604,6 +606,14 @@ packages:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    dev: false
+
+  /@hookform/resolvers/3.0.0_react-hook-form@7.43.7:
+    resolution: {integrity: sha512-SQPefakODpyq25b/phHXDKCdRrEfPcCXV7B4nAa139wE1DxufYbbNAjeo0T04ZXBokRxZ+wD8iA1kkVMa3QwjQ==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.43.7_react@18.2.0
     dev: false
 
   /@humanwhocodes/config-array/0.11.8:
