@@ -13,7 +13,7 @@ export async function createContext({
   const auth = getAuth(req);
   const conn = connect({ url: DATABASE_URL });
   const database = drizzle(conn);
-  await migrate(database, { migrationsFolder: "./drizzle" });
+  await migrate(database, { migrationsFolder: "../migrations" });
   return { database, auth };
 }
 export type Context = inferAsyncReturnType<typeof createContext>;
