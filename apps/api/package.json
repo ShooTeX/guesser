@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "npx tsx watch .",
     "lint": "eslint .",
-    "build": "npx esbuild . --bundle --minify --platform=node --outfile=dist/main.js --target=node16",
-    "migrate": "npx drizzle-kit generate:mysql"
+    "build": "npx esbuild . --bundle --minify --platform=node --outfile=dist/main.js --target=node16"
   },
   "keywords": [],
   "author": "",
