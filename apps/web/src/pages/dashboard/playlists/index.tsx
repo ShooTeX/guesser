@@ -4,6 +4,7 @@ import { List, Plus } from "lucide-react";
 
 import type { WithUserProp } from "@clerk/nextjs";
 import { withUser } from "@clerk/nextjs";
+import Link from "next/link";
 
 const Playlists = ({ user }: WithUserProp) => {
   return (
@@ -21,10 +22,12 @@ const Playlists = ({ user }: WithUserProp) => {
           <p className="mt-2 mb-4 text-sm text-slate-500 dark:text-slate-400">
             You have no playlists. Add one below.
           </p>
-          <Button>
-            <Plus className="h-4 w-4" />
-            Create Playlist
-          </Button>
+          <Link href="playlists/create">
+            <Button>
+              <Plus className="h-4 w-4" />
+              Create Playlist
+            </Button>
+          </Link>
         </div>
       </div>
     </DashboardLayout>

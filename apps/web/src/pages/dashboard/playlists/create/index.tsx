@@ -4,16 +4,53 @@ import { withUser } from "@clerk/nextjs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { HelpCircle, Plus } from "lucide-react";
+import { HelpCircle, Loader2, Plus } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { api } from "@/lib/trpc";
+
+const questionSchema = z.object({
+  id: z.string().length(21),
+  userId: z.string(),
+  question: z.string().min(1),
+  playlistId: z.string().length(21),
+  createdAt: z.date(),
+});
+
+const playlistSchema = z.object({
+  id: z.string().length(21),
+  userId: z.string(),
+  name: z.string().min(1),
+  createdAt: z.date(),
+});
+
+const createPlaylistSchema = playlistSchema.pick({ name: true }).extend({
+  questions: questionSchema.pick({ question: true }).array().optional(),
+});
 
 const PlaylistCreate = ({ user }: WithUserProp) => {
+  const mutation = api.playlists.create.useMutation();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm<z.infer<typeof createPlaylistSchema>>({
+    resolver: zodResolver(createPlaylistSchema),
+  });
+
+  const onSubmit = handleSubmit((data) => {
+    mutation.mutate(data);
+  });
+
   return (
     <DashboardLayout
       user={user}
       headline="Create Playlist"
       subline="Create a new fancy playlist"
     >
-      <div className="grid gap-4 pt-2">
+      <form className="grid gap-4 pt-2" onSubmit={onSubmit}>
         <div className="grid grid-cols-4 items-center gap-2">
           <Label htmlFor="name">Name</Label>
           <Input
@@ -21,6 +58,7 @@ const PlaylistCreate = ({ user }: WithUserProp) => {
             id="name"
             placeholder="Name"
             className="col-span-2"
+            {...register("name")}
           />
           <div className="col-span-4 my-4 h-[1px] w-full bg-slate-200 dark:bg-slate-700"></div>
           <Label htmlFor="questions" className="col-start-1 self-start">
@@ -47,10 +85,15 @@ const PlaylistCreate = ({ user }: WithUserProp) => {
           <div className="col-span-4 my-4 h-[1px] w-full bg-slate-200 dark:bg-slate-700"></div>
           <div className="col-start-4 flex justify-end space-x-2">
             <Button variant="outline">Cancel</Button>
-            <Button>Save</Button>
+            <Button type="submit" disabled={mutation.isLoading || !isValid}>
+              {mutation.isLoading && (
+                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+              )}
+              Save
+            </Button>
           </div>
         </div>
-      </div>
+      </form>
     </DashboardLayout>
   );
 };
