@@ -1,18 +1,15 @@
-import { z } from "znv";
+import { z } from "zod";
 import { nanoid } from "nanoid";
 import { and, eq } from "drizzle-orm/expressions";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure, router } from "../create-router";
-import { playlists } from "../database/schema";
+import type { QuestionInsert } from "../database/schemas";
+import { questions } from "../database/schemas";
+import { playlistSchema, playlists, questionSchema } from "../database/schemas";
 
-export const playlistSchema = z.object({
-  id: z.string().length(21),
-  userId: z.string(),
-  name: z.string(),
-  createdAt: z.coerce.date(),
+export const createPlaylistSchema = playlistSchema.pick({ name: true }).extend({
+  questions: questionSchema.pick({ question: true }).array().optional(),
 });
-
-export const createPlaylistSchema = playlistSchema.pick({ name: true });
 
 export const editPlaylistSchema = playlistSchema.pick({ id: true }).extend({
   input: createPlaylistSchema,
@@ -48,6 +45,20 @@ export const playlistsRouter = router({
         id,
         name: input.name,
       });
+
+      if (input.questions?.length) {
+        const newQuestions = input.questions.map(
+          (question) =>
+            ({
+              id: nanoid(),
+              userId: ctx.auth.userId,
+              playlistId: id,
+              ...question,
+            } satisfies QuestionInsert)
+        );
+
+        await ctx.database.insert(questions).values(...newQuestions);
+      }
 
       const result = await ctx.database
         .select()
