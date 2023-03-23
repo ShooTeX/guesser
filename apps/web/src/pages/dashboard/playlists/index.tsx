@@ -1,11 +1,13 @@
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { Button } from "@/components/ui/button";
-import { List, Plus } from "lucide-react";
+import { HelpCircle, List, Play, Plus } from "lucide-react";
 
 import type { WithUserProp } from "@clerk/nextjs";
 import { withUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { api } from "@/lib/trpc";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
 const Empty = () => (
   <div className="flex h-[450px] shrink-0 items-center justify-center rounded-md border border-dashed border-slate-200 dark:border-slate-700">
@@ -29,12 +31,37 @@ const Empty = () => (
 
 type ItemProperties = {
   title: string;
+  index: number;
+  questionCount: number;
+  playCount: number;
 };
 
-const Item = ({ title }: ItemProperties) => {
+const Item = ({ title, index, questionCount, playCount }: ItemProperties) => {
   return (
-    <div className="rounded-md border border-slate-200 px-4 py-3 text-sm font-bold dark:border-slate-700">
-      {title}
+    <div className="rounded-md border border-slate-200 px-4 py-3 text-sm dark:border-slate-700">
+      <div className="flex">
+        <span className="font-mono font-normal text-slate-500 dark:text-slate-400">
+          #{index} -&nbsp;
+        </span>
+        <p className="font-bold">{title}</p>
+      </div>
+      <p className="text-slate-500 dark:text-slate-400">short description</p>
+      <Separator className="my-2" />
+      <div className="flex justify-between">
+        <div className="grid w-32 grid-cols-2">
+          <div className="mt-1 flex items-center text-slate-500 dark:text-slate-400">
+            <HelpCircle className="mr-1 h-4 w-4" />
+            <p className="font-mono">{questionCount}</p>
+          </div>
+          <div className="mt-1 flex items-center text-slate-500 dark:text-slate-400">
+            <Play className="mr-1 h-4 w-4" />
+            <p className="font-mono">{playCount}</p>
+          </div>
+        </div>
+        <p className="shrink-0 self-end text-slate-400 dark:text-slate-600">
+          created 2d ago
+        </p>
+      </div>
     </div>
   );
 };
@@ -52,8 +79,15 @@ const Playlists = ({ user }: WithUserProp) => {
         <Empty />
       ) : (
         <div className="space-y-2">
-          {playlists.data?.map((playlist) => (
-            <Item title={playlist.name} key={playlist.id} />
+          <Input placeholder="Search..." />
+          {playlists.data?.map((playlist, index) => (
+            <Item
+              playCount={0}
+              index={index}
+              title={playlist.name}
+              key={playlist.id}
+              questionCount={20}
+            />
           ))}
         </div>
       )}
