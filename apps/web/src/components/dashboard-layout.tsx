@@ -2,7 +2,7 @@ import type { WithUserProp } from "@clerk/nextjs";
 import { UserButton } from "@clerk/nextjs";
 import { HelpCircle, Play, List } from "lucide-react";
 import { Button } from "./ui/button";
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import { Breadcrumbs } from "./ui/breadcrumbs";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -11,6 +11,7 @@ export type DashboardLayoutProperties = PropsWithChildren &
   WithUserProp & {
     headline: string;
     subline: string;
+    action?: ReactNode;
   };
 
 export const DashboardLayout = ({
@@ -18,6 +19,7 @@ export const DashboardLayout = ({
   headline,
   subline,
   user,
+  action,
 }: DashboardLayoutProperties) => {
   const { asPath } = useRouter();
   const manageRoutes = [
@@ -87,11 +89,16 @@ export const DashboardLayout = ({
             )}
           </div>
         </div>
-        <div className="mt-14">
-          <h2 className="text-2xl font-semibold tracking-tight">{headline}</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            {subline}
-          </p>
+        <div className="mt-14 flex items-end justify-between">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              {headline}
+            </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              {subline}
+            </p>
+          </div>
+          {action && action}
         </div>
         <div className="my-4 h-[1px] w-full bg-slate-200 dark:bg-slate-700"></div>
         {children}

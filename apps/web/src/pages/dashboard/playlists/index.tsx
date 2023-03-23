@@ -74,6 +74,11 @@ const Playlists = ({ user }: WithUserProp) => {
       user={user}
       headline="Playlists"
       subline="Create or edit playlists"
+      action={
+        <Link href="playlists/create">
+          <Button>Create</Button>
+        </Link>
+      }
     >
       {playlists.data?.length === 0 ? (
         <Empty />
