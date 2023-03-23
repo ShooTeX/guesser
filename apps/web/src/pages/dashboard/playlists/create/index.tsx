@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { api } from "@/lib/trpc";
+import { useRouter } from "next/router";
 
 const questionSchema = z.object({
   id: z.string().length(21),
@@ -30,7 +31,12 @@ const createPlaylistSchema = playlistSchema.pick({ name: true }).extend({
 });
 
 const PlaylistCreate = ({ user }: WithUserProp) => {
-  const mutation = api.playlists.create.useMutation();
+  const router = useRouter();
+  const mutation = api.playlists.create.useMutation({
+    onSuccess: () => {
+      router.back();
+    },
+  });
 
   const {
     register,
