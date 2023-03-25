@@ -1,12 +1,11 @@
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { Button } from "@/components/ui/button";
-import { HelpCircle, List, Play, Plus } from "lucide-react";
+import { HelpCircle, List, Play, Plus, Trash } from "lucide-react";
 
 import type { WithUserProp } from "@clerk/nextjs";
 import { withUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { api } from "@/lib/trpc";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
 const Empty = () => (
@@ -34,18 +33,39 @@ type ItemProperties = {
   index: number;
   questionCount: number;
   playCount: number;
+  id: string;
 };
 
-const Item = ({ title, index, questionCount, playCount }: ItemProperties) => {
+const Item = ({
+  title,
+  index,
+  questionCount,
+  playCount,
+  id,
+}: ItemProperties) => {
   return (
     <div className="rounded-md border border-slate-200 px-4 py-3 text-sm dark:border-slate-700">
-      <div className="flex">
-        <span className="font-mono font-normal text-slate-500 dark:text-slate-400">
-          #{index} -&nbsp;
-        </span>
-        <p className="font-bold">{title}</p>
+      <div className="flex items-center justify-between">
+        <div className="flex flex-col">
+          <div className="flex">
+            <span className="font-mono font-normal text-slate-500 dark:text-slate-400">
+              #{index} -&nbsp;
+            </span>
+            <p className="font-bold">{title}</p>
+          </div>
+          <p className="text-slate-500 dark:text-slate-400">
+            short description
+          </p>
+        </div>
+        <div className="flex space-x-1">
+          <Button variant="ghost">
+            <Trash className="h-4 w-4" />
+          </Button>
+          <Link href={`playlists/${id}/`}>
+            <Button variant="subtle">Edit</Button>
+          </Link>
+        </div>
       </div>
-      <p className="text-slate-500 dark:text-slate-400">short description</p>
       <Separator className="my-2" />
       <div className="flex justify-between">
         <div className="grid w-32 grid-cols-2">
@@ -84,9 +104,10 @@ const Playlists = ({ user }: WithUserProp) => {
         <Empty />
       ) : (
         <div className="space-y-2">
-          <Input placeholder="Search..." />
+          {/* <Input placeholder="Search..." /> */}
           {playlists.data?.map((playlist, index) => (
             <Item
+              id={playlist.id}
               playCount={0}
               index={index}
               title={playlist.name}

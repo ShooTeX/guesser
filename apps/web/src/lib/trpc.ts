@@ -1,6 +1,7 @@
 import type { AppRouter } from "@guesser/api";
 import { httpBatchLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { getCookie } from "typescript-cookie";
 
 function getBaseUrl() {
@@ -35,3 +36,6 @@ export const api = createTRPCNext<AppRouter>({
    **/
   ssr: false,
 });
+
+export type RouterInput = inferRouterInputs<AppRouter>;
+export type RouterOutput = inferRouterOutputs<AppRouter>;

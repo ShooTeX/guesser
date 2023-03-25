@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { api } from "@/lib/trpc";
 import { useRouter } from "next/router";
+import { Separator } from "@/components/ui/separator";
 
 const questionSchema = z.object({
   id: z.string().length(21),
@@ -66,7 +67,16 @@ const PlaylistCreate = ({ user }: WithUserProp) => {
             className="col-span-2"
             {...register("name")}
           />
-          <div className="col-span-4 my-4 h-[1px] w-full bg-slate-200 dark:bg-slate-700"></div>
+          <Separator className="col-span-4 my-4 w-full" />
+          <Label htmlFor="name">Short description</Label>
+          <Input
+            type="text"
+            id="name"
+            placeholder="Name"
+            className="col-span-2"
+            {...register("name")}
+          />
+          <Separator className="col-span-4 my-4 w-full" />
           <Label htmlFor="questions" className="col-start-1 self-start">
             Questions
           </Label>
@@ -88,7 +98,7 @@ const PlaylistCreate = ({ user }: WithUserProp) => {
               </Button>
             </div>
           </div>
-          <div className="col-span-4 my-4 h-[1px] w-full bg-slate-200 dark:bg-slate-700"></div>
+          <Separator className="col-span-4 my-4 w-full" />
           <div className="col-start-4 flex justify-end space-x-2">
             <Button variant="outline">Cancel</Button>
             <Button type="submit" disabled={mutation.isLoading || !isValid}>
