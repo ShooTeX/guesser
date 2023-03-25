@@ -7,8 +7,10 @@ export const questions = mysqlTable("questions", {
   id: varchar("id", { length: 21 }).primaryKey(),
   userId: text("user_id").notNull(),
   question: text("question").notNull(),
-  playlistId: varchar("id", { length: 21 }).references(() => playlists.id),
-  createdAt: timestamp("created_at").defaultNow(),
+  playlistId: varchar("id", { length: 21 })
+    .references(() => playlists.id)
+    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export type QuestionInsert = InferModel<typeof questions, "insert">;

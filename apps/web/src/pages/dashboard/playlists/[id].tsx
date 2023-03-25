@@ -13,8 +13,9 @@ import { useRouter } from "next/router";
 import { Separator } from "@/components/ui/separator";
 import { editPlaylistSchema } from "@/lib/schemas/playlists";
 import type { z } from "zod";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-const Form = ({
+const Settings = ({
   playlist,
 }: {
   playlist: RouterOutput["playlists"]["get"][0];
@@ -49,7 +50,7 @@ const Form = ({
   });
 
   return (
-    <form className="grid gap-4 pt-2" onSubmit={onSubmit}>
+    <form className="grid gap-4" onSubmit={onSubmit}>
       <div className="grid grid-cols-4 items-center gap-2">
         <Label htmlFor="name">Name</Label>
         <Input
@@ -68,28 +69,6 @@ const Form = ({
           className="col-span-2"
         />
         <Separator className="col-span-4 my-4 w-full" />
-        <Label htmlFor="questions" className="col-start-1 self-start">
-          Questions
-        </Label>
-        <div
-          id="questions"
-          className="col-span-2 flex h-60 shrink-0 items-center justify-center rounded-md border border-dashed border-slate-200 dark:border-slate-700"
-        >
-          <div className="mx-auto flex flex-col items-center justify-center text-center">
-            <HelpCircle className="h-10 w-10 text-slate-400" />
-            <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-50">
-              No questions created
-            </h3>
-            <p className="mt-2 mb-4 text-sm text-slate-500 dark:text-slate-400">
-              You have no playlists. Add one below.
-            </p>
-            <Button>
-              <Plus className="mr-1 h-4 w-4" />
-              Create question
-            </Button>
-          </div>
-        </div>
-        <Separator className="col-span-4 my-4 w-full" />
         <div className="col-start-4 flex justify-end space-x-2">
           <Button variant="outline">Cancel</Button>
           <Button type="submit" disabled={mutation.isLoading || !isValid}>
@@ -101,6 +80,26 @@ const Form = ({
         </div>
       </div>
     </form>
+  );
+};
+
+const Questions = () => {
+  return (
+    <div className="col-span-2 flex h-80 shrink-0 items-center justify-center">
+      <div className="mx-auto flex flex-col items-center justify-center text-center">
+        <HelpCircle className="h-10 w-10 text-slate-400" />
+        <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-50">
+          No questions created
+        </h3>
+        <p className="mt-2 mb-4 text-sm text-slate-500 dark:text-slate-400">
+          You have no questions. Add one below.
+        </p>
+        <Button>
+          <Plus className="mr-1 h-4 w-4" />
+          Create question
+        </Button>
+      </div>
+    </div>
   );
 };
 
@@ -129,13 +128,24 @@ const PlaylistCreate = ({ user }: WithUserProp) => {
       headline="Edit Playlist"
       subline="Change name, description and add/remove questions"
     >
-      {playlist.data ? (
-        <Form playlist={playlist.data} />
-      ) : (
-        <div className="flex justify-center">
-          <Loader2 className="animate-spin" />
-        </div>
-      )}
+      <Tabs defaultValue="settings">
+        <TabsList>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
+          <TabsTrigger value="questions">Questions</TabsTrigger>
+        </TabsList>
+        <TabsContent value="settings">
+          {playlist.data ? (
+            <Settings playlist={playlist.data} />
+          ) : (
+            <div className="flex justify-center">
+              <Loader2 className="animate-spin" />
+            </div>
+          )}
+        </TabsContent>
+        <TabsContent value="questions">
+          <Questions />
+        </TabsContent>
+      </Tabs>
     </DashboardLayout>
   );
 };

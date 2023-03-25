@@ -35,7 +35,7 @@ export const DashboardLayout = ({
     },
   ];
   return (
-    <div className="grid grid-cols-4 xl:grid-cols-6">
+    <div className="grid min-h-screen grid-cols-4 xl:grid-cols-6">
       <aside className="border-r border-r-slate-200 pb-12 dark:border-r-slate-700">
         <div className="px-8 py-6">
           <div className="inline-flex flex-col items-end">
