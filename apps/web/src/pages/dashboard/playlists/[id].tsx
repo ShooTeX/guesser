@@ -19,12 +19,16 @@ const Form = ({
 }: {
   playlist: RouterOutput["playlists"]["get"][0];
 }) => {
+  const utils = api.useContext();
   const router = useRouter();
   const mutation = api.playlists.edit.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await utils.playlists.get.invalidate({ id: playlist.id });
       router.back();
     },
   });
+
+  console.log(playlist);
 
   const {
     handleSubmit,
@@ -106,7 +110,13 @@ const PlaylistCreate = ({ user }: WithUserProp) => {
     {
       id: router.query.id as string,
     },
-    { enabled: !!router.query.id, retry: false }
+    {
+      enabled: !!router.query.id,
+      retry: false,
+      select: (data) => {
+        return data[0];
+      },
+    }
   );
 
   if (playlist.error) {
@@ -119,8 +129,8 @@ const PlaylistCreate = ({ user }: WithUserProp) => {
       headline="Edit Playlist"
       subline="Change name, description and add/remove questions"
     >
-      {playlist.data?.[0] ? (
-        <Form playlist={playlist.data[0]} />
+      {playlist.data ? (
+        <Form playlist={playlist.data} />
       ) : (
         <div className="flex justify-center">
           <Loader2 className="animate-spin" />
