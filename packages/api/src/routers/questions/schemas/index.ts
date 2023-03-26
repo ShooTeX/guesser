@@ -7,6 +7,7 @@ export const getQuestionsSchema = questionSchema
 export const createQuestionSchema = questionSchema.pick({
   playlistId: true,
   question: true,
+  answers: true,
 });
 
 export const removeQuestionSchema = questionSchema.pick({
