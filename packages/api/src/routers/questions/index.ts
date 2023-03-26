@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm/expressions";
 import { nanoid } from "nanoid";
-import { groupBy, map, pipe, values } from "remeda";
+import { compact, groupBy, map, pipe, values } from "remeda";
 import { protectedProcedure, router } from "../../create-router";
 import type { Answer, Question } from "../../database/schemas";
 import { answers, questions, questionSchema } from "../../database/schemas";
@@ -19,14 +19,14 @@ const nestAnswers = (rows: { question: Question; answer: Answer | null }[]) => {
     values,
     map((group) => ({
       ...group[0].question,
-      answers: group.map((item) => item.answer?.answer),
+      answers: compact(group.map((item) => item.answer?.answer)),
     }))
   );
 };
 
 const get = protectedProcedure
   .output(questionSchema.array())
-  .input(getQuestionsSchema)
+  .input(getQuestionsSchema.optional())
   .query(async ({ ctx, input }) => {
     const rows = await ctx.database
       .select({
@@ -38,8 +38,8 @@ const get = protectedProcedure
       .where(
         and(
           eq(questions.userId, ctx.auth.userId),
-          ...(input.id ? [eq(questions.id, input.id)] : []),
-          ...(input.playlistId
+          ...(input?.id ? [eq(questions.id, input.id)] : []),
+          ...(input?.playlistId
             ? [eq(questions.playlistId, input.playlistId)]
             : [])
         )
