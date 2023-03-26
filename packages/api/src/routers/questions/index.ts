@@ -1,9 +1,10 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm/expressions";
 import { nanoid } from "nanoid";
-import { groupBy, pipe } from "remeda";
+import { groupBy, map, pipe, values } from "remeda";
 import { protectedProcedure, router } from "../../create-router";
-import { Answer, answers, Question, questions, questionSchema } from "../../database/schemas";
+import type { Answer, Question } from "../../database/schemas";
+import { answers, questions, questionSchema } from "../../database/schemas";
 import {
   createQuestionSchema,
   editQuestionSchema,
@@ -11,30 +12,41 @@ import {
   removeQuestionSchema,
 } from "./schemas";
 
-const get = 
-  protectedProcedure
-    .output(questionSchema.array())
-    .input(getQuestionsSchema)
-    .query(async ({ ctx, input }) => {
-      const rows = await ctx.database
-        .select({
-        question: questions,
-        answer: answers
-      })
-        .from(questions)
-        .leftJoin(answers, eq(answers.questionId, questions.id))
-        .where(
-          and(
-            eq(questions.userId, ctx.auth.userId),
-            ...(input.id ? [eq(questions.id, input.id)] : []),
-            ...(input.playlistId
-              ? [eq(questions.playlistId, input.playlistId)]
-              : [])
-          )
-        );
+const nestAnswers = (rows: { question: Question; answer: Answer | null }[]) => {
+  return pipe(
+    rows,
+    groupBy((row) => row.question.id),
+    values,
+    map((group) => ({
+      ...group[0].question,
+      answers: group.map((item) => item.answer?.answer),
+    }))
+  );
+};
 
-      pipe(rows, groupBy((row) => row.question.id))
-    })
+const get = protectedProcedure
+  .output(questionSchema.array())
+  .input(getQuestionsSchema)
+  .query(async ({ ctx, input }) => {
+    const rows = await ctx.database
+      .select({
+        question: questions,
+        answer: answers,
+      })
+      .from(questions)
+      .leftJoin(answers, eq(answers.questionId, questions.id))
+      .where(
+        and(
+          eq(questions.userId, ctx.auth.userId),
+          ...(input.id ? [eq(questions.id, input.id)] : []),
+          ...(input.playlistId
+            ? [eq(questions.playlistId, input.playlistId)]
+            : [])
+        )
+      );
+
+    return nestAnswers(rows);
+  });
 
 export const questionsRouter = router({
   get,

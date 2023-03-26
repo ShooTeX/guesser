@@ -15,7 +15,7 @@
     "@clerk/fastify": "^0.1.14",
     "@planetscale/database": "^1.6.0",
     "@trpc/server": "^10.14.0",
-    "drizzle-orm": "^0.22.0",
+    "drizzle-orm": "0.22.0-cbee773",
     "fastify": "^4.14.1",
     "fastify-plugin": "^4.5.0",
     "mysql2": "^3.2.0",
