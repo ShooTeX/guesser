@@ -58,18 +58,18 @@ export const questionsRouter = router({
       await ctx.database
         .insert(questions)
         .values({ ...input, id, userId: ctx.auth.userId });
-      const result = await ctx.database
+      const [result] = await ctx.database
         .select()
         .from(questions)
         .where(
           and(eq(questions.id, id), eq(questions.userId, ctx.auth.userId))
         );
 
-      if (!result[0]) {
+      if (!result) {
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }
 
-      return { ...result[0], answers: [] };
+      return result;
     }),
   edit: protectedProcedure
     .output(questionSchema)
