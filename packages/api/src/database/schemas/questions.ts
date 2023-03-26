@@ -1,17 +1,31 @@
 import type { InferModel } from "drizzle-orm/mysql-core";
-import { mysqlTable, varchar, text, timestamp } from "drizzle-orm/mysql-core";
+import { uniqueIndex } from "drizzle-orm/mysql-core";
+import {
+  mysqlTable,
+  varchar,
+  text,
+  timestamp,
+  int,
+} from "drizzle-orm/mysql-core";
 import { z } from "zod";
 import { playlists } from "./playlists";
 
-export const questions = mysqlTable("questions", {
-  id: varchar("id", { length: 21 }).primaryKey(),
-  userId: text("user_id").notNull(),
-  question: text("question").notNull(),
-  playlistId: varchar("playlist_id", { length: 21 })
-    .references(() => playlists.id, { onDelete: "cascade" })
-    .notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+export const questions = mysqlTable(
+  "questions",
+  {
+    id: varchar("id", { length: 21 }).primaryKey(),
+    userId: text("user_id").notNull(),
+    question: text("question").notNull(),
+    playlistId: varchar("playlist_id", { length: 21 })
+      .references(() => playlists.id, { onDelete: "cascade" })
+      .notNull(),
+    order: int("order").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    order_idx: uniqueIndex("order_idx").on(table.order, table.playlistId),
+  })
+);
 
 export type QuestionInsert = InferModel<typeof questions, "insert">;
 export type Question = InferModel<typeof questions>;
