@@ -179,6 +179,7 @@ importers:
       mysql2: ^3.2.0
       nanoid: ^4.0.1
       prettier: ^2.8.4
+      remeda: ^1.9.1
       typescript: ^4.9.5
       znv: ^0.3.2
       zod: ^3.21.2
@@ -191,6 +192,7 @@ importers:
       fastify-plugin: 4.5.0
       mysql2: 3.2.0
       nanoid: 4.0.1
+      remeda: 1.9.1
       znv: 0.3.2_zod@3.21.4
       zod: 3.21.4
     devDependencies:

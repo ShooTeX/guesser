@@ -1,10 +1,8 @@
-import { z } from "zod";
 import { questionSchema } from "../../../database/schemas";
 
-export const getQuestionsSchema = z.intersection(
-  questionSchema.pick({ id: true }),
-  questionSchema.pick({ playlistId: true }).partial()
-);
+export const getQuestionsSchema = questionSchema
+  .pick({ id: true, playlistId: true })
+  .partial();
 
 export const createQuestionSchema = questionSchema.pick({
   playlistId: true,

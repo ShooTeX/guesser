@@ -1,8 +1,9 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm/expressions";
 import { nanoid } from "nanoid";
+import { groupBy, pipe } from "remeda";
 import { protectedProcedure, router } from "../../create-router";
-import { questions, questionSchema } from "../../database/schemas";
+import { Answer, answers, Question, questions, questionSchema } from "../../database/schemas";
 import {
   createQuestionSchema,
   editQuestionSchema,
@@ -10,24 +11,33 @@ import {
   removeQuestionSchema,
 } from "./schemas";
 
-export const questionsRouter = router({
-  get: protectedProcedure
+const get = 
+  protectedProcedure
     .output(questionSchema.array())
     .input(getQuestionsSchema)
-    .query(({ ctx, input }) => {
-      return ctx.database
-        .select()
+    .query(async ({ ctx, input }) => {
+      const rows = await ctx.database
+        .select({
+        question: questions,
+        answer: answers
+      })
         .from(questions)
+        .leftJoin(answers, eq(answers.questionId, questions.id))
         .where(
           and(
-            eq(questions.id, input.id),
             eq(questions.userId, ctx.auth.userId),
+            ...(input.id ? [eq(questions.id, input.id)] : []),
             ...(input.playlistId
               ? [eq(questions.playlistId, input.playlistId)]
               : [])
           )
         );
-    }),
+
+      pipe(rows, groupBy((row) => row.question.id))
+    })
+
+export const questionsRouter = router({
+  get,
   create: protectedProcedure
     .output(questionSchema)
     .input(createQuestionSchema)
@@ -47,7 +57,7 @@ export const questionsRouter = router({
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }
 
-      return result[0];
+      return { ...result[0], answers: [] };
     }),
   edit: protectedProcedure
     .output(questionSchema)
@@ -59,18 +69,18 @@ export const questionsRouter = router({
         .where(
           and(eq(questions.id, input.id), eq(questions.userId, ctx.auth.userId))
         );
-      const result = await ctx.database
+      const [result] = await ctx.database
         .select()
         .from(questions)
         .where(
           and(eq(questions.id, input.id), eq(questions.userId, ctx.auth.userId))
         );
 
-      if (!result[0]) {
+      if (!result) {
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }
 
-      return result[0];
+      return result;
     }),
   delete: protectedProcedure
     .output(questionSchema.pick({ id: true }))
