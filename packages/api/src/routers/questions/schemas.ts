@@ -1,4 +1,4 @@
-import { answerSchema, questionSchema } from "../../../database/schemas";
+import { questionSchema, answerSchema } from "../../database/schemas";
 
 export const getQuestionsSchema = questionSchema
   .pick({ id: true, playlistId: true })
