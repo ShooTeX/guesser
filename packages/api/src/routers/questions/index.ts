@@ -3,9 +3,10 @@ import { and, eq } from "drizzle-orm/expressions";
 import { nanoid } from "nanoid";
 import { compact, groupBy, map, pipe, values } from "remeda";
 import { protectedProcedure, router } from "../../create-router";
-import type { Answer, Question } from "../../database/schemas";
+import type { Answer, AnswerInsert, Question } from "../../database/schemas";
 import { answers, questions, questionSchema } from "../../database/schemas";
 import {
+  addAnswersSchema,
   createQuestionSchema,
   editQuestionSchema,
   getQuestionsSchema,
@@ -48,8 +49,38 @@ const get = protectedProcedure
     return nestAnswers(rows);
   });
 
+const addAnswers = protectedProcedure
+  .output(questionSchema)
+  .input(addAnswersSchema)
+  .mutation(async ({ ctx, input: { questionId, input } }) => {
+    const answersWithIds = input.map(
+      (answer) =>
+        ({
+          questionId,
+          answer,
+          id: nanoid(),
+          userId: ctx.auth.userId,
+        } satisfies AnswerInsert)
+    );
+    await ctx.database.insert(answers).values(...answersWithIds);
+
+    const [result] = await ctx.database
+      .select()
+      .from(questions)
+      .where(
+        and(eq(questions.id, questionId), eq(questions.userId, ctx.auth.userId))
+      );
+
+    if (!result) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    return result;
+  });
+
 export const questionsRouter = router({
   get,
+  addAnswers,
   create: protectedProcedure
     .output(questionSchema)
     .input(createQuestionSchema)

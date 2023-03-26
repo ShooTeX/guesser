@@ -1,4 +1,4 @@
-import { questionSchema } from "../../../database/schemas";
+import { answerSchema, questionSchema } from "../../../database/schemas";
 
 export const getQuestionsSchema = questionSchema
   .pick({ id: true, playlistId: true })
@@ -20,3 +20,21 @@ export const editQuestionSchema = questionSchema
   .extend({
     input: questionSchema.pick({ question: true }),
   });
+
+export const addAnswersSchema = answerSchema
+  .pick({
+    questionId: true,
+  })
+  .extend({
+    input: answerSchema.shape.answer.array().min(1),
+  });
+
+export const removeAnswerSchema = answerSchema.pick({
+  id: true,
+});
+
+export const editAnswerSchema = answerSchema
+  .pick({
+    id: true,
+  })
+  .extend({ input: answerSchema.pick({ answer: true }) });

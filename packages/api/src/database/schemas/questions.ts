@@ -27,6 +27,7 @@ export const answers = mysqlTable("answers", {
 });
 
 export type Answer = InferModel<typeof answers>;
+export type AnswerInsert = InferModel<typeof answers, "insert">;
 
 export const answerSchema = z.object({
   id: z.string().length(21),
