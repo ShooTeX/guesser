@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { questionSchema, answerSchema } from "../../database/schemas";
 
 export const getQuestionsSchema = questionSchema
@@ -8,6 +9,7 @@ export const createQuestionSchema = questionSchema.pick({
   playlistId: true,
   question: true,
   answers: true,
+  order: true,
 });
 
 export const removeQuestionSchema = questionSchema.pick({
@@ -19,7 +21,10 @@ export const editQuestionSchema = questionSchema
     id: true,
   })
   .extend({
-    input: questionSchema.pick({ question: true }),
+    input: z.intersection(
+      questionSchema.pick({ question: true }),
+      questionSchema.pick({ order: true }).optional()
+    ),
   });
 
 export const addAnswersSchema = answerSchema

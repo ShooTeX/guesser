@@ -1,12 +1,7 @@
 import type { InferModel } from "drizzle-orm/mysql-core";
+import { smallint } from "drizzle-orm/mysql-core";
 import { uniqueIndex } from "drizzle-orm/mysql-core";
-import {
-  mysqlTable,
-  varchar,
-  text,
-  timestamp,
-  int,
-} from "drizzle-orm/mysql-core";
+import { mysqlTable, varchar, text, timestamp } from "drizzle-orm/mysql-core";
 import { z } from "zod";
 import { playlists } from "./playlists";
 
@@ -19,7 +14,7 @@ export const questions = mysqlTable(
     playlistId: varchar("playlist_id", { length: 21 })
       .references(() => playlists.id, { onDelete: "cascade" })
       .notNull(),
-    order: int("order").notNull(),
+    order: smallint("order").notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({
@@ -55,6 +50,7 @@ export const questionSchema = z.object({
   id: z.string().length(21),
   userId: z.string(),
   question: z.string().min(1),
+  order: z.number().finite().nonnegative().min(0).max(32_767),
   playlistId: z.string().length(21),
   createdAt: z.date(),
   answers: z.array(answerSchema.shape.answer).min(2),
