@@ -1,10 +1,10 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm/expressions";
 import { nanoid } from "nanoid";
-import { compact, groupBy, map, pipe, values } from "remeda";
 import { protectedProcedure, router } from "../../create-router";
-import type { Answer, AnswerInsert, Question } from "../../database/schemas";
+import type { AnswerInsert } from "../../database/schemas";
 import { answers, questions, questionSchema } from "../../database/schemas";
+import { getQuestions } from "./models";
 import {
   addAnswersSchema,
   createQuestionSchema,
@@ -13,40 +13,11 @@ import {
   removeQuestionSchema,
 } from "./schemas";
 
-const nestAnswers = (rows: { question: Question; answer: Answer | null }[]) => {
-  return pipe(
-    rows,
-    groupBy((row) => row.question.id),
-    values,
-    map((group) => ({
-      ...group[0].question,
-      answers: compact(group.map((item) => item.answer?.answer)),
-    }))
-  );
-};
-
 const get = protectedProcedure
   .output(questionSchema.array())
   .input(getQuestionsSchema.optional())
   .query(async ({ ctx, input }) => {
-    const rows = await ctx.database
-      .select({
-        question: questions,
-        answer: answers,
-      })
-      .from(questions)
-      .leftJoin(answers, eq(answers.questionId, questions.id))
-      .where(
-        and(
-          eq(questions.userId, ctx.auth.userId),
-          ...(input?.id ? [eq(questions.id, input.id)] : []),
-          ...(input?.playlistId
-            ? [eq(questions.playlistId, input.playlistId)]
-            : [])
-        )
-      );
-
-    return nestAnswers(rows);
+    return getQuestions(ctx, { ...input });
   });
 
 const create = protectedProcedure
@@ -67,18 +38,10 @@ const create = protectedProcedure
           userId: ctx.auth.userId,
         } satisfies AnswerInsert)
     );
+
     await ctx.database.insert(answers).values(...answersWithIds);
 
-    const rows = await ctx.database
-      .select({
-        question: questions,
-        answer: answers,
-      })
-      .from(questions)
-      .leftJoin(answers, eq(answers.questionId, questions.id))
-      .where(and(eq(questions.id, id), eq(questions.userId, ctx.auth.userId)));
-
-    const [result] = nestAnswers(rows);
+    const [result] = await getQuestions(ctx, { id });
 
     if (!result) {
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
@@ -97,19 +60,8 @@ const edit = protectedProcedure
       .where(
         and(eq(questions.id, input.id), eq(questions.userId, ctx.auth.userId))
       );
-    // TODO: extract to function
-    const rows = await ctx.database
-      .select({
-        question: questions,
-        answer: answers,
-      })
-      .from(questions)
-      .leftJoin(answers, eq(answers.questionId, questions.id))
-      .where(
-        and(eq(questions.id, input.id), eq(questions.userId, ctx.auth.userId))
-      );
 
-    const [result] = nestAnswers(rows);
+    const [result] = await getQuestions(ctx, { id: input.id });
 
     if (!result) {
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
@@ -133,18 +85,7 @@ const addAnswers = protectedProcedure
     );
     await ctx.database.insert(answers).values(...answersWithIds);
 
-    const rows = await ctx.database
-      .select({
-        question: questions,
-        answer: answers,
-      })
-      .from(questions)
-      .leftJoin(answers, eq(answers.questionId, questions.id))
-      .where(
-        and(eq(questions.id, questionId), eq(questions.userId, ctx.auth.userId))
-      );
-
-    const [result] = nestAnswers(rows);
+    const [result] = await getQuestions(ctx, { id: questionId });
 
     if (!result) {
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
