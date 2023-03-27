@@ -37,7 +37,7 @@ export const DashboardLayout = ({
   return (
     <div className="grid min-h-screen grid-cols-4 xl:grid-cols-6">
       <aside className="border-r border-r-slate-200 pb-12 dark:border-r-slate-700">
-        <div className="px-8 py-6">
+        <div className="pointer-events-none px-8 py-6">
           <div className="inline-flex flex-col items-end">
             <span className="flex items-center justify-center text-2xl font-bold leading-none tracking-tight text-slate-50">
               <HelpCircle className="mr-1" />
