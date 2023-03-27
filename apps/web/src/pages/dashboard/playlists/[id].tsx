@@ -14,6 +14,16 @@ import { Separator } from "@/components/ui/separator";
 import { editPlaylistSchema } from "@/lib/schemas/playlists";
 import type { z } from "zod";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const Settings = ({
   playlist,
@@ -98,10 +108,51 @@ const Questions = () => {
         <p className="mt-2 mb-4 text-sm text-slate-500 dark:text-slate-400">
           You have no questions. Add one below.
         </p>
-        <Button>
-          <Plus className="mr-1 h-4 w-4" />
-          Create question
-        </Button>
+        <Sheet>
+          <SheetTrigger>
+            <Button>
+              <Plus className="mr-1 h-4 w-4" />
+              Create question
+            </Button>
+          </SheetTrigger>
+          <SheetContent size="content">
+            <SheetHeader>New question</SheetHeader>
+            <SheetDescription>Add a new question</SheetDescription>
+            <Separator className="my-4" />
+            <div className="flex w-80 flex-col gap-4">
+              <div className="grid w-full gap-1.5">
+                <Label htmlFor="message">Question</Label>
+                <Textarea
+                  placeholder="What's the best programming language?"
+                  id="message"
+                />
+              </div>
+              <RadioGroup defaultValue="option-one">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="option-one" id="option-one" />
+                  <Input placeholder="Answer..." />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="option-two" id="option-two" />
+                  <Input />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="option-three" id="option-two" />
+                  <Input />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="option-four" id="option-two" />
+                  <Input />
+                </div>
+              </RadioGroup>
+            </div>
+            <Separator className="my-4" />
+            <SheetFooter>
+              <Button variant="ghost">Cancel</Button>
+              <Button>Create</Button>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
       </div>
     </div>
   );
