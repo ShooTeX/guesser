@@ -98,6 +98,7 @@ importers:
       autoprefixer: 10.4.14
       class-variance-authority: ^0.4.0
       clsx: ^1.2.1
+      dayjs: ^1.11.7
       eslint: 8.36.0
       eslint-config-next: 13.2.4
       eslint-plugin-tailwindcss: ^3.10.1
@@ -135,6 +136,7 @@ importers:
       autoprefixer: 10.4.14_postcss@8.4.21
       class-variance-authority: 0.4.0_typescript@5.0.2
       clsx: 1.2.1
+      dayjs: 1.11.7
       install: 0.13.0
       lucide-react: 0.125.0_react@18.2.0
       next: 13.2.4_biqbaboplfbrettd7655fr4n2y
@@ -2148,6 +2150,10 @@ packages:
   /damerau-levenshtein/1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
     dev: true
+
+  /dayjs/1.11.7:
+    resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
+    dev: false
 
   /debug/3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}

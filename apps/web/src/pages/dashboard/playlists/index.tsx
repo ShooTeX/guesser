@@ -1,12 +1,15 @@
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { Button } from "@/components/ui/button";
 import { HelpCircle, List, Play, Plus, Trash } from "lucide-react";
-
 import type { WithUserProp } from "@clerk/nextjs";
 import { withUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { api } from "@/lib/trpc";
 import { Separator } from "@/components/ui/separator";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 const Empty = () => (
   <div className="flex h-[450px] shrink-0 items-center justify-center rounded-md border border-dashed border-slate-200 dark:border-slate-700">
@@ -33,6 +36,7 @@ type ItemProperties = {
   index: number;
   questionCount: number;
   playCount: number;
+  createdAt: string;
   id: string;
 };
 
@@ -41,6 +45,7 @@ const Item = ({
   index,
   questionCount,
   playCount,
+  createdAt,
   id,
 }: ItemProperties) => {
   return (
@@ -79,7 +84,7 @@ const Item = ({
           </div>
         </div>
         <p className="shrink-0 self-end text-slate-400 dark:text-slate-600">
-          created 2d ago
+          created {dayjs(createdAt).fromNow()}
         </p>
       </div>
     </div>
@@ -107,6 +112,7 @@ const Playlists = ({ user }: WithUserProp) => {
           {/* <Input placeholder="Search..." /> */}
           {playlists.data?.map((playlist, index) => (
             <Item
+              createdAt={playlist.createdAt}
               id={playlist.id}
               playCount={0}
               index={index}
