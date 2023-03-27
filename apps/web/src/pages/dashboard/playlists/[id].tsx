@@ -51,23 +51,27 @@ const Settings = ({
 
   return (
     <form className="grid gap-4" onSubmit={onSubmit}>
-      <div className="grid grid-cols-4 items-center gap-2">
-        <Label htmlFor="name">Name</Label>
-        <Input
-          type="text"
-          id="name"
-          placeholder="Name"
-          className="col-span-2"
-          {...register("input.name")}
-        />
-        <Separator className="col-span-4 my-4 w-full" />
-        <Label htmlFor="name">Short description</Label>
-        <Input
-          type="text"
-          id="name"
-          placeholder="Name"
-          className="col-span-2"
-        />
+      <div className="grid grid-cols-4 items-start gap-2">
+        <Label htmlFor="general">General</Label>
+        <div id="general" className="col-span-2 flex flex-col gap-4">
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              type="text"
+              id="name"
+              placeholder="Name"
+              {...register("input.name")}
+            />
+          </div>
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="short-desc">Short description</Label>
+            <Input
+              type="text"
+              id="short-desc"
+              placeholder="Awesome playlist..."
+            />
+          </div>
+        </div>
         <Separator className="col-span-4 my-4 w-full" />
         <div className="col-start-4 flex justify-end space-x-2">
           <Button variant="outline">Cancel</Button>
