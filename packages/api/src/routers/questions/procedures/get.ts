@@ -1,7 +1,6 @@
+import { questionSchema, getQuestionsSchema } from "@guesser/schemas";
 import { protectedProcedure } from "../../../create-router";
-import { questionSchema } from "../../../database/schemas";
 import { getQuestions } from "../models";
-import { getQuestionsSchema } from "../schemas";
 
 export const get = protectedProcedure
   .output(questionSchema.array())

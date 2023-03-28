@@ -1,5 +1,22 @@
 import { z } from "zod";
-import { questionSchema, answerSchema } from "../../database/schemas";
+
+export const answerSchema = z.object({
+  id: z.string().length(21),
+  userId: z.string(),
+  answer: z.string().min(1),
+  questionId: z.string().length(21),
+  createdAt: z.date(),
+});
+
+export const questionSchema = z.object({
+  id: z.string().length(21),
+  userId: z.string(),
+  question: z.string().min(1),
+  order: z.number().finite().nonnegative().min(0).max(32_767),
+  playlistId: z.string().length(21),
+  createdAt: z.date(),
+  answers: z.array(answerSchema.shape.answer).min(2),
+});
 
 export const getQuestionsSchema = questionSchema
   .pick({ id: true, playlistId: true })

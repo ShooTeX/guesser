@@ -1,10 +1,10 @@
+import { questionSchema, addAnswersSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
 import { nanoid } from "nanoid";
 import { protectedProcedure } from "../../../create-router";
 import type { AnswerInsert } from "../../../database/schemas";
-import { questionSchema, answers } from "../../../database/schemas";
+import { answers } from "../../../database/schemas";
 import { getQuestions } from "../models";
-import { addAnswersSchema } from "../schemas";
 
 export const addAnswers = protectedProcedure
   .output(questionSchema)

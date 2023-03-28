@@ -5,13 +5,14 @@ import { TRPCError } from "@trpc/server";
 import { protectedProcedure, router } from "../../create-router";
 import type { QuestionInsert } from "../../database/schemas";
 import { questions } from "../../database/schemas";
-import { playlistSchema, playlists } from "../../database/schemas";
+import { playlists } from "../../database/schemas";
 import {
+  playlistSchema,
   getPlaylistsSchema,
   createPlaylistSchema,
   editPlaylistSchema,
   deletePlaylistSchema,
-} from "./schemas";
+} from "@guesser/schemas";
 
 export const playlistsRouter = router({
   get: protectedProcedure

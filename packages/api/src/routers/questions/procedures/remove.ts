@@ -1,7 +1,7 @@
+import { questionSchema, removeQuestionSchema } from "@guesser/schemas";
 import { and, eq } from "drizzle-orm/expressions";
 import { protectedProcedure } from "../../../create-router";
-import { questionSchema, questions } from "../../../database/schemas";
-import { removeQuestionSchema } from "../schemas";
+import { questions } from "../../../database/schemas";
 
 export const remove = protectedProcedure
   .output(questionSchema.pick({ id: true }))

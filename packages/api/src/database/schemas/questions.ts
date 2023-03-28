@@ -2,7 +2,6 @@ import type { InferModel } from "drizzle-orm/mysql-core";
 import { smallint } from "drizzle-orm/mysql-core";
 import { uniqueIndex } from "drizzle-orm/mysql-core";
 import { mysqlTable, varchar, text, timestamp } from "drizzle-orm/mysql-core";
-import { z } from "zod";
 import { playlists } from "./playlists";
 
 export const questions = mysqlTable(
@@ -37,21 +36,3 @@ export const answers = mysqlTable("answers", {
 
 export type Answer = InferModel<typeof answers>;
 export type AnswerInsert = InferModel<typeof answers, "insert">;
-
-export const answerSchema = z.object({
-  id: z.string().length(21),
-  userId: z.string(),
-  answer: z.string().min(1),
-  questionId: z.string().length(21),
-  createdAt: z.date(),
-});
-
-export const questionSchema = z.object({
-  id: z.string().length(21),
-  userId: z.string(),
-  question: z.string().min(1),
-  order: z.number().finite().nonnegative().min(0).max(32_767),
-  playlistId: z.string().length(21),
-  createdAt: z.date(),
-  answers: z.array(answerSchema.shape.answer).min(2),
-});

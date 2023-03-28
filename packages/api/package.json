@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@guesser/schemas": "workspace:*",
     "@clerk/fastify": "^0.1.14",
     "@planetscale/database": "^1.6.0",
     "@trpc/server": "^10.14.0",
