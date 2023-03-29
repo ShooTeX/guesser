@@ -11,7 +11,9 @@
   "dependencies": {
     "@clerk/nextjs": "^4.11.11",
     "@guesser/api": "workspace:*",
+    "@guesser/schemas": "workspace:*",
     "@hookform/resolvers": "^3.0.0",
+    "@radix-ui/react-checkbox": "^1.0.3",
     "@radix-ui/react-dialog": "^1.0.3",
     "@radix-ui/react-label": "^2.0.1",
     "@radix-ui/react-radio-group": "^1.1.2",

@@ -14,14 +14,6 @@ import { Separator } from "@/components/ui/separator";
 import { editPlaylistSchema } from "@/lib/schemas/playlists";
 import type { z } from "zod";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { QuestionForm } from "@/components/question-form";
 
 const Settings = ({
@@ -92,7 +84,11 @@ const Settings = ({
   );
 };
 
-const Questions = () => {
+type QuestionsProperties = {
+  playlistId: string;
+};
+
+const Questions = ({ playlistId }: QuestionsProperties) => {
   return (
     <div className="col-span-2 flex h-80 shrink-0 items-center justify-center">
       <div className="mx-auto flex flex-col items-center justify-center text-center">
@@ -103,38 +99,26 @@ const Questions = () => {
         <p className="mt-2 mb-4 text-sm text-slate-500 dark:text-slate-400">
           You have no questions. Add one below.
         </p>
-        <Sheet>
-          <SheetTrigger>
-            <Button>
-              <Plus className="mr-1 h-4 w-4" />
-              Create question
-            </Button>
-          </SheetTrigger>
-          <SheetContent size="content">
-            <SheetHeader>New question</SheetHeader>
-            <SheetDescription>Add a new question</SheetDescription>
-            <Separator className="my-4" />
-            <QuestionForm />
-            <Separator className="my-4" />
-            <SheetFooter>
-              <Button variant="ghost">Cancel</Button>
-              <Button>Create</Button>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
+        <QuestionForm order={0} playlistId={playlistId}>
+          <Button>
+            <Plus className="mr-1 h-4 w-4" />
+            Create question
+          </Button>
+        </QuestionForm>
       </div>
     </div>
   );
 };
 
-const PlaylistCreate = ({ user }: WithUserProp) => {
+const PlaylistEdit = ({ user }: WithUserProp) => {
   const router = useRouter();
+  const { id } = router.query;
   const playlist = api.playlists.get.useQuery(
     {
-      id: router.query.id as string,
+      id: id as string,
     },
     {
-      enabled: !!router.query.id,
+      enabled: !!id,
       retry: false,
       select: (data) => {
         return data[0];
@@ -167,11 +151,11 @@ const PlaylistCreate = ({ user }: WithUserProp) => {
           )}
         </TabsContent>
         <TabsContent value="questions">
-          <Questions />
+          <Questions playlistId={id} />
         </TabsContent>
       </Tabs>
     </DashboardLayout>
   );
 };
 
-export default withUser(PlaylistCreate);
+export default withUser(PlaylistEdit);
