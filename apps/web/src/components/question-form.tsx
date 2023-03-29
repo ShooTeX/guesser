@@ -14,10 +14,9 @@ import {
   SheetHeader,
   SheetDescription,
   SheetFooter,
+  SheetTitle,
 } from "./ui/sheet";
 import type { PropsWithChildren } from "react";
-import { Separator } from "./ui/separator";
-import { Label } from "./ui/label";
 
 type QuestionFormProperties = PropsWithChildren & {
   playlistId: string;
@@ -70,19 +69,17 @@ export const QuestionForm = ({
     <Sheet>
       <SheetTrigger>{children}</SheetTrigger>
       <SheetContent size="content">
-        <SheetHeader>New question</SheetHeader>
-        <SheetDescription>Add a new question</SheetDescription>
-        <Separator className="my-4" />
-        <form onSubmit={onSubmit}>
-          <div className="flex w-80 flex-col gap-4">
-            <div className="grid w-full gap-1.5">
-              <Label htmlFor="message">Question</Label>
-              <Textarea
-                placeholder="What's the best programming language?"
-                id="message"
-                {...register("question")}
-              />
-            </div>
+        <SheetHeader>
+          <SheetTitle>New question</SheetTitle>
+          <SheetDescription>Add a new question</SheetDescription>
+        </SheetHeader>
+        <form onSubmit={onSubmit} className="mt-4 flex w-80 flex-col gap-4">
+          <div className="flex flex-col gap-4">
+            <Textarea
+              placeholder="What's the best programming language?"
+              id="message"
+              {...register("question")}
+            />
             <Controller
               control={control}
               name="correctAnswerIdx"
@@ -111,11 +108,7 @@ export const QuestionForm = ({
               )}
             />
           </div>
-          <Separator className="my-4" />
           <SheetFooter>
-            <Button variant="ghost" type="button">
-              Cancel
-            </Button>
             <Button type="submit" disabled={!isValid || !isDirty}>
               Create
             </Button>
