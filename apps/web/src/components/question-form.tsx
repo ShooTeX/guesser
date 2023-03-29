@@ -28,6 +28,8 @@ const customQuestionSchema = createQuestionSchema.extend({
   correctAnswerIdx: z.string(),
 });
 
+type CustomQuestion = z.infer<typeof customQuestionSchema>;
+
 export const QuestionForm = ({
   playlistId,
   order,
@@ -37,8 +39,8 @@ export const QuestionForm = ({
     register,
     control,
     handleSubmit,
-    formState: { isValid, isDirty, errors },
-  } = useForm<z.infer<typeof customQuestionSchema>>({
+    formState: { isValid, isDirty },
+  } = useForm<CustomQuestion>({
     resolver: zodResolver(customQuestionSchema),
     mode: "onChange",
     defaultValues: {
@@ -57,10 +59,12 @@ export const QuestionForm = ({
   const mutation = api.questions.create.useMutation();
 
   const onSubmit = handleSubmit((data) => {
-    mutation.mutate(data);
+    const answers = data.answers.map((answer, index) => ({
+      ...answer,
+      correct: index === Number(data.correctAnswerIdx),
+    }));
+    mutation.mutate({ ...data, answers });
   });
-
-  console.log(isValid, errors);
 
   return (
     <Sheet>
