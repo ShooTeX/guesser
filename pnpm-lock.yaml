@@ -178,8 +178,8 @@ importers:
       '@types/node': ^18.14.6
       '@typescript-eslint/eslint-plugin': ^5.54.1
       '@typescript-eslint/parser': ^5.55.0
-      drizzle-kit: 0.17.0
-      drizzle-orm: 0.22.0-cbee773
+      drizzle-kit: 0.17.1
+      drizzle-orm: 0.23.2
       eslint: 8.36.0
       eslint-config-prettier: ^8.6.0
       eslint-plugin-prettier: ^4.2.1
@@ -200,7 +200,7 @@ importers:
       '@guesser/schemas': link:../schemas
       '@planetscale/database': 1.6.0
       '@trpc/server': 10.18.0
-      drizzle-orm: 0.22.0-cbee773_7wrgmb4pybenke4ozfnne7qf3u
+      drizzle-orm: 0.23.2_7wrgmb4pybenke4ozfnne7qf3u
       fastify: 4.15.0
       fastify-plugin: 4.5.0
       mysql2: 3.2.0
@@ -212,7 +212,7 @@ importers:
       '@types/node': 18.15.3
       '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
       '@typescript-eslint/parser': 5.56.0_vgl77cfdswitgr47lm5swmv43m
-      drizzle-kit: 0.17.0
+      drizzle-kit: 0.17.1
       eslint: 8.36.0
       eslint-config-prettier: 8.8.0_eslint@8.36.0
       eslint-plugin-prettier: 4.2.1_ose2zoovovx4ulolhifz3tfzx4
@@ -2382,62 +2382,22 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm/0.22.0-cbee773_7wrgmb4pybenke4ozfnne7qf3u:
-    resolution: {integrity: sha512-L3No9KQ6oO2Rtbp98XtWZGg9+mE5WTg7CZ52Gh6WIb7O5LwtENo3L8vDKZHLwgjZ1HQXM9/O99lSYmEOS/pPUA==}
-    peerDependencies:
-      '@aws-sdk/client-rds-data': '>=3 <4'
-      '@cloudflare/workers-types': '>=3'
-      '@neondatabase/serverless': '>=0.1 <0.2'
-      '@planetscale/database': '>=1 <2'
-      '@types/better-sqlite3': '*'
-      '@types/pg': '*'
-      '@types/sql.js': '*'
-      better-sqlite3: '>=7 <9'
-      bun-types: '*'
-      knex: '*'
-      kysely: '*'
-      mysql2: '>=2 <3'
-      pg: '>=8 <9'
-      postgres: '>=3 <4'
-      sql.js: '>=1 <2'
-      sqlite3: '>=5 <6'
-    peerDependenciesMeta:
-      '@aws-sdk/client-rds-data':
-        optional: true
-      '@cloudflare/workers-types':
-        optional: true
-      '@neondatabase/serverless':
-        optional: true
-      '@planetscale/database':
-        optional: true
-      '@types/better-sqlite3':
-        optional: true
-      '@types/pg':
-        optional: true
-      '@types/sql.js':
-        optional: true
-      better-sqlite3:
-        optional: true
-      bun-types:
-        optional: true
-      knex:
-        optional: true
-      kysely:
-        optional: true
-      mysql2:
-        optional: true
-      pg:
-        optional: true
-      postgres:
-        optional: true
-      sql.js:
-        optional: true
-      sqlite3:
-        optional: true
+  /drizzle-kit/0.17.1:
+    resolution: {integrity: sha512-1+/RSzVMRpAjqQzr+Gi8st3Y3GrRzun/EG9MwASZ/iYOm3erLJgAaM4xTz9RiM/wLYonPI+I5MZRXStSpCfEmg==}
+    hasBin: true
     dependencies:
-      '@planetscale/database': 1.6.0
-      mysql2: 3.2.0
-    dev: false
+      camelcase: 7.0.1
+      chalk: 5.2.0
+      commander: 9.5.0
+      esbuild: 0.15.18
+      esbuild-register: 3.4.2_esbuild@0.15.18
+      glob: 8.1.0
+      hanji: 0.0.5
+      json-diff: 0.9.0
+      zod: 3.21.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
 
   /drizzle-orm/0.22.0_7wrgmb4pybenke4ozfnne7qf3u:
     resolution: {integrity: sha512-oZ/CNbv3NXoCxmBWTPNAZHZkuzhacT+eXM0ywemkHSTiqEJe79VQ1jvGVd0fQthfOt1UHRMuAW0CeIizhQpb2Q==}
@@ -2474,6 +2434,63 @@ packages:
       better-sqlite3:
         optional: true
       bun-types:
+        optional: true
+      mysql2:
+        optional: true
+      pg:
+        optional: true
+      postgres:
+        optional: true
+      sql.js:
+        optional: true
+      sqlite3:
+        optional: true
+    dependencies:
+      '@planetscale/database': 1.6.0
+      mysql2: 3.2.0
+    dev: false
+
+  /drizzle-orm/0.23.2_7wrgmb4pybenke4ozfnne7qf3u:
+    resolution: {integrity: sha512-GSOhOc+gGSMsf3eyBzL1Yb0g0M3pOurWmFI1lVhOrmMQCVuA/smJgYSy4UeTzBV521+J+emiFaSKSomEmc+fog==}
+    peerDependencies:
+      '@aws-sdk/client-rds-data': '>=3'
+      '@cloudflare/workers-types': '>=3'
+      '@neondatabase/serverless': '>=0.1'
+      '@planetscale/database': '>=1'
+      '@types/better-sqlite3': '*'
+      '@types/pg': '*'
+      '@types/sql.js': '*'
+      better-sqlite3: '>=7'
+      bun-types: '*'
+      knex: '*'
+      kysely: '*'
+      mysql2: '>=2'
+      pg: '>=8'
+      postgres: '>=3'
+      sql.js: '>=1'
+      sqlite3: '>=5'
+    peerDependenciesMeta:
+      '@aws-sdk/client-rds-data':
+        optional: true
+      '@cloudflare/workers-types':
+        optional: true
+      '@neondatabase/serverless':
+        optional: true
+      '@planetscale/database':
+        optional: true
+      '@types/better-sqlite3':
+        optional: true
+      '@types/pg':
+        optional: true
+      '@types/sql.js':
+        optional: true
+      better-sqlite3:
+        optional: true
+      bun-types:
+        optional: true
+      knex:
+        optional: true
+      kysely:
         optional: true
       mysql2:
         optional: true
@@ -5554,6 +5571,7 @@ packages:
 
   /turbo/1.8.7:
     resolution: {integrity: sha512-0EtA4OfLSPpcErAQBKArDueQ/EoYPiPlRAWidHV8l030aVFY3B05dDd3CcfTM41IFSSgqk9n4R8DgesC8fVrDA==}
+    deprecated: Unstable cache bug
     hasBin: true
     requiresBuild: true
     optionalDependencies:

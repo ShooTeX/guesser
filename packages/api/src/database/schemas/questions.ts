@@ -1,6 +1,5 @@
 import type { InferModel } from "drizzle-orm/mysql-core";
-import { smallint } from "drizzle-orm/mysql-core";
-import { uniqueIndex } from "drizzle-orm/mysql-core";
+import { uniqueIndex, smallint, boolean } from "drizzle-orm/mysql-core";
 import { mysqlTable, varchar, text, timestamp } from "drizzle-orm/mysql-core";
 import { playlists } from "./playlists";
 
@@ -28,6 +27,7 @@ export const answers = mysqlTable("answers", {
   id: varchar("id", { length: 21 }).primaryKey(),
   userId: text("user_id").notNull(),
   answer: text("answer").notNull(),
+  correct: boolean("correct").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   questionId: varchar("question_id", { length: 21 })
     .notNull()

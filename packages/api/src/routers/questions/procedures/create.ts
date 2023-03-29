@@ -16,9 +16,10 @@ export const create = protectedProcedure
       .values({ ...input, id, userId: ctx.auth.userId });
 
     const answersWithIds = input.answers.map(
-      (answer) =>
+      ({ answer, correct }) =>
         ({
           answer,
+          correct,
           questionId: id,
           id: nanoid(),
           userId: ctx.auth.userId,

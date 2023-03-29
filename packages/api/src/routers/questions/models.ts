@@ -11,7 +11,7 @@ const nestAnswers = (rows: { question: Question; answer: Answer | null }[]) => {
     values,
     map((group) => ({
       ...group[0].question,
-      answers: compact(group.map((item) => item.answer?.answer)),
+      answers: compact(group.map((item) => item.answer)),
     }))
   );
 };
