@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { editPlaylistSchema } from "@/lib/schemas/playlists";
 import type { z } from "zod";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import type { QuestionFormProperties } from "@/components/question-form";
 import { QuestionForm } from "@/components/question-form";
 
 const Settings = ({
@@ -72,7 +73,9 @@ const Settings = ({
       </div>
       <Separator className="col-span-4 my-4 w-full" />
       <div className="col-start-4 flex justify-end space-x-2">
-        <Button variant="outline">Cancel</Button>
+        <Button variant="outline" type="button">
+          Cancel
+        </Button>
         <Button type="submit" disabled={mutation.isLoading || !isValid}>
           {mutation.isLoading && (
             <Loader2 className="mr-1 h-4 w-4 animate-spin" />
@@ -84,9 +87,7 @@ const Settings = ({
   );
 };
 
-type QuestionsProperties = {
-  playlistId: string;
-};
+type QuestionsProperties = Pick<QuestionFormProperties, "playlistId">;
 
 const Questions = ({ playlistId }: QuestionsProperties) => {
   return (
@@ -97,7 +98,7 @@ const Questions = ({ playlistId }: QuestionsProperties) => {
           No questions created
         </h3>
         <p className="mt-2 mb-4 text-sm text-slate-500 dark:text-slate-400">
-          You have no questions. Add one below.
+          This playlist does not have any questions. Add one below.
         </p>
         <QuestionForm order={0} playlistId={playlistId}>
           <Button>
@@ -151,7 +152,7 @@ const PlaylistEdit = ({ user }: WithUserProp) => {
           )}
         </TabsContent>
         <TabsContent value="questions">
-          <Questions playlistId={id} />
+          <Questions playlistId={id as string} />
         </TabsContent>
       </Tabs>
     </DashboardLayout>

@@ -18,7 +18,7 @@ import {
 } from "./ui/sheet";
 import type { PropsWithChildren } from "react";
 
-type QuestionFormProperties = PropsWithChildren & {
+export type QuestionFormProperties = PropsWithChildren & {
   playlistId: string;
   order: number;
 };
