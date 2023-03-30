@@ -17,6 +17,7 @@ import {
   SheetTitle,
 } from "./ui/sheet";
 import type { PropsWithChildren } from "react";
+import { Loader2 } from "lucide-react";
 
 export type QuestionFormProperties = PropsWithChildren & {
   playlistId: string;
@@ -109,7 +110,13 @@ export const QuestionForm = ({
             />
           </div>
           <SheetFooter>
-            <Button type="submit" disabled={!isValid || !isDirty}>
+            <Button
+              type="submit"
+              disabled={!isValid || !isDirty || mutation.isLoading}
+            >
+              {mutation.isLoading && (
+                <Loader2 className="m-4 mr-1 h-4 animate-spin" />
+              )}
               Create
             </Button>
           </SheetFooter>
