@@ -23,6 +23,11 @@
       "outputs": [
         "migrations/**"
       ]
+    },
+    "push": {
+      "outputs": [
+        "migrations/**"
+      ]
     }
   }
 }

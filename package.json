@@ -10,7 +10,8 @@
     "build": "turbo run build",
     "dev": "dotenv -c -- turbo run dev",
     "lint": "turbo run lint",
-    "db:migrate": "dotenv -c -- turbo run migrate"
+    "db:migrate": "dotenv -c -- turbo run migrate",
+    "db:push": "dotenv -c -- turbo run push"
   },
   "devDependencies": {
     "dotenv-cli": "^7.1.0",
