@@ -115,7 +115,7 @@ export const QuestionForm = ({
               disabled={!isValid || !isDirty || mutation.isLoading}
             >
               {mutation.isLoading && (
-                <Loader2 className="m-4 mr-1 h-4 animate-spin" />
+                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
               )}
               Create
             </Button>
