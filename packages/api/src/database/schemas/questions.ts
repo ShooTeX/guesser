@@ -1,7 +1,14 @@
 import type { InferModel } from "drizzle-orm";
-import { uniqueIndex, smallint, boolean } from "drizzle-orm/mysql-core";
-import { mysqlTable, varchar, text, timestamp } from "drizzle-orm/mysql-core";
-import { playlists } from "./playlists";
+import {
+  uniqueIndex,
+  smallint,
+  boolean,
+  index,
+  mysqlTable,
+  varchar,
+  text,
+  timestamp,
+} from "drizzle-orm/mysql-core";
 
 export const questions = mysqlTable(
   "questions",
@@ -9,30 +16,33 @@ export const questions = mysqlTable(
     id: varchar("id", { length: 21 }).primaryKey(),
     userId: text("user_id").notNull(),
     question: text("question").notNull(),
-    playlistId: varchar("playlist_id", { length: 21 })
-      .references(() => playlists.id, { onDelete: "cascade" })
-      .notNull(),
+    playlistId: varchar("playlist_id", { length: 21 }).notNull(),
     order: smallint("order").notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({
-    order_idx: uniqueIndex("order_idx").on(table.order, table.playlistId),
+    playlistIdIdx: index("playlist_id_idx").on(table.playlistId),
+    orderIdx: uniqueIndex("order_idx").on(table.order, table.playlistId),
   })
 );
 
 export type QuestionInsert = InferModel<typeof questions, "insert">;
 export type Question = InferModel<typeof questions>;
 
-export const answers = mysqlTable("answers", {
-  id: varchar("id", { length: 21 }).primaryKey(),
-  userId: text("user_id").notNull(),
-  answer: text("answer").notNull(),
-  correct: boolean("correct").notNull().default(false),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  questionId: varchar("question_id", { length: 21 })
-    .notNull()
-    .references(() => questions.id, { onDelete: "cascade" }),
-});
+export const answers = mysqlTable(
+  "answers",
+  {
+    id: varchar("id", { length: 21 }).primaryKey(),
+    userId: text("user_id").notNull(),
+    answer: text("answer").notNull(),
+    correct: boolean("correct").notNull().default(false),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    questionId: varchar("question_id", { length: 21 }).notNull(),
+  },
+  (table) => ({
+    questionIdIdx: index("question_id_idx").on(table.questionId),
+  })
+);
 
 export type Answer = InferModel<typeof answers>;
 export type AnswerInsert = InferModel<typeof answers, "insert">;

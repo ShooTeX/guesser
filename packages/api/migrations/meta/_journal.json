@@ -5,14 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1679604354440,
-      "tag": "0000_secret_crystal"
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1680196178727,
-      "tag": "0001_green_lorna_dane",
+      "when": 1680203392107,
+      "tag": "0000_stormy_lizard",
       "breakpoints": false
     }
   ]
