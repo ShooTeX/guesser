@@ -1,4 +1,4 @@
-import type { InferModel } from "drizzle-orm/mysql-core";
+import type { InferModel } from "drizzle-orm";
 import { uniqueIndex, smallint, boolean } from "drizzle-orm/mysql-core";
 import { mysqlTable, varchar, text, timestamp } from "drizzle-orm/mysql-core";
 import { playlists } from "./playlists";
