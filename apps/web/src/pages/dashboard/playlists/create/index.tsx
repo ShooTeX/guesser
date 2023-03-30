@@ -1,6 +1,4 @@
 import { DashboardLayout } from "@/components/dashboard-layout";
-import type { WithUserProp } from "@clerk/nextjs";
-import { withUser } from "@clerk/nextjs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -31,7 +29,7 @@ const createPlaylistSchema = playlistSchema.pick({ name: true }).extend({
   questions: questionSchema.pick({ question: true }).array().optional(),
 });
 
-const PlaylistCreate = ({ user }: WithUserProp) => {
+const PlaylistCreate = () => {
   const router = useRouter();
   const mutation = api.playlists.create.useMutation({
     onSuccess: () => {
@@ -53,7 +51,6 @@ const PlaylistCreate = ({ user }: WithUserProp) => {
 
   return (
     <DashboardLayout
-      user={user}
       headline="Create Playlist"
       subline="Create a new fancy playlist"
     >
@@ -114,4 +111,4 @@ const PlaylistCreate = ({ user }: WithUserProp) => {
   );
 };
 
-export default withUser(PlaylistCreate);
+export default PlaylistCreate;

@@ -1,5 +1,4 @@
-import type { WithUserProp } from "@clerk/nextjs";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { HelpCircle, Play, List } from "lucide-react";
 import { Button } from "./ui/button";
 import type { PropsWithChildren, ReactNode } from "react";
@@ -7,21 +6,20 @@ import { Breadcrumbs } from "./ui/breadcrumbs";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-export type DashboardLayoutProperties = PropsWithChildren &
-  WithUserProp & {
-    headline: string;
-    subline: string;
-    action?: ReactNode;
-  };
+export type DashboardLayoutProperties = PropsWithChildren & {
+  headline: string;
+  subline: string;
+  action?: ReactNode;
+};
 
 export const DashboardLayout = ({
   children,
   headline,
   subline,
-  user,
   action,
 }: DashboardLayoutProperties) => {
   const { asPath } = useRouter();
+  const { user, isLoaded } = useUser();
   const manageRoutes = [
     {
       title: "Playlists",
@@ -79,7 +77,7 @@ export const DashboardLayout = ({
         <div className="flex items-center justify-between">
           <Breadcrumbs path={asPath} />
           <div className="flex items-center">
-            {user && (
+            {isLoaded && user && (
               <>
                 <span className="mr-2 text-sm">
                   Hey <strong>{user.firstName}</strong>

@@ -1,8 +1,6 @@
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { Button } from "@/components/ui/button";
 import { HelpCircle, List, Play, Plus, Trash } from "lucide-react";
-import type { WithUserProp } from "@clerk/nextjs";
-import { withUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { api } from "@/lib/trpc";
 import { Separator } from "@/components/ui/separator";
@@ -91,12 +89,11 @@ const Item = ({
   );
 };
 
-const Playlists = ({ user }: WithUserProp) => {
+const Playlists = () => {
   const playlists = api.playlists.get.useQuery();
 
   return (
     <DashboardLayout
-      user={user}
       headline="Playlists"
       subline="Create or edit playlists"
       action={
@@ -109,7 +106,6 @@ const Playlists = ({ user }: WithUserProp) => {
         <Empty />
       ) : (
         <div className="space-y-2">
-          {/* <Input placeholder="Search..." /> */}
           {playlists.data?.map((playlist, index) => (
             <Item
               createdAt={playlist.createdAt}
@@ -127,4 +123,4 @@ const Playlists = ({ user }: WithUserProp) => {
   );
 };
 
-export default withUser(Playlists);
+export default Playlists;

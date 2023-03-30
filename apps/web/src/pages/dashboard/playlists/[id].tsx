@@ -1,6 +1,4 @@
 import { DashboardLayout } from "@/components/dashboard-layout";
-import type { WithUserProp } from "@clerk/nextjs";
-import { withUser } from "@clerk/nextjs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -100,7 +98,7 @@ const Questions = ({ playlistId }: QuestionsProperties) => {
         <p className="mt-2 mb-4 text-sm text-slate-500 dark:text-slate-400">
           This playlist does not have any questions. Add one below.
         </p>
-        <QuestionForm order={0} playlistId={playlistId}>
+        <QuestionForm playlistId={playlistId}>
           <Button>
             <Plus className="mr-1 h-4 w-4" />
             Create question
@@ -111,7 +109,7 @@ const Questions = ({ playlistId }: QuestionsProperties) => {
   );
 };
 
-const PlaylistEdit = ({ user }: WithUserProp) => {
+const PlaylistEdit = () => {
   const router = useRouter();
   const { id } = router.query;
   const playlist = api.playlists.get.useQuery(
@@ -133,7 +131,6 @@ const PlaylistEdit = ({ user }: WithUserProp) => {
 
   return (
     <DashboardLayout
-      user={user}
       headline="Edit Playlist"
       subline="Change name, description and add/remove questions"
     >
@@ -159,4 +156,4 @@ const PlaylistEdit = ({ user }: WithUserProp) => {
   );
 };
 
-export default withUser(PlaylistEdit);
+export default PlaylistEdit;

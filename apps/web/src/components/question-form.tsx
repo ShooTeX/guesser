@@ -21,7 +21,6 @@ import { Loader2 } from "lucide-react";
 
 export type QuestionFormProperties = PropsWithChildren & {
   playlistId: string;
-  order: number;
 };
 
 const customQuestionSchema = createQuestionSchema.extend({
@@ -32,7 +31,6 @@ type CustomQuestion = z.infer<typeof customQuestionSchema>;
 
 export const QuestionForm = ({
   playlistId,
-  order,
   children,
 }: QuestionFormProperties) => {
   const {
@@ -45,7 +43,6 @@ export const QuestionForm = ({
     mode: "onChange",
     defaultValues: {
       playlistId,
-      order,
       answers: [{ answer: "" }, { answer: "" }, { answer: "" }, { answer: "" }],
       correctAnswerIdx: "0",
     },
