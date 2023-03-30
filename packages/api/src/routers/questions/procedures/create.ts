@@ -1,6 +1,7 @@
 import { questionSchema, createQuestionSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
 import { sql } from "drizzle-orm";
+import { eq } from "drizzle-orm/expressions";
 import { nanoid } from "nanoid";
 import { protectedProcedure } from "../../../create-router";
 import type { AnswerInsert, QuestionInsert } from "../../../database/schemas";
@@ -18,13 +19,18 @@ export const create = protectedProcedure
   .mutation(
     async ({ ctx, input: { answers: answersInput, ...questionInput } }) => {
       const id = nanoid();
-      const questionRow = await ctx.database.insert(questions).values({
+
+      const [countSelect] = await ctx.database
+        .select({ count: count() })
+        .from(questions)
+        .where(eq(questions.playlistId, questionInput.playlistId));
+
+      await ctx.database.insert(questions).values({
         id: id,
         userId: ctx.auth.userId,
+        order: countSelect?.count || 0,
         ...questionInput,
       } satisfies QuestionInsert);
-
-      console.log(questionRow.rowsAffected);
 
       const answersWithIds = answersInput.map(
         ({ answer, correct }) =>

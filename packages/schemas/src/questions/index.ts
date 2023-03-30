@@ -28,7 +28,6 @@ export const createQuestionSchema = questionSchema
     playlistId: true,
     question: true,
     answers: true,
-    order: true,
   })
   .extend({
     answers: answerSchema.pick({ answer: true, correct: true }).array().min(2),
