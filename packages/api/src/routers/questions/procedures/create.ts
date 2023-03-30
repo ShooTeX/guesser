@@ -26,7 +26,7 @@ export const create = protectedProcedure
         } satisfies AnswerInsert)
     );
 
-    await ctx.database.insert(answers).values(...answersWithIds);
+    await ctx.database.insert(answers).values(answersWithIds);
 
     const [result] = await getQuestions(ctx, { id });
 
