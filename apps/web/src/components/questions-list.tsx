@@ -12,6 +12,7 @@ import { api } from "@/lib/trpc";
 import type { RouterOutput } from "@/lib/trpc";
 import { Separator } from "./ui/separator";
 import { cn } from "@/lib/utils";
+import React from "react";
 
 const Empty = ({ playlistId }: { playlistId: string }) => {
   return (
@@ -54,7 +55,11 @@ const Item = ({
           <Button variant="ghost">
             <ChevronLast className="h-4 w-4 rotate-90" />
           </Button>
-          <QuestionForm type="edit" questionId={question.id}>
+          <QuestionForm
+            type="edit"
+            questionId={question.id}
+            playlistId={question.playlistId}
+          >
             <Button variant="subtle">Edit</Button>
           </QuestionForm>
         </div>
