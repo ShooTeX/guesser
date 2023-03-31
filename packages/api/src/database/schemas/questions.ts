@@ -33,6 +33,7 @@ export const answers = mysqlTable(
   "answers",
   {
     id: varchar("id", { length: 21 }).primaryKey(),
+    order: smallint("order").notNull(),
     userId: text("user_id").notNull(),
     answer: text("answer").notNull(),
     correct: boolean("correct").notNull().default(false),

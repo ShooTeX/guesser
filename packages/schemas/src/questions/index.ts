@@ -38,30 +38,9 @@ export const removeQuestionSchema = questionSchema.pick({
 });
 
 export const editQuestionSchema = questionSchema
-  .pick({
-    id: true,
-  })
+  .pick({ id: true, question: true })
   .extend({
-    input: z.intersection(
-      questionSchema.pick({ question: true }),
-      questionSchema.pick({ order: true }).optional()
+    answers: z.optional(
+      answerSchema.pick({ id: true, answer: true, correct: true }).array()
     ),
   });
-
-export const addAnswersSchema = answerSchema
-  .pick({
-    questionId: true,
-  })
-  .extend({
-    input: answerSchema.shape.answer.array().min(1),
-  });
-
-export const removeAnswerSchema = answerSchema.pick({
-  id: true,
-});
-
-export const editAnswerSchema = answerSchema
-  .pick({
-    id: true,
-  })
-  .extend({ input: answerSchema.pick({ answer: true }) });
