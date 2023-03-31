@@ -2,7 +2,7 @@ import { DashboardLayout } from "@/components/dashboard-layout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { HelpCircle, Loader2, Plus } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { RouterOutput } from "@/lib/trpc";
@@ -12,8 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { editPlaylistSchema } from "@/lib/schemas/playlists";
 import type { z } from "zod";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import type { QuestionFormProperties } from "@/components/question-form";
-import { QuestionForm } from "@/components/question-form";
+import { QuestionsList } from "@/components/questions-list";
 
 const Settings = ({
   playlist,
@@ -85,30 +84,6 @@ const Settings = ({
   );
 };
 
-type QuestionsProperties = Pick<QuestionFormProperties, "playlistId">;
-
-const Questions = ({ playlistId }: QuestionsProperties) => {
-  return (
-    <div className="col-span-2 flex h-80 shrink-0 items-center justify-center">
-      <div className="mx-auto flex flex-col items-center justify-center text-center">
-        <HelpCircle className="h-10 w-10 text-slate-400" />
-        <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-50">
-          No questions created
-        </h3>
-        <p className="mt-2 mb-4 text-sm text-slate-500 dark:text-slate-400">
-          This playlist does not have any questions. Add one below.
-        </p>
-        <QuestionForm playlistId={playlistId}>
-          <Button>
-            <Plus className="mr-1 h-4 w-4" />
-            Create question
-          </Button>
-        </QuestionForm>
-      </div>
-    </div>
-  );
-};
-
 const PlaylistEdit = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -137,7 +112,9 @@ const PlaylistEdit = () => {
       <Tabs defaultValue="settings">
         <TabsList>
           <TabsTrigger value="settings">Settings</TabsTrigger>
-          <TabsTrigger value="questions">Questions</TabsTrigger>
+          <TabsTrigger value="questions" disabled={!playlist.data}>
+            Questions
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="settings">
           {playlist.data ? (
@@ -148,8 +125,8 @@ const PlaylistEdit = () => {
             </div>
           )}
         </TabsContent>
-        <TabsContent value="questions">
-          <Questions playlistId={id as string} />
+        <TabsContent value="questions" className="border-none p-0">
+          {playlist.data && <QuestionsList playlistId={playlist.data.id} />}
         </TabsContent>
       </Tabs>
     </DashboardLayout>

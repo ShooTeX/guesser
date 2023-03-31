@@ -1,0 +1,115 @@
+import {
+  ChevronFirst,
+  ChevronLast,
+  GripVertical,
+  HelpCircle,
+  Loader2,
+  Plus,
+} from "lucide-react";
+import type { QuestionFormProperties } from "./question-form";
+import { QuestionForm } from "./question-form";
+import { Button } from "./ui/button";
+import { api } from "@/lib/trpc";
+import type { RouterOutput } from "@/lib/trpc";
+import { Separator } from "./ui/separator";
+import { cn } from "@/lib/utils";
+
+const Empty = ({ playlistId }: Pick<QuestionFormProperties, "playlistId">) => {
+  return (
+    <div className="col-span-2 flex h-80 shrink-0 items-center justify-center rounded-md border border-slate-200 dark:border-slate-700">
+      <div className="mx-auto flex flex-col items-center justify-center text-center">
+        <HelpCircle className="h-10 w-10 text-slate-400" />
+        <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-50">
+          No questions created
+        </h3>
+        <p className="mt-2 mb-4 text-sm text-slate-500 dark:text-slate-400">
+          This playlist does not have any questions. Add one below.
+        </p>
+        <QuestionForm playlistId={playlistId}>
+          <Button>
+            <Plus className="mr-1 h-4 w-4" />
+            Create question
+          </Button>
+        </QuestionForm>
+      </div>
+    </div>
+  );
+};
+
+const Item = ({
+  question,
+}: {
+  question: RouterOutput["questions"]["get"][0];
+}) => {
+  return (
+    <div className="rounded-md border border-slate-200 px-4 py-3 dark:border-slate-700">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center justify-center">
+          <GripVertical className="mr-2 h-4 w-4" />
+          <p className="font-bold">{question.question}</p>
+        </div>
+        <div className="flex gap-1">
+          <Button variant="ghost">
+            <ChevronFirst className="h-4 w-4 rotate-90" />
+          </Button>
+          <Button variant="ghost">
+            <ChevronLast className="h-4 w-4 rotate-90" />
+          </Button>
+          <Button variant="subtle">Edit</Button>
+        </div>
+      </div>
+      <Separator className="my-2" />
+      <div className="grid grid-cols-2 gap-2">
+        {question.answers.map((answer) => (
+          <Button
+            key={answer.id}
+            variant="outline"
+            size="lg"
+            className={cn(
+              "pointer-events-none",
+              answer.correct &&
+                "border-green-200 bg-green-700 dark:border-green-700 font-bold text-green-500 dark:text-green-50"
+            )}
+          >
+            {answer.answer}
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+type QuestionsProperties = Pick<QuestionFormProperties, "playlistId">;
+
+export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
+  const { data, isLoading } = api.questions.get.useQuery({ playlistId });
+
+  // TODO: skeleton?
+  if (isLoading) {
+    return (
+      <div className="flex h-80 items-center justify-center rounded-md border border-slate-200 dark:border-slate-700">
+        <Loader2 className="mx-auto animate-spin"></Loader2>
+      </div>
+    );
+  }
+
+  if (!data?.length) {
+    return <Empty playlistId={playlistId} />;
+  }
+  return (
+    <>
+      <div className="mt-4 flex flex-col items-end">
+        <QuestionForm playlistId={playlistId}>
+          <Button size="lg">
+            <Plus className="mr-1" /> Add new
+          </Button>
+        </QuestionForm>
+      </div>
+      <div className="mt-4 flex flex-col gap-8">
+        {data.map((question) => (
+          <Item question={question} key={question.id} />
+        ))}
+      </div>
+    </>
+  );
+};
