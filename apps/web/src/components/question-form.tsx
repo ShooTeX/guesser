@@ -78,7 +78,7 @@ export const QuestionForm = ({
     createMutation.mutate({ ...data, answers });
   });
 
-  const { isLoading, isInitialLoading } = api.questions.get.useQuery(
+  const { isInitialLoading } = api.questions.get.useQuery(
     {
       id: properties.type === "edit" ? properties.questionId : "",
     },
