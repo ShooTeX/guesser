@@ -81,22 +81,15 @@ const Form = (properties: QuestionFormProperties) => {
   } = useForm<CustomQuestion>({
     resolver: zodResolver(customQuestionSchema),
     mode: "onChange",
-    defaultValues:
-      properties.type === "create"
-        ? {
-            playlistId: properties.playlistId,
-            answers: [
-              { answer: "" },
-              { answer: "" },
-              { answer: "" },
-              { answer: "" },
-            ],
-            correctAnswerIdx: "0",
-          }
-        : {},
+    defaultValues: {
+      question: "",
+      playlistId: properties.playlistId,
+      answers: [{ answer: "" }, { answer: "" }, { answer: "" }, { answer: "" }],
+      correctAnswerIdx: "0",
+    },
   });
 
-  const { fields, replace } = useFieldArray({
+  const { fields } = useFieldArray({
     control,
     name: "answers",
   });
@@ -150,13 +143,15 @@ const Form = (properties: QuestionFormProperties) => {
     reset({
       playlistId: data.playlistId,
       question: data.question,
+      answers: data.answers.map((answer) => ({
+        correct: false,
+        answer: answer.answer,
+      })),
       correctAnswerIdx: data.answers
         .findIndex((answer) => answer.correct)
         .toString(),
     });
-
-    replace(data.answers);
-  }, [data, reset, replace]);
+  }, [data, reset]);
 
   return (
     <>
