@@ -4,6 +4,7 @@ export const answerSchema = z.object({
   id: z.string().length(21),
   userId: z.string(),
   answer: z.string().min(1),
+  order: z.number().finite().nonnegative().min(0).max(32_767),
   correct: z.boolean().default(false),
   questionId: z.string().length(21),
   createdAt: z.date(),

@@ -33,10 +33,11 @@ export const create = protectedProcedure
       } satisfies QuestionInsert);
 
       const answersWithIds = answersInput.map(
-        ({ answer, correct }) =>
+        ({ answer, correct }, index) =>
           ({
             answer,
             correct,
+            order: index,
             questionId: id,
             id: nanoid(),
             userId: ctx.auth.userId,
