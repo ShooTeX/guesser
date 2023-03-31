@@ -63,12 +63,12 @@ const Item = ({
         {question.answers.map((answer) => (
           <Button
             key={answer.id}
-            variant="outline"
+            variant="subtle"
             size="lg"
             className={cn(
               "pointer-events-none",
               answer.correct &&
-                "border-green-200 bg-green-700 dark:border-green-700 font-bold text-green-500 dark:text-green-50"
+                "bg-green-700 dark:bg-green-700 font-bold text-green-500 dark:text-green-50"
             )}
           >
             {answer.answer}
