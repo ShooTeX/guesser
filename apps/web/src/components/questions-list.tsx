@@ -6,7 +6,6 @@ import {
   Loader2,
   Plus,
 } from "lucide-react";
-import type { QuestionFormProperties } from "./question-form";
 import { QuestionForm } from "./question-form";
 import { Button } from "./ui/button";
 import { api } from "@/lib/trpc";
@@ -14,7 +13,7 @@ import type { RouterOutput } from "@/lib/trpc";
 import { Separator } from "./ui/separator";
 import { cn } from "@/lib/utils";
 
-const Empty = ({ playlistId }: Pick<QuestionFormProperties, "playlistId">) => {
+const Empty = ({ playlistId }: { playlistId: string }) => {
   return (
     <div className="col-span-2 flex h-80 shrink-0 items-center justify-center rounded-md border border-slate-200 dark:border-slate-700">
       <div className="mx-auto flex flex-col items-center justify-center text-center">
@@ -25,7 +24,7 @@ const Empty = ({ playlistId }: Pick<QuestionFormProperties, "playlistId">) => {
         <p className="mt-2 mb-4 text-sm text-slate-500 dark:text-slate-400">
           This playlist does not have any questions. Add one below.
         </p>
-        <QuestionForm playlistId={playlistId}>
+        <QuestionForm playlistId={playlistId} type="create">
           <Button>
             <Plus className="mr-1 h-4 w-4" />
             Create question
@@ -55,7 +54,9 @@ const Item = ({
           <Button variant="ghost">
             <ChevronLast className="h-4 w-4 rotate-90" />
           </Button>
-          <Button variant="subtle">Edit</Button>
+          <QuestionForm type="edit" questionId={question.id}>
+            <Button variant="subtle">Edit</Button>
+          </QuestionForm>
         </div>
       </div>
       <Separator className="my-2" />
@@ -79,7 +80,9 @@ const Item = ({
   );
 };
 
-type QuestionsProperties = Pick<QuestionFormProperties, "playlistId">;
+type QuestionsProperties = {
+  playlistId: string;
+};
 
 export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
   const { data, isLoading } = api.questions.get.useQuery({ playlistId });
@@ -99,7 +102,7 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
   return (
     <>
       <div className="mt-4 flex flex-col items-end">
-        <QuestionForm playlistId={playlistId}>
+        <QuestionForm playlistId={playlistId} type="create">
           <Button size="lg">
             <Plus className="mr-1" /> Add new
           </Button>

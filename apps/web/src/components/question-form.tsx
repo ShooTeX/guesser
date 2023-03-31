@@ -19,9 +19,14 @@ import {
 import type { PropsWithChildren } from "react";
 import { Loader2 } from "lucide-react";
 
-export type QuestionFormProperties = PropsWithChildren & {
-  playlistId: string;
-};
+export type QuestionFormProperties = PropsWithChildren &
+  (
+    | {
+        type: "create";
+        playlistId: string;
+      }
+    | { type: "edit"; questionId: string }
+  );
 
 const customQuestionSchema = createQuestionSchema.extend({
   correctAnswerIdx: z.string(),
@@ -30,22 +35,31 @@ const customQuestionSchema = createQuestionSchema.extend({
 type CustomQuestion = z.infer<typeof customQuestionSchema>;
 
 export const QuestionForm = ({
-  playlistId,
   children,
+  ...properties
 }: QuestionFormProperties) => {
   const {
     register,
     control,
     handleSubmit,
+    reset,
     formState: { isValid, isDirty },
   } = useForm<CustomQuestion>({
     resolver: zodResolver(customQuestionSchema),
     mode: "onChange",
-    defaultValues: {
-      playlistId,
-      answers: [{ answer: "" }, { answer: "" }, { answer: "" }, { answer: "" }],
-      correctAnswerIdx: "0",
-    },
+    defaultValues:
+      properties.type === "create"
+        ? {
+            playlistId: properties.playlistId,
+            answers: [
+              { answer: "" },
+              { answer: "" },
+              { answer: "" },
+              { answer: "" },
+            ],
+            correctAnswerIdx: "0",
+          }
+        : {},
   });
 
   const { fields } = useFieldArray({
@@ -53,71 +67,118 @@ export const QuestionForm = ({
     name: "answers",
   });
 
-  const mutation = api.questions.create.useMutation();
+  const createMutation = api.questions.create.useMutation();
+  const editMutation = api.questions.edit.useMutation();
 
   const onSubmit = handleSubmit((data) => {
     const answers = data.answers.map((answer, index) => ({
       ...answer,
       correct: index === Number(data.correctAnswerIdx),
     }));
-    mutation.mutate({ ...data, answers });
+    createMutation.mutate({ ...data, answers });
   });
+
+  const { isLoading, isInitialLoading } = api.questions.get.useQuery(
+    {
+      id: properties.type === "edit" ? properties.questionId : "",
+    },
+    {
+      refetchOnWindowFocus: false,
+      enabled: properties.type === "edit",
+      select: (data) => {
+        return data[0];
+      },
+      onSuccess: (data) => {
+        if (!data) return;
+        reset({
+          ...data,
+          correctAnswerIdx: data.answers
+            .findIndex((answer) => answer.correct)
+            .toString(),
+        });
+      },
+    }
+  );
 
   return (
     <Sheet>
       <SheetTrigger>{children}</SheetTrigger>
       <SheetContent size="content">
         <SheetHeader>
-          <SheetTitle>New question</SheetTitle>
-          <SheetDescription>Add a new question</SheetDescription>
+          {properties.type === "create" && (
+            <>
+              <SheetTitle>New question</SheetTitle>
+              <SheetDescription>Add a new question</SheetDescription>
+            </>
+          )}
+          {properties.type === "edit" && (
+            <>
+              <SheetTitle>Edit question</SheetTitle>
+              <SheetDescription>
+                Edit your question, click save when you&apos;re done.
+              </SheetDescription>
+            </>
+          )}
         </SheetHeader>
-        <form onSubmit={onSubmit} className="mt-4 flex w-80 flex-col gap-4">
-          <div className="flex flex-col gap-4">
-            <Textarea
-              placeholder="What's the best programming language?"
-              id="message"
-              {...register("question")}
-            />
-            <Controller
-              control={control}
-              name="correctAnswerIdx"
-              render={({ field: { onChange, ...field } }) => (
-                <RadioGroup onValueChange={onChange} {...field}>
-                  {fields.map((field, index) => (
-                    <div key={field.id} className="flex items-center space-x-2">
-                      <RadioGroupItem value={`${index}`} />
-                      <div className="relative w-full">
-                        <div className="absolute left-2 flex h-full items-center">
-                          <div className="flex h-5 w-5 rounded-md bg-slate-700 font-mono text-sm font-bold leading-none text-slate-200">
-                            <span className="m-auto uppercase">
-                              {String.fromCodePoint(97 + index)}
-                            </span>
+        <div className="w-80">
+          {isInitialLoading && (
+            <div className="flex justify-center p-5">
+              <Loader2 className="animate-spin" />
+            </div>
+          )}
+          {!isInitialLoading && (
+            <form onSubmit={onSubmit} className="mt-4 flex flex-col gap-4">
+              <div className="flex flex-col gap-4">
+                <Textarea
+                  placeholder="What's the best programming language?"
+                  id="message"
+                  {...register("question")}
+                />
+                <Controller
+                  control={control}
+                  name="correctAnswerIdx"
+                  render={({ field: { onChange, ...field } }) => (
+                    <RadioGroup onValueChange={onChange} {...field}>
+                      {fields.map((field, index) => (
+                        <div
+                          key={field.id}
+                          className="flex items-center space-x-2"
+                        >
+                          <RadioGroupItem value={`${index}`} />
+                          <div className="relative w-full">
+                            <div className="absolute left-2 flex h-full items-center">
+                              <div className="flex h-5 w-5 rounded-md bg-slate-700 font-mono text-sm font-bold leading-none text-slate-200">
+                                <span className="m-auto uppercase">
+                                  {String.fromCodePoint(97 + index)}
+                                </span>
+                              </div>
+                            </div>
+                            <Input
+                              className="pl-9"
+                              key={field.id}
+                              {...register(`answers.${index}.answer`)}
+                            />
                           </div>
                         </div>
-                        <Input
-                          className="pl-9"
-                          key={field.id}
-                          {...register(`answers.${index}.answer`)}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </RadioGroup>
-              )}
-            />
-          </div>
-          <SheetFooter>
-            <Button
-              type="submit"
-              disabled={!isValid || !isDirty || mutation.isLoading}
-            >
-              {mutation.isLoading && (
-                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-              )}
-              Create
-            </Button>
-          </SheetFooter>
-        </form>
+                      ))}
+                    </RadioGroup>
+                  )}
+                />
+              </div>
+              <SheetFooter>
+                <Button
+                  type="submit"
+                  disabled={!isValid || !isDirty || createMutation.isLoading}
+                >
+                  {createMutation.isLoading && (
+                    <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                  )}
+                  Save
+                </Button>
+              </SheetFooter>
+            </form>
+          )}
+        </div>
       </SheetContent>
     </Sheet>
   );
