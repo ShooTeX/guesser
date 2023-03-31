@@ -45,8 +45,8 @@ export const getQuestions = async (
         ...(playlistId ? [eq(questions.playlistId, playlistId)] : [])
       )
     )
-    .orderBy(questions.order)
-    .orderBy(answers.order);
+    .orderBy(answers.order)
+    .orderBy(questions.order);
 
   return nestAnswers(rows);
 };

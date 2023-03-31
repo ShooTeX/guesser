@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Inter as FontSans } from "next/font/google";
 import { api } from "@/lib/trpc";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -19,6 +20,7 @@ function App({ Component, pageProps }: AppProps) {
 					--font-sans: ${fontSans.style.fontFamily};
 				}
 			}`}</style>
+      <ReactQueryDevtools />
       <ClerkProvider {...pageProps}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <Component {...pageProps} />

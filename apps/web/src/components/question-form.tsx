@@ -38,6 +38,7 @@ export const QuestionForm = ({
   children,
   ...properties
 }: QuestionFormProperties) => {
+  const utils = api.useContext();
   const {
     register,
     control,
@@ -67,7 +68,16 @@ export const QuestionForm = ({
     name: "answers",
   });
 
-  const createMutation = api.questions.create.useMutation();
+  const createMutation = api.questions.create.useMutation({
+    onSuccess: async () => {
+      if (properties.type === "create") {
+        await utils.questions.get.invalidate({
+          playlistId: properties.playlistId,
+        });
+      }
+      reset();
+    },
+  });
   const editMutation = api.questions.edit.useMutation();
 
   const onSubmit = handleSubmit((data) => {
