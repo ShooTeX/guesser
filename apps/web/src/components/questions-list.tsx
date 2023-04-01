@@ -114,7 +114,23 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
     }
   );
 
-  const mutation = api.questions.reorder.useMutation();
+  const mutation = api.questions.reorder.useMutation({
+    onSuccess: (newData) => {
+      apiContext.questions.get.setData({ playlistId }, (oldData) => {
+        if (!oldData) return;
+        return oldData
+          .map((oldQuestion) => {
+            return {
+              ...oldQuestion,
+              ...newData.find(
+                (newQuestion) => newQuestion.id === oldQuestion.id
+              ),
+            };
+          })
+          .sort((a, b) => a.order - b.order);
+      });
+    },
+  });
 
   const reorderTop = (id: string) => {
     mutation.mutate({
