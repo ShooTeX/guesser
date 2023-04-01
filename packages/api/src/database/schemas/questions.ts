@@ -1,6 +1,5 @@
 import type { InferModel } from "drizzle-orm";
 import {
-  uniqueIndex,
   smallint,
   boolean,
   index,
@@ -22,7 +21,6 @@ export const questions = mysqlTable(
   },
   (table) => ({
     playlistIdIdx: index("playlist_id_idx").on(table.playlistId),
-    orderIdx: uniqueIndex("order_idx").on(table.order, table.playlistId),
   })
 );
 
