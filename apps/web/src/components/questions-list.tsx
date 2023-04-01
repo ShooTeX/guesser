@@ -12,7 +12,8 @@ import { api } from "@/lib/trpc";
 import type { RouterOutput } from "@/lib/trpc";
 import { Separator } from "./ui/separator";
 import { cn } from "@/lib/utils";
-import React from "react";
+import React, { useState } from "react";
+import { flatten, pipe, reverse, splitAt } from "remeda";
 
 const Empty = ({ playlistId }: { playlistId: string }) => {
   return (
@@ -40,8 +41,10 @@ const Item = ({
   question,
   onReorderTopClick,
   onReorderBottomClick,
+  isLoading,
 }: {
   question: RouterOutput["questions"]["get"][0];
+  isLoading?: boolean;
   onReorderTopClick: (id: string) => void;
   onReorderBottomClick: (id: string) => void;
 }) => {
@@ -54,12 +57,14 @@ const Item = ({
         </div>
         <div className="flex gap-1">
           <Button
+            disabled={isLoading}
             variant="ghost"
             onClick={() => onReorderTopClick(question.id)}
           >
             <ChevronFirst className="h-4 w-4 rotate-90" />
           </Button>
           <Button
+            disabled={isLoading}
             variant="ghost"
             onClick={() => onReorderBottomClick(question.id)}
           >
@@ -70,7 +75,9 @@ const Item = ({
             questionId={question.id}
             playlistId={question.playlistId}
           >
-            <Button variant="subtle">Edit</Button>
+            <Button variant="subtle" disabled={isLoading}>
+              Edit
+            </Button>
           </QuestionForm>
         </div>
       </div>
@@ -113,6 +120,22 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
       },
     }
   );
+  const [reorderData, setReorderData] = useState<
+    RouterOutput["questions"]["get"]
+  >([]);
+
+  if (
+    data &&
+    data.length > 0 &&
+    reorderData !== data &&
+    reorderData.some(
+      (question) =>
+        question !==
+        data.find((remoteQuestion) => remoteQuestion.id === question.id)
+    )
+  ) {
+    setReorderData(data);
+  }
 
   const mutation = api.questions.reorder.useMutation({
     onSuccess: (newData) => {
@@ -133,6 +156,10 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
   });
 
   const reorderTop = (id: string) => {
+    // TODO: setData might be the right call here;
+    setReorderData((oldData) =>
+      pipe(oldData, splitAt(-1), reverse(), flatten())
+    );
     mutation.mutate({
       id,
       playlistId,
@@ -171,12 +198,13 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
         </QuestionForm>
       </div>
       <div className="mt-4 flex flex-col gap-8">
-        {data.map((question) => (
+        {reorderData.map((question) => (
           <Item
             question={question}
             key={question.id}
             onReorderTopClick={reorderTop}
             onReorderBottomClick={reorderBottom}
+            isLoading={mutation.isLoading}
           />
         ))}
       </div>
