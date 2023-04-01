@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Input } from "./ui/input";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createQuestionSchema } from "@guesser/schemas";
+import { createQuestionSchema, editQuestionSchema } from "@guesser/schemas";
 import { z } from "zod";
 import { Button } from "./ui/button";
 import {
@@ -34,6 +34,7 @@ export const QuestionForm = ({
   ...properties
 }: QuestionFormProperties) => {
   const [open, setOpen] = useState(false);
+
   const createMutation = api.questions.create.useMutation({
     onSuccess: () => {
       setOpen(false);
@@ -41,8 +42,25 @@ export const QuestionForm = ({
   });
 
   const onSubmit = (data: CustomQuestion) => {
-    createMutation.mutate(data);
+    if (data.type === "create") {
+      createMutation.mutate(data);
+    }
+    if (data.type === "edit") {
+      editMutation.mutate(data);
+    }
   };
+
+  const editMutation = api.questions.edit.useMutation({
+    onSuccess: () => {
+      setOpen(false);
+    },
+  });
+
+  const { data: defaultValues } = api.questions.get.useQuery(
+    { id: properties.type === "edit" ? properties.questionId : "" },
+    { enabled: properties.type === "edit" && open, select: (data) => data[0] }
+  );
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>{children}</SheetTrigger>
@@ -64,30 +82,60 @@ export const QuestionForm = ({
           )}
         </SheetHeader>
         <div className="w-80">
-          <Form
-            onSubmit={onSubmit}
-            isLoading={createMutation.isLoading}
-            defaultValues={{
-              playlistId: properties.playlistId,
-              question: "",
-              correctAnswerIdx: "0",
-              answers: [
-                { answer: "", correct: false },
-                { answer: "", correct: false },
-                { answer: "", correct: false },
-                { answer: "", correct: false },
-              ],
-            }}
-          />
+          {properties.type === "create" && (
+            <Form
+              onSubmit={onSubmit}
+              isLoading={createMutation.isLoading}
+              defaultValues={{
+                type: "create",
+                playlistId: properties.playlistId,
+                question: "",
+                correctAnswerIdx: "0",
+                answers: [
+                  { answer: "", correct: false },
+                  { answer: "", correct: false },
+                  { answer: "", correct: false },
+                  { answer: "", correct: false },
+                ],
+              }}
+            />
+          )}
+          {properties.type === "edit" && (
+            <>
+              {defaultValues ? (
+                <Form
+                  key={defaultValues.id}
+                  onSubmit={onSubmit}
+                  isLoading={editMutation.isLoading}
+                  defaultValues={{
+                    ...defaultValues,
+                    type: "edit",
+                    correctAnswerIdx: defaultValues.answers
+                      .findIndex((answer) => answer.correct)
+                      .toString(),
+                  }}
+                />
+              ) : (
+                <Loader2 className="mx-auto h-80" />
+              )}
+            </>
+          )}
         </div>
       </SheetContent>
     </Sheet>
   );
 };
 
-const customQuestionSchema = createQuestionSchema.extend({
-  correctAnswerIdx: z.string(),
-});
+const customQuestionSchema = z.discriminatedUnion("type", [
+  createQuestionSchema.extend({
+    type: z.literal("create"),
+    correctAnswerIdx: z.string(),
+  }),
+  editQuestionSchema.extend({
+    type: z.literal("edit"),
+    correctAnswerIdx: z.string(),
+  }),
+]);
 
 type CustomQuestion = z.infer<typeof customQuestionSchema>;
 
@@ -117,12 +165,21 @@ const Form = ({
   });
 
   const handleOnSubmit = handleSubmit((data) => {
-    const answers = data.answers.map((answer, index) => ({
-      ...answer,
-      correct: index === Number(data.correctAnswerIdx),
-    }));
+    if (data.type === "create") {
+      const answers = data.answers.map((answer, index) => ({
+        ...answer,
+        correct: index === Number(data.correctAnswerIdx),
+      }));
+      onSubmit({ ...data, answers });
+    }
 
-    onSubmit({ ...data, answers });
+    if (data.type === "edit") {
+      const answers = data.answers?.map((answer, index) => ({
+        ...answer,
+        correct: index === Number(data.correctAnswerIdx),
+      }));
+      onSubmit({ ...data, answers });
+    }
   });
 
   return (
