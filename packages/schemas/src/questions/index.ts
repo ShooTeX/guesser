@@ -45,3 +45,9 @@ export const editQuestionSchema = questionSchema
       answerSchema.pick({ id: true, answer: true, correct: true }).array()
     ),
   });
+
+export const reorderQuestionSchema = questionSchema.pick({
+  id: true,
+  playlistId: true,
+  order: true,
+});
