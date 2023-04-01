@@ -34,9 +34,13 @@ export const QuestionForm = ({
   ...properties
 }: QuestionFormProperties) => {
   const [open, setOpen] = useState(false);
+  const apiContext = api.useContext();
 
   const createMutation = api.questions.create.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await apiContext.questions.get.invalidate({
+        playlistId: properties.playlistId,
+      });
       setOpen(false);
     },
   });
@@ -51,14 +55,25 @@ export const QuestionForm = ({
   };
 
   const editMutation = api.questions.edit.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await apiContext.questions.get.invalidate({
+        playlistId: properties.playlistId,
+      });
+      if (properties.type === "edit") {
+        await apiContext.questions.get.invalidate({
+          id: properties.questionId,
+        });
+      }
       setOpen(false);
     },
   });
 
   const { data: defaultValues } = api.questions.get.useQuery(
     { id: properties.type === "edit" ? properties.questionId : "" },
-    { enabled: properties.type === "edit" && open, select: (data) => data[0] }
+    {
+      enabled: properties.type === "edit" && open,
+      select: (data) => data[0],
+    }
   );
 
   return (
