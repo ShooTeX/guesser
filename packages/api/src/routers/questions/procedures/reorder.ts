@@ -1,6 +1,6 @@
 import { questionSchema, reorderQuestionSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
-import { and, eq, gte, lte } from "drizzle-orm/expressions";
+import { and, eq, gt, gte, lt, lte } from "drizzle-orm/expressions";
 import { protectedProcedure } from "../../../create-router";
 import { questions } from "../../../database/schemas";
 
@@ -34,8 +34,18 @@ export const reorder = protectedProcedure
       .where(
         and(
           ...(input.order > currentRow.order
-            ? [lte(questions.order, input.order)]
-            : [gte(questions.order, input.order)]),
+            ? [
+                and(
+                  lte(questions.order, input.order),
+                  gt(questions.order, currentRow.order)
+                ),
+              ]
+            : [
+                and(
+                  gte(questions.order, input.order),
+                  lt(questions.order, currentRow.order)
+                ),
+              ]),
           eq(questions.playlistId, input.playlistId),
           eq(questions.userId, ctx.auth.userId)
         )
