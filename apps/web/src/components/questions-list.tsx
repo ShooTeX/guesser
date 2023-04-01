@@ -90,7 +90,19 @@ type QuestionsProperties = {
 };
 
 export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
-  const { data, isLoading } = api.questions.get.useQuery({ playlistId });
+  const apiContext = api.useContext();
+  const { data, isLoading } = api.questions.get.useQuery(
+    { playlistId },
+    {
+      onSuccess: (data) => {
+        data.map((question) => {
+          apiContext.questions.get.setData({ id: question.id }, () => [
+            question,
+          ]);
+        });
+      },
+    }
+  );
 
   // TODO: skeleton?
   if (isLoading) {
