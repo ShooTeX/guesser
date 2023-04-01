@@ -2,25 +2,45 @@ import { editQuestionSchema, questionSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm/expressions";
 import { protectedProcedure } from "../../../create-router";
-import { questions } from "../../../database/schemas";
+import { answers, questions } from "../../../database/schemas";
 import { getQuestions } from "../models";
 
 export const edit = protectedProcedure
   .output(questionSchema)
   .input(editQuestionSchema)
-  .mutation(async ({ ctx, input }) => {
-    await ctx.database
-      .update(questions)
-      .set(input.input)
-      .where(
-        and(eq(questions.id, input.id), eq(questions.userId, ctx.auth.userId))
-      );
+  .mutation(
+    async ({ ctx, input: { answers: answersInput, ...questionInput } }) => {
+      await ctx.database
+        .update(questions)
+        .set({ id: questionInput.id, question: questionInput.question })
+        .where(
+          and(
+            eq(questions.id, questionInput.id),
+            eq(questions.userId, ctx.auth.userId)
+          )
+        );
 
-    const [result] = await getQuestions(ctx, { id: input.id });
+      if (answersInput) {
+        answersInput.map(
+          async (answer) =>
+            await ctx.database
+              .update(answers)
+              .set(answer)
+              .where(
+                and(
+                  eq(answers.id, answer.id),
+                  eq(answers.userId, ctx.auth.userId)
+                )
+              )
+        );
+      }
 
-    if (!result) {
-      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      const [result] = await getQuestions(ctx, { id: questionInput.id });
+
+      if (!result) {
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      }
+
+      return result;
     }
-
-    return result;
-  });
+  );
