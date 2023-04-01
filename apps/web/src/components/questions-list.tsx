@@ -38,8 +38,12 @@ const Empty = ({ playlistId }: { playlistId: string }) => {
 
 const Item = ({
   question,
+  onReorderTopClick,
+  onReorderBottomClick,
 }: {
   question: RouterOutput["questions"]["get"][0];
+  onReorderTopClick: (id: string) => void;
+  onReorderBottomClick: (id: string) => void;
 }) => {
   return (
     <div className="rounded-md border border-slate-200 px-4 py-3 dark:border-slate-700">
@@ -49,10 +53,16 @@ const Item = ({
           <p className="font-bold">{question.question}</p>
         </div>
         <div className="flex gap-1">
-          <Button variant="ghost">
+          <Button
+            variant="ghost"
+            onClick={() => onReorderTopClick(question.id)}
+          >
             <ChevronFirst className="h-4 w-4 rotate-90" />
           </Button>
-          <Button variant="ghost">
+          <Button
+            variant="ghost"
+            onClick={() => onReorderBottomClick(question.id)}
+          >
             <ChevronLast className="h-4 w-4 rotate-90" />
           </Button>
           <QuestionForm
@@ -104,6 +114,25 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
     }
   );
 
+  const mutation = api.questions.reorder.useMutation();
+
+  const reorderTop = (id: string) => {
+    mutation.mutate({
+      id,
+      playlistId,
+      order: 0,
+    });
+  };
+
+  const reorderBottom = (id: string) => {
+    if (!data) return;
+    mutation.mutate({
+      id,
+      playlistId,
+      order: data.length - 1,
+    });
+  };
+
   // TODO: skeleton?
   if (isLoading) {
     return (
@@ -127,7 +156,12 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
       </div>
       <div className="mt-4 flex flex-col gap-8">
         {data.map((question) => (
-          <Item question={question} key={question.id} />
+          <Item
+            question={question}
+            key={question.id}
+            onReorderTopClick={reorderTop}
+            onReorderBottomClick={reorderBottom}
+          />
         ))}
       </div>
     </>
