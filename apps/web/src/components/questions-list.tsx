@@ -66,8 +66,8 @@ const Item = ({
           <div onPointerDown={(event) => dragControls.start(event)}>
             <Grip
               className={cn(
-                "mr-2 h-4 w-4 cursor-grab",
-                isLoading && "cursor-wait text-slate-500"
+                "mr-2 h-4 w-4 cursor-grab text-slate-500",
+                isLoading && "cursor-wait"
               )}
             />
           </div>
