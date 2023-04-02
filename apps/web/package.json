@@ -29,6 +29,7 @@
     "class-variance-authority": "^0.4.0",
     "clsx": "^1.2.1",
     "dayjs": "^1.11.7",
+    "framer-motion": "^10.10.0",
     "install": "^0.13.0",
     "lucide-react": "^0.125.0",
     "next": "13.2.4",
