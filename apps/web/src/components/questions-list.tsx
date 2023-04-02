@@ -13,7 +13,7 @@ import type { RouterOutput } from "@/lib/trpc";
 import { Separator } from "./ui/separator";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
-import { flatten, pipe, reverse, splitAt } from "remeda";
+import { compact } from "remeda";
 
 const Empty = ({ playlistId }: { playlistId: string }) => {
   return (
@@ -124,16 +124,7 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
     RouterOutput["questions"]["get"]
   >([]);
 
-  if (
-    data &&
-    data.length > 0 &&
-    reorderData !== data &&
-    reorderData.some(
-      (question) =>
-        question !==
-        data.find((remoteQuestion) => remoteQuestion.id === question.id)
-    )
-  ) {
+  if (data && data.length > 0 && reorderData !== data) {
     setReorderData(data);
   }
 
@@ -155,11 +146,19 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
     },
   });
 
-  const reorderTop = (id: string) => {
+  const reorderTop = (id: string, index: number) => {
     // TODO: setData might be the right call here;
-    setReorderData((oldData) =>
-      pipe(oldData, splitAt(-1), reverse(), flatten())
-    );
+    apiContext.questions.get.setData({ playlistId }, (oldData) => {
+      if (!oldData) return;
+      if (index < 0 || index >= oldData.length) {
+        return;
+      }
+      return compact([
+        oldData[index],
+        ...oldData.slice(0, index),
+        ...oldData.slice(index + 1),
+      ]);
+    });
     mutation.mutate({
       id,
       playlistId,
@@ -198,13 +197,13 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
         </QuestionForm>
       </div>
       <div className="mt-4 flex flex-col gap-8">
-        {reorderData.map((question) => (
+        {reorderData.map((question, index) => (
           <Item
             question={question}
             key={question.id}
-            onReorderTopClick={reorderTop}
+            onReorderTopClick={(id) => reorderTop(id, index)}
             onReorderBottomClick={reorderBottom}
-            isLoading={mutation.isLoading}
+            isLoading={mutation.isLoading || isLoading}
           />
         ))}
       </div>
