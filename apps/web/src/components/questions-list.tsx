@@ -178,12 +178,10 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
   });
 
   const reorderTop = (id: string, index: number) => {
-    // TODO: setData might be the right call here;
-    apiContext.questions.get.setData({ playlistId }, (oldData) => {
-      if (!oldData) return;
-      if (index < 0 || index >= oldData.length) {
-        return;
-      }
+    if (index < 0 || index >= reorderData.length) {
+      return;
+    }
+    setReorderData((oldData) => {
       return compact([
         oldData[index],
         ...oldData.slice(0, index),
@@ -198,12 +196,10 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
   };
 
   const reorderBottom = (id: string, index: number) => {
-    if (!data) return;
-    apiContext.questions.get.setData({ playlistId }, (oldData) => {
-      if (!oldData) return;
-      if (index < 0 || index >= oldData.length) {
-        return;
-      }
+    if (!data || index < 0 || index >= reorderData.length) {
+      return;
+    }
+    setReorderData((oldData) => {
       return compact([
         ...oldData.slice(0, index),
         ...oldData.slice(index + 1),
@@ -254,22 +250,19 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
           </Button>
         </QuestionForm>
       </div>
-      <Reorder.Group
-        axis="y"
-        values={reorderData}
-        onReorder={setReorderData}
-        className="mt-4 flex flex-col gap-8"
-      >
-        {reorderData.map((question, index) => (
-          <Item
-            key={question.id}
-            question={question}
-            onReorderTopClick={(id) => reorderTop(id, index)}
-            onReorderBottomClick={(id) => reorderBottom(id, index)}
-            isLoading={mutation.isLoading || isLoading}
-            onDragEnd={() => reorder(question.id)}
-          />
-        ))}
+      <Reorder.Group axis="y" values={reorderData} onReorder={setReorderData}>
+        <div className="mt-4 flex flex-col gap-8">
+          {reorderData.map((question, index) => (
+            <Item
+              key={question.id}
+              question={question}
+              onReorderTopClick={(id) => reorderTop(id, index)}
+              onReorderBottomClick={(id) => reorderBottom(id, index)}
+              isLoading={mutation.isLoading || isLoading}
+              onDragEnd={() => reorder(question.id)}
+            />
+          ))}
+        </div>
       </Reorder.Group>
     </>
   );
