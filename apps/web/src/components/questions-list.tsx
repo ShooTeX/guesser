@@ -144,10 +144,11 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
 
   if (
     data &&
-    (data.some(
-      (upstreamQuestion) =>
-        !reorderData.some((question) => question.id === upstreamQuestion.id)
-    ) ||
+    (data.length !== reorderData.length ||
+      data.some(
+        (upstreamQuestion) =>
+          !reorderData.some((question) => question.id === upstreamQuestion.id)
+      ) ||
       reorderData.some(
         (question) =>
           question.order !==
