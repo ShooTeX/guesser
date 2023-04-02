@@ -153,9 +153,8 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
       ) ||
       reorderData.some(
         (question) =>
-          question.order !==
+          question !==
           data.find((upstreamQuestion) => upstreamQuestion.id === question.id)
-            ?.order
       ))
   ) {
     setReorderData(data);
