@@ -1,7 +1,7 @@
 import {
   ChevronFirst,
   ChevronLast,
-  GripVertical,
+  Grip,
   HelpCircle,
   Loader2,
   Plus,
@@ -64,7 +64,7 @@ const Item = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-center">
           <div onPointerDown={(event) => dragControls.start(event)}>
-            <GripVertical
+            <Grip
               className={cn(
                 "mr-2 h-4 w-4 cursor-grab",
                 isLoading && "cursor-wait text-slate-500"
