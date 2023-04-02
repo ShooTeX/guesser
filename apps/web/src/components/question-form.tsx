@@ -72,6 +72,15 @@ export const QuestionForm = ({
     },
   });
 
+  const deleteMutation = api.questions.remove.useMutation({
+    onSuccess: async () => {
+      await apiContext.questions.get.invalidate({
+        playlistId: properties.playlistId,
+      });
+      setOpen(false);
+    },
+  });
+
   const { data: defaultValues } = api.questions.get.useQuery(
     { id: properties.type === "edit" ? properties.questionId : "" },
     {
@@ -80,6 +89,10 @@ export const QuestionForm = ({
       select: (data) => data[0],
     }
   );
+
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate({ id });
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -127,6 +140,8 @@ export const QuestionForm = ({
                   key={defaultValues.id}
                   onSubmit={onSubmit}
                   isLoading={editMutation.isLoading}
+                  isDeleteLoading={deleteMutation.isLoading}
+                  onDelete={handleDelete}
                   defaultValues={{
                     ...defaultValues,
                     type: "edit",
@@ -163,10 +178,14 @@ const Form = ({
   defaultValues,
   onSubmit,
   isLoading,
+  onDelete,
+  isDeleteLoading,
 }: {
   defaultValues: CustomQuestion;
   onSubmit: (data: CustomQuestion) => void;
   isLoading?: boolean;
+  onDelete?: (id: string) => void;
+  isDeleteLoading?: boolean;
 }) => {
   const {
     register,
@@ -239,6 +258,19 @@ const Form = ({
         />
       </div>
       <SheetFooter>
+        {defaultValues.type === "edit" && onDelete && (
+          <Button
+            type="button"
+            variant="destructive"
+            disabled={isLoading || isDeleteLoading}
+            onClick={() => onDelete(defaultValues.id)}
+          >
+            {isDeleteLoading && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            Delete
+          </Button>
+        )}
         <Button type="submit" disabled={!isValid || !isDirty || isLoading}>
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Save

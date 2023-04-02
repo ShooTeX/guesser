@@ -63,7 +63,9 @@ const Item = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-center">
-          <div onPointerDown={(event) => dragControls.start(event)}>
+          <div
+            onPointerDown={(event) => !isLoading && dragControls.start(event)}
+          >
             <Grip
               className={cn(
                 "mr-2 h-4 w-4 cursor-grab text-slate-500",
