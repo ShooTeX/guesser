@@ -5,6 +5,7 @@ export const playlistSchema = z.object({
   id: z.string().length(21),
   userId: z.string(),
   name: z.string(),
+  shortDescription: z.string().max(200).optional(),
   createdAt: z.date(),
 });
 
