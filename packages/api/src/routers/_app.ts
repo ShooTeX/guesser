@@ -1,5 +1,5 @@
 import { router } from "../create-router";
-import { playlistsRouter } from "./playlists";
+import { playlistsRouter } from "./playlists/_router";
 import { questionsRouter } from "./questions/_router";
 
 export const appRouter = router({

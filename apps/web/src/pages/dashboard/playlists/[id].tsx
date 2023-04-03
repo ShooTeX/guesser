@@ -9,10 +9,10 @@ import type { RouterOutput } from "@/lib/trpc";
 import { api } from "@/lib/trpc";
 import { useRouter } from "next/router";
 import { Separator } from "@/components/ui/separator";
-import { editPlaylistSchema } from "@/lib/schemas/playlists";
 import type { z } from "zod";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { QuestionsList } from "@/components/questions-list";
+import { editPlaylistSchema } from "@guesser/schemas";
 
 const Settings = ({
   playlist,
@@ -65,6 +65,7 @@ const Settings = ({
             type="text"
             id="short-desc"
             placeholder="Awesome playlist..."
+            {...register("input.shortDescription")}
           />
         </div>
       </div>

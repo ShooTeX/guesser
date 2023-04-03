@@ -1,3 +1,4 @@
+import type { InferModel } from "drizzle-orm";
 import { mysqlTable, varchar, text, timestamp } from "drizzle-orm/mysql-core";
 
 export const playlists = mysqlTable("playlists", {
@@ -7,3 +8,5 @@ export const playlists = mysqlTable("playlists", {
   shortDesc: text("short_desc"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export type PlaylistsInsert = InferModel<typeof playlists, "insert">;
