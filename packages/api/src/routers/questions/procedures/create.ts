@@ -1,17 +1,13 @@
 import { questionSchema, createQuestionSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
-import { sql } from "drizzle-orm";
 import { eq } from "drizzle-orm/expressions";
 import { nanoid } from "nanoid";
 import { protectedProcedure } from "../../../create-router";
 import type { AnswerInsert, QuestionInsert } from "../../../database/schemas";
 import { answers } from "../../../database/schemas";
 import { questions } from "../../../database/schemas";
+import { countQuery } from "../../../lib/count-query";
 import { getQuestions } from "../models";
-
-const count = () => {
-  return sql<number>`count(*)`;
-};
 
 export const create = protectedProcedure
   .output(questionSchema)
@@ -21,7 +17,7 @@ export const create = protectedProcedure
       const id = nanoid();
 
       const [countSelect] = await ctx.database
-        .select({ count: count() })
+        .select({ count: countQuery() })
         .from(questions)
         .where(eq(questions.playlistId, questionInput.playlistId));
 
