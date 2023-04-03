@@ -11,7 +11,7 @@ export const edit = protectedProcedure
   .mutation(async ({ ctx, input }) => {
     await ctx.database
       .update(playlists)
-      .set({ name: input.id, shortDesc: input.shortDescription })
+      .set({ name: input.name, shortDesc: input.shortDescription })
       .where(
         and(eq(playlists.id, input.id), eq(playlists.userId, ctx.auth.userId))
       );
