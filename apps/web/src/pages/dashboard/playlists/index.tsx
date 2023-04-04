@@ -66,7 +66,7 @@ const CreateForm = ({ children }: PropsWithChildren) => {
               <Input
                 id="shortDesc"
                 className="col-span-3"
-                {...register("shortDescription")}
+                {...register("shortDesc")}
               />
             </div>
           </div>
@@ -105,25 +105,25 @@ const Empty = () => (
 const Item = ({
   name,
   questionCount,
-  shortDescription,
+  shortDesc,
   playCount,
   createdAt,
   id,
 }: RouterOutput["playlists"]["get"][0]) => {
   return (
-    <div className="rounded-md border border-slate-200 px-4 py-3 text-sm dark:border-slate-700">
+    <div className="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm dark:border-slate-700 dark:bg-slate-800">
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <div className="flex">
             <p className="font-bold">{name}</p>
           </div>
           <p className="text-slate-500 dark:text-slate-400">
-            {shortDescription || `\u00A0`}
+            {shortDesc || `\u00A0`}
           </p>
         </div>
         <div className="flex space-x-1">
           <Link href={`playlists/${id}/`}>
-            <Button variant="subtle">Edit</Button>
+            <Button variant="outline">Edit</Button>
           </Link>
         </div>
       </div>
@@ -139,7 +139,7 @@ const Item = ({
             <p className="font-mono">{playCount}</p>
           </div>
         </div>
-        <p className="shrink-0 self-end text-slate-400 dark:text-slate-600">
+        <p className="shrink-0 self-end text-slate-300 dark:text-slate-500">
           created {dayjs(createdAt).fromNow()}
         </p>
       </div>
@@ -163,7 +163,7 @@ const Playlists = () => {
       {playlists.data?.length === 0 ? (
         <Empty />
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-4">
           {playlists.data?.map((playlist) => (
             <Item {...playlist} key={playlist.id} />
           ))}
