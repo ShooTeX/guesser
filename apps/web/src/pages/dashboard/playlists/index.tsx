@@ -7,6 +7,7 @@ import { api } from "@/lib/trpc";
 import { Separator } from "@/components/ui/separator";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 import {
   Sheet,
   SheetTrigger,
@@ -24,7 +25,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createPlaylistSchema } from "@guesser/schemas";
 import type { z } from "zod";
 import { useRouter } from "next/router";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
 
 const CreateForm = ({ children }: PropsWithChildren) => {
   const router = useRouter();
@@ -141,9 +149,18 @@ const Item = ({
             <p className="font-mono">{playCount}</p>
           </div>
         </div>
-        <p className="shrink-0 self-end text-slate-300 dark:text-slate-500">
-          created {dayjs(createdAt).fromNow()}
-        </p>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <p className="shrink-0 self-end text-slate-300 dark:text-slate-500">
+                created {dayjs(createdAt).fromNow()}
+              </p>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{dayjs(createdAt).format("llll")}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
   );
