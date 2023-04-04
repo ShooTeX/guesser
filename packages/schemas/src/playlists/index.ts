@@ -4,9 +4,13 @@ export const playlistSchema = z.object({
   id: z.string().length(21),
   userId: z.string(),
   name: z.string(),
-  shortDescription: z.string().max(200).optional(),
+  shortDescription: z
+    .string()
+    .max(200)
+    .nullish()
+    .transform((value) => value ?? undefined),
   createdAt: z.date(),
-  questionCount: z.number().finite().nonnegative(),
+  questionCount: z.coerce.number().finite().nonnegative(),
   playCount: z.number().finite().nonnegative(),
 });
 

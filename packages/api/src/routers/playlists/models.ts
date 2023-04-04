@@ -21,6 +21,7 @@ export const getPlaylists = async (
       playlistId: questions.playlistId,
     })
     .from(questions)
+    .groupBy(questions.playlistId)
     .as("sq");
 
   const results = await database
@@ -37,8 +38,11 @@ export const getPlaylists = async (
       )
     );
 
-  return results.map(({ playlist, questionCount }) => ({
+  const test = results.map(({ playlist, questionCount }) => ({
     ...playlist,
     questionCount,
   }));
+  console.log(test);
+
+  return test;
 };
