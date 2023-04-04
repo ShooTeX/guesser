@@ -15,6 +15,7 @@ export const create = protectedProcedure
       userId: ctx.auth.userId,
       id,
       name: input.name,
+      shortDesc: input.shortDescription,
     });
 
     const [result] = await getPlaylists(ctx, { id });
