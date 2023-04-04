@@ -24,7 +24,14 @@ const Settings = ({
   const mutation = api.playlists.edit.useMutation({
     onSuccess: async () => {
       await utils.playlists.get.invalidate({ id: playlist.id });
-      router.back();
+      await router.replace("playlists");
+    },
+  });
+
+  const deleteMutation = api.playlists.remove.useMutation({
+    onSuccess: async () => {
+      await utils.playlists.get.invalidate({ id: playlist.id });
+      await router.replace("playlists");
     },
   });
 
@@ -44,6 +51,10 @@ const Settings = ({
   const onSubmit = handleSubmit((data) => {
     mutation.mutate(data);
   });
+
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate({ id });
+  };
 
   return (
     <form className="grid grid-cols-4 items-start gap-4" onSubmit={onSubmit}>
@@ -66,6 +77,36 @@ const Settings = ({
             placeholder="Awesome playlist..."
             {...register("shortDesc")}
           />
+        </div>
+      </div>
+      <Separator className="col-span-4 w-full" />
+      <div>
+        <Label htmlFor="danger" className="text-red-600">
+          Danger
+        </Label>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Your hard work will be deleted forever :(
+        </p>
+      </div>
+      <div id="danger" className="col-span-2 flex flex-col gap-4">
+        <div className="grid w-full items-center gap-1.5 rounded-md border border-red-600 p-4">
+          <p className="text-sm text-red-500 dark:text-red-600">
+            You can <span className="font-bold uppercase">not</span> undo this
+            action!
+          </p>
+          <div className="flex w-full justify-end">
+            <Button
+              variant="destructive"
+              type="button"
+              disabled={deleteMutation.isLoading}
+              onClick={() => handleDelete(playlist.id)}
+            >
+              {deleteMutation.isLoading && (
+                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+              )}
+              Remove
+            </Button>
+          </div>
         </div>
       </div>
       <Separator className="col-span-4 w-full" />
