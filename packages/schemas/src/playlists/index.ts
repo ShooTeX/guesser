@@ -6,7 +6,8 @@ export const playlistSchema = z.object({
   name: z.string(),
   shortDescription: z.string().max(200).optional(),
   createdAt: z.date(),
-  questionCount: z.number(),
+  questionCount: z.number().finite().nonnegative(),
+  playCount: z.number().finite().nonnegative(),
 });
 
 export const createPlaylistSchema = playlistSchema.pick({
@@ -23,3 +24,7 @@ export const editPlaylistSchema = playlistSchema.pick({
 export const deletePlaylistSchema = playlistSchema.pick({ id: true });
 
 export const getPlaylistsSchema = playlistSchema.pick({ id: true }).optional();
+
+export const incrementPlaylistPlayCountSchema = playlistSchema.pick({
+  id: true,
+});
