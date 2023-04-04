@@ -36,9 +36,8 @@ const Settings = ({
     resolver: zodResolver(editPlaylistSchema),
     defaultValues: {
       id: playlist.id,
-      input: {
-        name: playlist.name,
-      },
+      name: playlist.name,
+      shortDesc: playlist.shortDesc,
     },
   });
 
@@ -56,7 +55,7 @@ const Settings = ({
             type="text"
             id="name"
             placeholder="Name"
-            {...register("input.name")}
+            {...register("name")}
           />
         </div>
         <div className="grid w-full items-center gap-1.5">
@@ -65,15 +64,12 @@ const Settings = ({
             type="text"
             id="short-desc"
             placeholder="Awesome playlist..."
-            {...register("input.shortDescription")}
+            {...register("shortDesc")}
           />
         </div>
       </div>
-      <Separator className="col-span-4 my-4 w-full" />
+      <Separator className="col-span-4 w-full" />
       <div className="col-start-4 flex justify-end space-x-2">
-        <Button variant="outline" type="button">
-          Cancel
-        </Button>
         <Button type="submit" disabled={mutation.isLoading || !isValid}>
           {mutation.isLoading && (
             <Loader2 className="mr-1 h-4 w-4 animate-spin" />
