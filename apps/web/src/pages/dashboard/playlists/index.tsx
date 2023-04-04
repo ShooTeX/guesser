@@ -111,7 +111,7 @@ const Item = ({
   id,
 }: RouterOutput["playlists"]["get"][0]) => {
   return (
-    <div className="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm dark:border-slate-700 dark:bg-slate-800">
+    <div className="rounded-md border border-slate-200 px-4 py-3 text-sm dark:border-slate-700">
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <div className="flex">
@@ -123,7 +123,9 @@ const Item = ({
         </div>
         <div className="flex space-x-1">
           <Link href={`playlists/${id}/`}>
-            <Button variant="outline">Edit</Button>
+            <Button variant="subtle" type="button">
+              Edit
+            </Button>
           </Link>
         </div>
       </div>
