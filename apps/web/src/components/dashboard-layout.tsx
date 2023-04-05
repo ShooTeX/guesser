@@ -5,6 +5,7 @@ import type { PropsWithChildren, ReactNode } from "react";
 import { Breadcrumbs } from "./ui/breadcrumbs";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Logo } from "./logo";
 
 export type DashboardLayoutProperties = PropsWithChildren & {
   headline: string;
@@ -36,15 +37,7 @@ export const DashboardLayout = ({
     <div className="grid min-h-screen grid-cols-4 xl:grid-cols-6">
       <aside className="border-r border-r-slate-200 pb-12 dark:border-r-slate-700">
         <div className="pointer-events-none px-8 py-6">
-          <div className="inline-flex flex-col items-end">
-            <span className="flex items-center justify-center text-2xl font-bold leading-none tracking-tight text-slate-50">
-              <HelpCircle className="mr-1" />
-              GUESSER
-            </span>
-            <span className="text-sm text-slate-500">
-              by <strong className="tracking-tight">ShooTeX</strong>
-            </span>
-          </div>
+          <Logo />
         </div>
         <div className="space-y-4">
           <div className="px-8 py-6">

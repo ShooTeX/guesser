@@ -1,7 +1,7 @@
 import { SignIn } from "@clerk/nextjs";
 
 const SignInPage = () => (
-  <section className="container flex items-center justify-center py-4">
+  <section className="flex h-screen w-full items-center justify-center">
     <SignIn
       path="/sign-in"
       routing="path"
