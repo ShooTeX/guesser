@@ -125,7 +125,7 @@ const Item = ({
           <div className="flex">
             <p className="font-bold">{name}</p>
           </div>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="truncate whitespace-nowrap text-slate-500 dark:text-slate-400">
             {shortDesc || `\u00A0`}
           </p>
         </div>
