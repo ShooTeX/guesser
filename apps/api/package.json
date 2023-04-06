@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@clerk/fastify": "^0.1.14",
+    "@clerk/fastify": "^0.2.2",
     "@fastify/cors": "^8.2.1",
     "@fastify/websocket": "^7.1.2",
     "@guesser/api": "workspace:*",

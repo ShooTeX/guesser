@@ -14,9 +14,9 @@ const server = fastify({
   logger: true,
 });
 
-void server.register(ws);
-
 void server.register(clerkPlugin);
+
+void server.register(ws);
 
 void server.register(cors, {
   origin: CLIENT_ORIGIN,
@@ -25,7 +25,7 @@ void server.register(cors, {
 
 void server.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
-  trpcOptions: { router: appRouter, createContext },
+  trpcOptions: { router: appRouter, createContext, onError: console.error },
   useWSS: true,
 });
 

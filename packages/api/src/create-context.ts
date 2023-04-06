@@ -11,13 +11,13 @@ export const createContextInner = ({
   auth,
 }: {
   database: PlanetScaleDatabase;
-  auth: ReturnType<typeof getAuth>;
+  auth?: ReturnType<typeof getAuth> | undefined;
 }) => {
   return { database, auth };
 };
 
 export function createContext({ req, res: _ }: CreateFastifyContextOptions) {
-  const auth = getAuth(req);
+  const auth = req.headers.authorization ? getAuth(req) : undefined;
   const conn = connect({ url: DATABASE_URL });
   const database = drizzle(conn);
   return createContextInner({ auth, database });

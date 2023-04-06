@@ -1,39 +1,45 @@
 import type { AppRouter } from "@guesser/api";
-import { httpBatchLink } from "@trpc/client";
+import { createWSClient, httpBatchLink, splitLink, wsLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { getCookie } from "typescript-cookie";
 
 function getBaseUrl() {
-  return `http://localhost:3001`;
+  return `localhost:3001`;
 }
+
+global.WebSocket = global.WebSocket || undefined;
+
+const batchLink = httpBatchLink({
+  url: `http://${getBaseUrl()}/trpc`,
+  headers() {
+    return {
+      Authorization: getCookie("__session"),
+    };
+  },
+});
+
+const getLinks = () => {
+  if (typeof window === "undefined") {
+    return batchLink;
+  }
+
+  const wsClient = createWSClient({ url: `ws://${getBaseUrl()}/trpc` });
+  return wsLink<AppRouter>({ client: wsClient });
+};
 
 export const api = createTRPCNext<AppRouter>({
   config() {
     return {
       links: [
-        httpBatchLink({
-          /**
-           * If you want to use SSR, you need to use the server's full URL
-           * @link https://trpc.io/docs/ssr
-           **/
-          url: `${getBaseUrl()}/trpc`,
-          headers() {
-            return {
-              Authorization: getCookie("__session"),
-            };
-          },
+        splitLink({
+          condition: (op) => op.type === "subscription",
+          true: getLinks(),
+          false: batchLink,
         }),
       ],
-      /**
-       * @link https://tanstack.com/query/v4/docs/reference/QueryClient
-       **/
-      // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
     };
   },
-  /**
-   * @link https://trpc.io/docs/ssr
-   **/
   ssr: false,
 });
 
