@@ -1,50 +1,26 @@
-import { clerkClient } from "@clerk/fastify";
 import { observable } from "@trpc/server/observable";
-import EventEmitter from "node:events";
-import { z } from "zod";
+import type { ContextFrom } from "xstate";
+import { interpret } from "xstate";
 import { publicProcedure, router } from "../../create-router";
+import { roomMachine } from "../../machines/room-manager";
 
-const ee = new EventEmitter();
-
-const postSchema = z.object({
-  id: z.string(),
-  text: z.string().min(1),
-  user: z.string(),
-});
-
-type Post = z.infer<typeof postSchema>;
+const actor = interpret(
+  roomMachine.withContext({ currentQuestion: 0, players: [], questions: [] })
+).start();
 
 export const gameRouter = router({
-  onAdd: publicProcedure
-    .input(z.object({ roomId: z.string(), userId: z.string() }))
-    .subscription(async ({ input }) => {
-      const user = await clerkClient.users.getUser(input.userId);
-      return observable<Post>((emit) => {
-        const onAdd = (data: Post) => {
-          // emit data to client
-          emit.next({
-            ...data,
-            user: user.username || user.firstName || "null",
-          });
-        };
-
-        ee.on("add", onAdd);
-
-        return () => {
-          ee.off("add", onAdd);
-        };
+  join: publicProcedure.subscription(() => {
+    return observable<ContextFrom<typeof roomMachine>>((emit) => {
+      actor.subscribe((data) => {
+        console.log("data");
+        emit.next({ ...data.context, state: data.value });
       });
-    }),
-  add: publicProcedure
-    .input(
-      z.object({
-        id: z.string().uuid().optional(),
-        text: z.string().min(1),
-      })
-    )
-    .mutation(({ input }) => {
-      const post = { ...input };
-      ee.emit("add", post);
-      return post;
-    }),
+      return () => {
+        // actor.stop();
+      };
+    });
+  }),
+  continue: publicProcedure.mutation(() => {
+    actor.send({ type: "CONTINUE" });
+  }),
 });

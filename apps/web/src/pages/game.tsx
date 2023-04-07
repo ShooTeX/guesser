@@ -1,31 +1,21 @@
 import { Button } from "@/components/ui/button";
+import type { RouterOutput } from "@/lib/trpc";
 import { api } from "@/lib/trpc";
-import { useUser } from "@clerk/nextjs";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 export default function Game() {
-  const { user, isLoaded } = useUser();
-  const [data, setData] = useState("");
-  api.game.onAdd.useSubscription(
-    { userId: user?.id || "", roomId: "asdf" },
-    {
-      onData: (data) => setData(data.user),
-      enabled: isLoaded,
-    }
+  const [data, setData] = useState<RouterOutput["game"]["join"] | undefined>(
+    undefined
   );
-  const mutation = api.game.add.useMutation();
+  api.game.join.useSubscription(undefined, {
+    onData: (data) => setData(data),
+  });
+  const mutation = api.game.continue.useMutation();
   return (
-    <div>
-      {data}
-      <Button
-        onClick={() =>
-          mutation.mutate({
-            text: (Math.random() + 1).toString(36).slice(7),
-          })
-        }
-      >
-        Test
-      </Button>
-    </div>
+    <>
+      <div>{JSON.stringify(data) || <Loader2 className="animate-spin" />}</div>
+      <Button onClick={() => mutation.mutate()}>Continue</Button>
+    </>
   );
 }
