@@ -7,7 +7,7 @@ export const answerSchema = z.object({
   order: z.number().finite().nonnegative().min(0).max(32_767),
   correct: z.boolean().default(false),
   questionId: z.string().length(21),
-  createdAt: z.date(),
+  createdAt: z.string(),
 });
 
 export const questionSchema = z.object({
@@ -16,7 +16,7 @@ export const questionSchema = z.object({
   question: z.string().min(1),
   order: z.number().finite().nonnegative().min(0).max(32_767),
   playlistId: z.string().length(21),
-  createdAt: z.date(),
+  createdAt: z.string(),
   answers: answerSchema.array().min(2),
 });
 

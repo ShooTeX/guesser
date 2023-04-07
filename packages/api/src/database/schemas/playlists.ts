@@ -12,7 +12,7 @@ export const playlists = mysqlTable("playlists", {
   userId: text("user_id").notNull(),
   name: text("name").notNull(),
   shortDesc: text("short_desc"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
   playCount: int("play_count").notNull().default(0),
 });
 

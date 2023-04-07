@@ -9,7 +9,7 @@ export const playlistSchema = z.object({
     .max(200)
     .nullish()
     .transform((value) => value ?? undefined),
-  createdAt: z.date(),
+  createdAt: z.string(),
   questionCount: z.coerce.number().finite().nonnegative(),
   playCount: z.number().finite().nonnegative(),
 });

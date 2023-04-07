@@ -17,7 +17,9 @@ export const questions = mysqlTable(
     question: text("question").notNull(),
     playlistId: varchar("playlist_id", { length: 21 }).notNull(),
     order: smallint("order").notNull(),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .notNull()
+      .defaultNow(),
   },
   (table) => ({
     playlistIdIdx: index("playlist_id_idx").on(table.playlistId),
@@ -35,7 +37,9 @@ export const answers = mysqlTable(
     userId: text("user_id").notNull(),
     answer: text("answer").notNull(),
     correct: boolean("correct").notNull().default(false),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .notNull()
+      .defaultNow(),
     questionId: varchar("question_id", { length: 21 }).notNull(),
   },
   (table) => ({
