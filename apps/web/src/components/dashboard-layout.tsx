@@ -40,7 +40,7 @@ export const DashboardLayout = ({
 
   const createRoomMutation = api.game.createRoom.useMutation({
     onSuccess: async (roomId) => {
-      await push({ pathname: "/game", query: { roomId } });
+      await push({ pathname: "/game/[room-id]", query: { "room-id": roomId } });
     },
   });
 

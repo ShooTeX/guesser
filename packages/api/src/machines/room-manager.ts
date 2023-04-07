@@ -10,7 +10,7 @@ import {
 import { stop } from "xstate/lib/actions";
 import { z } from "zod";
 
-const roomMachine = createMachine(
+export const roomMachine = createMachine(
   {
     preserveActionOrder: true,
     id: "room",

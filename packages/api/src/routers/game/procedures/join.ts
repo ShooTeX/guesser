@@ -6,6 +6,8 @@ import type { z } from "zod";
 import { publicProcedure } from "../../../create-router";
 import { roomManager } from "../interpreters";
 import { zu } from "zod_utilz";
+import type { StateValueFrom } from "xstate";
+import type { roomMachine } from "../../../machines/room-manager";
 
 const gameSchema = zu.useTypedParsers(unsafeGameSchema);
 
@@ -18,8 +20,10 @@ export const join = publicProcedure
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
-    return observable<z.infer<typeof gameSchema>>((emit) => {
-      const subscription = room.subscribe(({ context, matches }) => {
+    return observable<
+      z.infer<typeof gameSchema> & { state: StateValueFrom<typeof roomMachine> }
+    >((emit) => {
+      const subscription = room.subscribe(({ context, matches, value }) => {
         const { players, questions, currentQuestion, host } = context;
         const question = questions[currentQuestion];
         if (!question) {
@@ -44,7 +48,10 @@ export const join = publicProcedure
             : undefined,
         });
 
-        emit.next(parsedResponse);
+        emit.next({
+          ...parsedResponse,
+          state: value as StateValueFrom<typeof roomMachine>,
+        });
       });
       return () => {
         subscription.unsubscribe();
