@@ -31,17 +31,20 @@ export interface Typegen1 {
   };
   invokeSrcNameMap: {};
   missingImplementations: {
-    actions: "addRoom" | "removeRoom";
+    actions: never;
     delays: never;
     guards: never;
     services: never;
   };
   eventsCausingActions: {
-    addRoom: "ADD_ROOM";
+    createRoom: "CREATE_ROOM";
     removeRoom: "REMOVE_ROOM";
+    stopRoom: "REMOVE_ROOM";
   };
   eventsCausingDelays: {};
-  eventsCausingGuards: {};
+  eventsCausingGuards: {
+    roomExists: "REMOVE_ROOM";
+  };
   eventsCausingServices: {};
   matchesStates: "running";
   tags: never;
