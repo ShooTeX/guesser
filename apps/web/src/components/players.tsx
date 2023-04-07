@@ -15,10 +15,10 @@ export const Players = ({ players, host }: PlayersProperties) => (
         <AvatarFallback>{host.username[0]}</AvatarFallback>
       </Avatar>
       <div className="flex flex-col justify-center">
-        <span className="text-lg font-semibold leading-none text-slate-900 dark:text-slate-50">
+        <span className="text-lg font-semibold leading-tight text-slate-900 dark:text-slate-50">
           {host.username}
         </span>
-        <span className="text-sm leading-none text-slate-500 dark:text-slate-400">
+        <span className="text-sm leading-tight text-slate-500 dark:text-slate-400">
           host
         </span>
       </div>
