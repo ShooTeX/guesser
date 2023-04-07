@@ -42,7 +42,6 @@ export const getPlaylists = async (
     ...playlist,
     questionCount,
   }));
-  console.log(test);
 
   return test;
 };

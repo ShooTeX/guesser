@@ -1,3 +1,4 @@
+import { clerkClient } from "@clerk/fastify";
 import { createRoomSchema, joinRoomSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
@@ -11,6 +12,7 @@ import {
 import { roomManagerMachine } from "../../machines/room-manager";
 import { getQuestions } from "../questions/models";
 
+// TODO: create in trpc context
 const roomManager = interpret(
   roomManagerMachine.withContext({ rooms: {} })
 ).start();
@@ -47,12 +49,25 @@ export const gameRouter = router({
         throw new TRPCError({ code: "BAD_REQUEST" });
       }
 
-      console.log(questions);
+      const user = await clerkClient.users.getUser(ctx.auth.userId);
+
       const id = nanoid();
       roomManager.send({
         type: "CREATE_ROOM",
         id,
-        context: { questions, players: [], currentQuestion: 0 },
+        context: {
+          questions,
+          players: [
+            {
+              id: ctx.auth.userId,
+              username: user.firstName || "",
+              isHost: true,
+              connected: false,
+              score: 0,
+            },
+          ],
+          currentQuestion: 0,
+        },
       });
 
       return id;
