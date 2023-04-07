@@ -18,12 +18,13 @@ export const roomSchema = z.object({
   host: playerSchema.pick({ id: true, username: true, avatar: true }),
 });
 
-export const gameSchema = roomSchema.extend({
-  players: playerSchema,
-  question: questionSchema.omit({ answers: true }),
-  answers: answerSchema.omit({ correct: true }),
-  correctAnswer: answerSchema.shape.id.optional(),
-});
+export const gameSchema = roomSchema
+  .pick({ players: true, host: true })
+  .extend({
+    question: questionSchema.omit({ answers: true }),
+    answers: answerSchema.omit({ correct: true }).array(),
+    correctAnswer: answerSchema.shape.id.optional(),
+  });
 
 export const joinRoomSchema = z.object({
   id: z.string(),
