@@ -12,7 +12,6 @@ import {
 import { roomManagerMachine } from "../../machines/room-manager";
 import { getQuestions } from "../questions/models";
 
-// TODO: create in trpc context
 const roomManager = interpret(
   roomManagerMachine.withContext({ rooms: {} })
 ).start();
