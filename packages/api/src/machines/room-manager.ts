@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { roomSchema } from "@guesser/schemas";
+import { playerSchema, roomSchema } from "@guesser/schemas";
 import {
   ActorRefFrom,
   assign,
@@ -17,6 +17,9 @@ export const roomMachine = createMachine(
     tsTypes: {} as import("./room-manager.typegen").Typegen0,
     schema: {
       context: {} as z.infer<typeof roomSchema>,
+      events: {} as
+        | { type: "CONTINUE" }
+        | { type: "JOIN"; player: z.infer<typeof playerSchema> },
     },
     initial: "waiting",
     states: {
@@ -24,6 +27,9 @@ export const roomMachine = createMachine(
         on: {
           CONTINUE: {
             target: "showing_question",
+          },
+          JOIN: {
+            actions: "addPlayer",
           },
         },
       },
@@ -53,6 +59,12 @@ export const roomMachine = createMachine(
   },
   {
     actions: {
+      addPlayer: assign({
+        players: (context, { player }) => {
+          if (player.id === context.host.id) return context.players;
+          return [...context.players, player];
+        },
+      }),
       nextQuestion: assign({
         currentQuestion: (context) => context.currentQuestion + 1,
       }),

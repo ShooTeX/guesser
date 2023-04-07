@@ -13,6 +13,7 @@ export interface Typegen0 {
     services: never;
   };
   eventsCausingActions: {
+    addPlayer: "JOIN";
     nextQuestion: "CONTINUE";
   };
   eventsCausingDelays: {};
