@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { answerSchema, questionSchema } from "../questions";
+import { playlistSchema } from "../playlists";
 
 export const playerSchema = z.object({
   id: z.string(),
@@ -20,4 +21,13 @@ export const gameSchema = roomSchema.extend({
   question: questionSchema.omit({ answers: true }),
   answers: answerSchema.omit({ correct: true }),
   correctAnswer: answerSchema.shape.id.optional(),
+});
+
+export const joinRoomSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+});
+
+export const createRoomSchema = z.object({
+  playlistId: playlistSchema.shape.id,
 });

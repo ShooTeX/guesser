@@ -1,26 +1,60 @@
+import { createRoomSchema, joinRoomSchema } from "@guesser/schemas";
+import { TRPCError } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
-import type { ContextFrom } from "xstate";
+import { nanoid } from "nanoid";
 import { interpret } from "xstate";
-import { publicProcedure, router } from "../../create-router";
-import { roomMachine } from "../../machines/room-manager";
+import {
+  protectedProcedure,
+  publicProcedure,
+  router,
+} from "../../create-router";
+import { roomManagerMachine } from "../../machines/room-manager";
+import { getQuestions } from "../questions/models";
 
-const actor = interpret(
-  roomMachine.withContext({ currentQuestion: 0, players: [], questions: [] })
+const roomManager = interpret(
+  roomManagerMachine.withContext({ rooms: {} })
 ).start();
 
+roomManager.subscribe((data) => console.log(data.context));
+
 export const gameRouter = router({
-  join: publicProcedure.subscription(() => {
-    return observable<ContextFrom<typeof roomMachine>>((emit) => {
-      actor.subscribe((data) => {
-        console.log("data");
-        emit.next({ ...data.context, state: data.value });
+  join: publicProcedure
+    .input(joinRoomSchema)
+    .subscription(({ ctx: _, input }) => {
+      const room = roomManager.getSnapshot().context.rooms[input.id];
+
+      if (!room) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      return observable<unknown>((emit) => {
+        const subscription = room.subscribe((data) => {
+          emit.next(data);
+        });
+        return () => {
+          subscription.unsubscribe();
+        };
       });
-      return () => {
-        // actor.stop();
-      };
-    });
-  }),
-  continue: publicProcedure.mutation(() => {
-    actor.send({ type: "CONTINUE" });
-  }),
+    }),
+
+  createRoom: protectedProcedure
+    .input(createRoomSchema)
+    .mutation(async ({ ctx, input }) => {
+      const questions = await getQuestions(ctx, {
+        playlistId: input.playlistId,
+      });
+      if (questions.length === 0) {
+        throw new TRPCError({ code: "BAD_REQUEST" });
+      }
+
+      console.log(questions);
+      const id = nanoid();
+      roomManager.send({
+        type: "CREATE_ROOM",
+        id,
+        context: { questions, players: [], currentQuestion: 0 },
+      });
+
+      return id;
+    }),
 });
