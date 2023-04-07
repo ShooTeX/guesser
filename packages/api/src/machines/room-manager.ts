@@ -19,7 +19,8 @@ export const roomMachine = createMachine(
       context: {} as z.infer<typeof roomSchema>,
       events: {} as
         | { type: "CONTINUE" }
-        | { type: "JOIN"; player: z.infer<typeof playerSchema> },
+        | { type: "JOIN"; player: z.infer<typeof playerSchema> }
+        | { type: "DISCONNECT"; id: z.infer<typeof playerSchema>["id"] },
     },
     initial: "waiting",
     states: {
@@ -30,6 +31,9 @@ export const roomMachine = createMachine(
           },
           JOIN: {
             actions: "addPlayer",
+          },
+          DISCONNECT: {
+            actions: "removePlayer",
           },
         },
       },
@@ -63,6 +67,12 @@ export const roomMachine = createMachine(
         players: (context, { player }) => {
           if (player.id === context.host.id) return context.players;
           return [...context.players, player];
+        },
+      }),
+      removePlayer: assign({
+        players: (context, { id }) => {
+          if (id === context.host.id) return context.players;
+          return context.players.filter((player) => player.id !== id);
         },
       }),
       nextQuestion: assign({

@@ -15,6 +15,7 @@ export interface Typegen0 {
   eventsCausingActions: {
     addPlayer: "JOIN";
     nextQuestion: "CONTINUE";
+    removePlayer: "DISCONNECT";
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {

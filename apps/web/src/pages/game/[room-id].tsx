@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { api } from "@/lib/trpc";
+import { useUser } from "@clerk/nextjs";
 import type { AppRouter } from "@guesser/api";
 import type { inferProcedureOutput } from "@trpc/server";
 import type { inferObservableValue } from "@trpc/server/observable";
@@ -43,6 +44,7 @@ const Waiting = ({
 };
 
 export default function Game() {
+  const { user } = useUser();
   const router = useRouter();
   const roomId = router.query["room-id"] as string | undefined;
   const [data, setData] = useState<
@@ -50,9 +52,9 @@ export default function Game() {
     | undefined
   >(undefined);
   api.game.join.useSubscription(
-    { id: roomId || "", userId: "" },
+    { id: roomId || "", userId: user?.id || "" },
     {
-      enabled: !!roomId,
+      enabled: !!roomId && !!user,
       onData: (data) => {
         setData(data);
       },
