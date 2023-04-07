@@ -66,11 +66,11 @@ export default function Game() {
         <div className="flex h-14 items-center space-x-4">
           <Logo />
           <Separator orientation="vertical" />
-          <div className="flex items-center">
-            <Loader2 className="mr-2 h-10 w-10 animate-spin" />
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-              Connecting
-            </h1>
+          <div className="flex items-center justify-center">
+            <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+            <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">
+              Connecting...
+            </p>
           </div>
         </div>
       </div>
