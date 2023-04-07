@@ -4,8 +4,8 @@ import { playlistSchema } from "../playlists";
 
 export const playerSchema = z.object({
   id: z.string(),
-  isHost: z.boolean().default(false),
   username: z.string(),
+  avatar: z.string().url(),
   connected: z.boolean(),
   score: z.number().min(0).finite().nonnegative(),
   guess: answerSchema.shape.id.optional(),
@@ -15,6 +15,7 @@ export const roomSchema = z.object({
   questions: questionSchema.array(),
   currentQuestion: z.number().finite().min(0).nonnegative(),
   players: playerSchema.array(),
+  host: playerSchema.pick({ id: true, username: true, avatar: true }),
 });
 
 export const gameSchema = roomSchema.extend({
