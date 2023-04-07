@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { Logo } from "./logo";
 import { PlaylistSelect } from "./playlist-select";
+import { api } from "@/lib/trpc";
 
 export type DashboardLayoutProperties = PropsWithChildren & {
   headline: string;
@@ -21,7 +22,7 @@ export const DashboardLayout = ({
   subline,
   action,
 }: DashboardLayoutProperties) => {
-  const { asPath } = useRouter();
+  const { asPath, push } = useRouter();
   const { user, isLoaded } = useUser();
   const [playlistSelectOpen, setPlayListSelectOpen] = useState(false);
   const manageRoutes = [
@@ -36,11 +37,23 @@ export const DashboardLayout = ({
       icon: HelpCircle,
     },
   ];
+
+  const createRoomMutation = api.game.createRoom.useMutation({
+    onSuccess: async (roomId) => {
+      await push({ pathname: "/game", query: { roomId } });
+    },
+  });
+
+  const createRoom = (playlistId: string) => {
+    createRoomMutation.mutate({ playlistId });
+  };
+
   return (
     <>
       <PlaylistSelect
         open={playlistSelectOpen}
         onOpenChange={setPlayListSelectOpen}
+        onSelect={createRoom}
       />
 
       <div className="grid min-h-screen grid-cols-4 xl:grid-cols-6">

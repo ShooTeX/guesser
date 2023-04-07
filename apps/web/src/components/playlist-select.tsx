@@ -31,7 +31,7 @@ export function PlaylistSelect({
             <CommandItem
               key={playlist.id}
               className="cursor-pointer"
-              onClick={() => onSelect && onSelect(playlist.id)}
+              onSelect={() => onSelect && onSelect(playlist.id)}
             >
               <div className="grid w-full grid-cols-2 gap-4">
                 <span className="flex-1 whitespace-nowrap font-bold">
