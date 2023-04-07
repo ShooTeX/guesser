@@ -53,9 +53,9 @@ export const roomMachine = createMachine(
   },
   {
     actions: {
-      nextQuestion: (context) => {
-        context.currentQuestion = context.currentQuestion + 1;
-      },
+      nextQuestion: assign({
+        currentQuestion: (context) => context.currentQuestion + 1,
+      }),
     },
     guards: {
       hasNoMoreQuestions: (context) =>
