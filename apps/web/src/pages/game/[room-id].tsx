@@ -1,4 +1,6 @@
 import { Logo } from "@/components/logo";
+import type { PlayersProperties } from "@/components/players";
+import { Players } from "@/components/players";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -14,10 +16,19 @@ const copyToClipboard = async (value: string) => {
   await navigator.clipboard.writeText(value);
 };
 
-const Waiting = ({ roomId }: { roomId: string }) => {
+const Waiting = ({
+  roomId,
+  players,
+  host,
+}: {
+  roomId: string;
+  players: PlayersProperties["players"];
+  host: PlayersProperties["host"];
+}) => {
   return (
-    <div className="flex h-screen w-full items-center justify-center">
-      <div className="flex w-full max-w-sm items-center space-x-2">
+    <div className="flex h-screen w-full flex-col items-center justify-center">
+      <Players players={players} host={host} />
+      <div className="mt-4 flex w-full max-w-sm items-center space-x-2">
         <Input type="password" value={roomId} disabled />
         <Button
           type="button"
@@ -67,7 +78,9 @@ export default function Game() {
   }
 
   if (data.state === "waiting") {
-    return <Waiting roomId={roomId} />;
+    return (
+      <Waiting roomId={roomId || ""} players={data.players} host={data.host} />
+    );
   }
 
   return <div>hello!</div>;
