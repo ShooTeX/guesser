@@ -28,7 +28,8 @@
     "remeda": "^1.9.1",
     "xstate": "^4.37.1",
     "znv": "^0.3.2",
-    "zod": "^3.21.2"
+    "zod": "^3.21.2",
+    "zod_utilz": "^0.7.3"
   },
   "devDependencies": {
     "@types/node": "^18.14.6",

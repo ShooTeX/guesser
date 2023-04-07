@@ -207,6 +207,7 @@ importers:
       xstate: ^4.37.1
       znv: ^0.3.2
       zod: ^3.21.2
+      zod_utilz: ^0.7.3
     dependencies:
       '@clerk/fastify': 0.1.15_ffbnthqbz5v6eyypswpribdhyy
       '@guesser/schemas': link:../schemas
@@ -221,6 +222,7 @@ importers:
       xstate: 4.37.1
       znv: 0.3.2_zod@3.21.4
       zod: 3.21.4
+      zod_utilz: 0.7.3_zod@3.21.4
     devDependencies:
       '@types/node': 18.15.3
       '@typescript-eslint/eslint-plugin': 5.56.0_iskin7c6dxqunwflhstekcjqmq
@@ -585,6 +587,17 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       csstype: 3.1.1
+    dev: false
+
+  /@deno/shim-deno-test/0.4.0:
+    resolution: {integrity: sha512-oYWcD7CpERZy/TXMTM9Tgh1HD/POHlbY9WpzmAk+5H8DohcxG415Qws8yLGlim3EaKBT2v3lJv01x4G0BosnaQ==}
+    dev: false
+
+  /@deno/shim-deno/0.12.0:
+    resolution: {integrity: sha512-nD/Izdp4RfU35rip2Jx4lP1WOWY8qAvGLpB3wvjlwgut237/RS4PwhLdmYnxDBXdsjjWMx8sDxmdHWs35GF3yA==}
+    dependencies:
+      '@deno/shim-deno-test': 0.4.0
+      which: 2.0.2
     dev: false
 
   /@emotion/is-prop-valid/0.8.8:
@@ -2529,6 +2542,13 @@ packages:
     resolution: {integrity: sha512-zhaCDicdLuWN5UbN5IMnFqNMhNfo919sH85y2/ea+5Yg9TsTkeZxpL+JLbp6cgYFS4sRLp3YV4S6yDuqVWHYOw==}
     engines: {node: '>=6'}
     dev: true
+
+  /busboy/1.6.0:
+    resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
+    engines: {node: '>=10.16.0'}
+    dependencies:
+      streamsearch: 1.1.0
+    dev: false
 
   /cac/6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
@@ -5880,6 +5900,11 @@ packages:
       internal-slot: 1.0.5
     dev: true
 
+  /streamsearch/1.1.0:
+    resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
+    engines: {node: '>=10.0.0'}
+    dev: false
+
   /string-width/5.1.2:
     resolution: {integrity: sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA==}
     engines: {node: '>=12'}
@@ -6319,6 +6344,13 @@ packages:
       which-boxed-primitive: 1.0.2
     dev: true
 
+  /undici/5.21.0:
+    resolution: {integrity: sha512-HOjK8l6a57b2ZGXOcUsI5NLfoTrfmbOl90ixJDl0AEFG4wgHNDQxtZy15/ZQp7HhjkpaGlp/eneMgtsu1dIlUA==}
+    engines: {node: '>=12.18'}
+    dependencies:
+      busboy: 1.6.0
+    dev: false
+
   /update-browserslist-db/1.0.10_browserslist@4.21.5:
     resolution: {integrity: sha512-OztqDenkfFkbSG+tRxBeAnCVPckDBcvibKd35yDONx6OU8N7sqgwc7rCbkJ/WcYtVRZ4ba68d6byhC21GFh7sQ==}
     hasBin: true
@@ -6631,3 +6663,13 @@ packages:
 
   /zod/3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+
+  /zod_utilz/0.7.3_zod@3.21.4:
+    resolution: {integrity: sha512-rLWnXBmNQeY0zSC0cCXy7Y+Jx6ohKBoiOiGwD1kwgc/MnZ23YOMzJa/1cpvZE9+y4btrk6u34zd3o4E6SKUIPw==}
+    peerDependencies:
+      zod: ^3.21.4
+    dependencies:
+      '@deno/shim-deno': 0.12.0
+      undici: 5.21.0
+      zod: 3.21.4
+    dev: false

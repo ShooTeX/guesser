@@ -1,10 +1,13 @@
-import type { gameSchema } from "@guesser/schemas";
+import { gameSchema as unsafeGameSchema } from "@guesser/schemas";
 import { joinRoomSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import type { z } from "zod";
 import { publicProcedure } from "../../../create-router";
 import { roomManager } from "../interpreters";
+import { zu } from "zod_utilz";
+
+const gameSchema = zu.useTypedParsers(unsafeGameSchema);
 
 export const join = publicProcedure
   .input(joinRoomSchema)
@@ -31,7 +34,7 @@ export const join = publicProcedure
           throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
         }
 
-        emit.next({
+        const parsedResponse = gameSchema.parse({
           players,
           host,
           question,
@@ -40,6 +43,8 @@ export const join = publicProcedure
             ? correctAnswer
             : undefined,
         });
+
+        emit.next(parsedResponse);
       });
       return () => {
         subscription.unsubscribe();
