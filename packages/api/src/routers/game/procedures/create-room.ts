@@ -3,12 +3,19 @@ import { createRoomSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
 import { nanoid } from "nanoid";
 import { protectedProcedure } from "../../../create-router";
+import { getPlaylists } from "../../playlists/models";
 import { getQuestions } from "../../questions/models";
 import { roomManager } from "../interpreters";
 
 export const createRoom = protectedProcedure
   .input(createRoomSchema)
   .mutation(async ({ ctx, input }) => {
+    const [playlist] = await getPlaylists(ctx, {
+      id: input.playlistId,
+    });
+    if (!playlist) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
     const questions = await getQuestions(ctx, {
       playlistId: input.playlistId,
     });
@@ -23,6 +30,7 @@ export const createRoom = protectedProcedure
       type: "CREATE_ROOM",
       id,
       context: {
+        playlistName: playlist.name,
         questions,
         host: {
           id: user.id,

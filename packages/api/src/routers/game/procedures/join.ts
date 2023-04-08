@@ -65,6 +65,13 @@ export const join = publicProcedure
           correctAnswer: matches("revealing_answer")
             ? correctAnswer
             : undefined,
+          ...(input.userId === host.id && {
+            hostInfo: {
+              currentQuestion,
+              questionCount: questions.length,
+              playlistName: "test",
+            },
+          }),
         });
 
         emit.next({
