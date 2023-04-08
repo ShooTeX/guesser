@@ -47,16 +47,20 @@ export const Controls = ({
         <X className="h-4 w-4 cursor-pointer" onClick={() => onClose()} />
       </div>
       <div className="flex flex-col gap-4 px-4 py-3 text-sm">
-        <div className="grid w-64 grid-cols-2 gap-2">
+        <div className="grid w-64 grid-cols-3 gap-2">
           <p>Playlist</p>
-          <p className="truncate text-right font-semibold">{playlistName}</p>
+          <p className="col-span-2 truncate text-right font-semibold">
+            {playlistName}
+          </p>
           <p>Question</p>
-          <p className="text-right">
+          <p className="col-span-2 text-right">
             <span className="font-semibold">{currentQuestion + 1}</span> of{" "}
             <span className="font-semibold">{questionsCount}</span>
           </p>
           <p>State</p>
-          <p className="truncate text-right font-semibold uppercase">{state}</p>
+          <p className="col-span-2 truncate text-right font-semibold uppercase">
+            {state.replace("_", " ")}
+          </p>
         </div>
         <Separator />
         <div className="flex flex-col gap-2">
@@ -68,9 +72,6 @@ export const Controls = ({
             }}
           >
             Continue
-          </Button>
-          <Button className="w-full" type="button" variant="subtle">
-            Reset
           </Button>
         </div>
       </div>
