@@ -55,7 +55,7 @@ const Screen = ({ data, roomId }: ScreenProperties) => {
       <Waiting roomId={roomId || ""} players={data.players} host={data.host} />
     );
   }
-  return <div>hello!</div>;
+  return <div>{data.question.question}</div>;
 };
 
 export default function Game() {
