@@ -82,7 +82,7 @@ export const roomMachine = createMachine(
     },
     guards: {
       hasNoMoreQuestions: (context) =>
-        context.questions.length + 1 === context.currentQuestion,
+        context.questions.length <= context.currentQuestion + 1,
     },
   }
 );
