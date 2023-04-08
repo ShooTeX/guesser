@@ -21,6 +21,7 @@ export interface Typegen0 {
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {
+    clientIsNotHost: "DISCONNECT" | "JOIN";
     hasNoMoreQuestions: "CONTINUE";
     playerExists: "DISCONNECT" | "JOIN";
   };

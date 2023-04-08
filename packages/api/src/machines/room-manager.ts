@@ -27,9 +27,11 @@ export const roomMachine = createMachine(
           },
           JOIN: {
             actions: "addPlayer",
+            cond: "clientIsNotHost",
           },
           DISCONNECT: {
             actions: "removePlayer",
+            cond: "clientIsNotHost",
           },
         },
       },
@@ -70,13 +72,9 @@ export const roomMachine = createMachine(
   {
     actions: {
       addPlayer: assign((context, event) => {
-        if (event.player.id === context.host.id) return;
-
         context.players.push(event.player);
       }),
       removePlayer: assign((context, event) => {
-        if (event.id === context.host.id) return;
-
         context.players = context.players.filter(
           (player) => player.id !== event.id
         );
@@ -93,6 +91,8 @@ export const roomMachine = createMachine(
       }),
     },
     guards: {
+      clientIsNotHost: ({ host }, event) =>
+        host.id !== (event.type === "JOIN" ? event.player.id : event.id),
       playerExists: ({ players }, event) =>
         players.some(
           (player) =>
