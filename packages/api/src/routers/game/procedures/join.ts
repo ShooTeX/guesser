@@ -42,7 +42,8 @@ export const join = publicProcedure
       z.infer<typeof gameSchema> & { state: StateValueFrom<typeof roomMachine> }
     >((emit) => {
       const subscription = room.subscribe(({ context, matches, value }) => {
-        const { players, questions, currentQuestion, host } = context;
+        const { players, questions, currentQuestion, host, playlistName } =
+          context;
         console.log(players);
         const question = questions[currentQuestion];
         if (!question) {
@@ -69,7 +70,7 @@ export const join = publicProcedure
             hostInfo: {
               currentQuestion,
               questionCount: questions.length,
-              playlistName: "test",
+              playlistName,
             },
           }),
         });

@@ -97,9 +97,12 @@ export default function Game() {
 
   return (
     <div className="relative">
-      {data.host.id === user?.id && (
+      {data.host.id === user?.id && data.hostInfo && (
         <div className="absolute top-4 right-4">
           <Controls
+            playlistName={data.hostInfo.playlistName}
+            questionsCount={data.hostInfo.questionCount}
+            currentQuestion={data.hostInfo.currentQuestion}
             state={data.state}
             open={controlsOpen}
             onOpen={() => setControlsOpen(true)}
