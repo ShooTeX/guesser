@@ -100,6 +100,7 @@ export default function Game() {
       {data.host.id === user?.id && (
         <div className="absolute top-4 right-4">
           <Controls
+            state={data.state}
             open={controlsOpen}
             onOpen={() => setControlsOpen(true)}
             onClose={() => setControlsOpen(false)}

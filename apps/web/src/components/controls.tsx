@@ -6,9 +6,21 @@ export type ControlsProperties = {
   open: boolean;
   onOpen: () => void;
   onClose: () => void;
+  state: string;
+  currentQuestion: number;
+  questionsCount: number;
+  playlistName: string;
 };
 
-export const Controls = ({ open, onOpen, onClose }: ControlsProperties) => {
+export const Controls = ({
+  open,
+  onOpen,
+  onClose,
+  state,
+  currentQuestion,
+  questionsCount,
+  playlistName,
+}: ControlsProperties) => {
   if (!open) {
     return (
       <Button
@@ -32,14 +44,14 @@ export const Controls = ({ open, onOpen, onClose }: ControlsProperties) => {
       <div className="flex flex-col gap-4 px-4 py-3 text-sm">
         <div className="grid w-64 grid-cols-2 gap-2">
           <p>Playlist</p>
-          <p className="truncate text-right font-semibold">Awesome Playlist</p>
+          <p className="truncate text-right font-semibold">{playlistName}</p>
           <p>Question</p>
           <p className="text-right">
-            <span className="font-semibold">1</span> of{" "}
-            <span className="font-semibold">20</span>
+            <span className="font-semibold">{currentQuestion}</span> of{" "}
+            <span className="font-semibold">{questionsCount}</span>
           </p>
           <p>State</p>
-          <p className="truncate text-right font-semibold">Some State</p>
+          <p className="truncate text-right font-semibold uppercase">{state}</p>
         </div>
         <Separator />
         <div className="flex flex-col gap-2">
