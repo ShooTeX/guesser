@@ -5,6 +5,8 @@ import { Players } from "@/components/players";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/trpc";
 import { useUser } from "@clerk/nextjs";
 import type { AppRouter } from "@guesser/api";
@@ -12,7 +14,7 @@ import type { inferProcedureOutput } from "@trpc/server";
 import type { inferObservableValue } from "@trpc/server/observable";
 import { Copy, Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const copyToClipboard = async (value: string) => {
   await navigator.clipboard.writeText(value);
@@ -63,6 +65,7 @@ export default function Game() {
   const router = useRouter();
   const roomId = router.query["room-id"] as string | undefined;
   const [controlsOpen, setControlsOpen] = useState(true);
+  const { toast } = useToast();
   const [data, setData] = useState<
     | inferObservableValue<inferProcedureOutput<AppRouter["game"]["join"]>>
     | undefined
@@ -77,6 +80,17 @@ export default function Game() {
       onError: console.error,
     }
   );
+
+  useEffect(() => {
+    const down = (event: KeyboardEvent) => {
+      if (event.key === "k" && event.metaKey) {
+        setControlsOpen((open) => !open);
+      }
+    };
+
+    if (user?.id === data?.host.id) document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, [data?.host.id, user?.id]);
 
   if (!data) {
     return (
@@ -95,6 +109,27 @@ export default function Game() {
     );
   }
 
+  const handleControlsClose = () => {
+    setControlsOpen(false);
+    toast({
+      title: "Host controls hidden",
+      description: (
+        <span>
+          Press{" "}
+          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-slate-100 bg-slate-100 px-1.5 font-mono text-[10px] font-medium text-slate-600 opacity-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
+            <span className="text-xs">⌘</span>K
+          </kbd>{" "}
+          to undo
+        </span>
+      ),
+      action: (
+        <ToastAction altText="undo" onClick={() => setControlsOpen(true)}>
+          Undo
+        </ToastAction>
+      ),
+    });
+  };
+
   return (
     <div className="relative">
       {data.host.id === user?.id && data.hostInfo && controlsOpen && (
@@ -105,7 +140,7 @@ export default function Game() {
             questionsCount={data.hostInfo.questionCount}
             currentQuestion={data.hostInfo.currentQuestion}
             state={data.state}
-            onClose={() => setControlsOpen(false)}
+            onClose={() => handleControlsClose()}
           />
         </div>
       )}
