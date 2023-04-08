@@ -1,3 +1,4 @@
+import { api } from "@/lib/trpc";
 import { Settings2, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
@@ -10,6 +11,7 @@ export type ControlsProperties = {
   currentQuestion: number;
   questionsCount: number;
   playlistName: string;
+  roomId: string;
 };
 
 export const Controls = ({
@@ -20,7 +22,9 @@ export const Controls = ({
   currentQuestion,
   questionsCount,
   playlistName,
+  roomId,
 }: ControlsProperties) => {
+  const continueRoomMutation = api.game.continueRoom.useMutation();
   if (!open) {
     return (
       <Button
@@ -33,6 +37,7 @@ export const Controls = ({
       </Button>
     );
   }
+
   return (
     <div className="rounded-md border border-slate-200 dark:border-slate-700 dark:bg-slate-800">
       <div className="flex justify-center bg-slate-200 py-1 px-4 dark:bg-slate-700">
@@ -55,7 +60,13 @@ export const Controls = ({
         </div>
         <Separator />
         <div className="flex flex-col gap-2">
-          <Button className="w-full" type="button">
+          <Button
+            className="w-full"
+            type="button"
+            onClick={() => {
+              continueRoomMutation.mutate({ id: roomId });
+            }}
+          >
             Continue
           </Button>
           <Button className="w-full" type="button" variant="subtle">

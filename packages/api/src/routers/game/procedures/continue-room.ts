@@ -5,5 +5,6 @@ import { roomManager } from "../interpreters";
 export const continueRoom = protectedProcedure
   .input(continueRoomSchema)
   .mutation(({ input }) => {
+    console.log(input.id);
     roomManager.send({ type: "CONTINUE_ROOM", id: input.id });
   });

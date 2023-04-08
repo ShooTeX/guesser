@@ -28,6 +28,7 @@ export const roomMachine = createMachine(
         on: {
           CONTINUE: {
             target: "showing_question",
+            actions: () => console.log("CONTINUE"),
           },
           JOIN: {
             actions: "addPlayer",
@@ -81,7 +82,7 @@ export const roomMachine = createMachine(
     },
     guards: {
       hasNoMoreQuestions: (context) =>
-        context.questions.length === context.currentQuestion,
+        context.questions.length + 1 === context.currentQuestion,
     },
   }
 );
@@ -140,9 +141,10 @@ export const roomManagerMachine = createMachine(
           return rooms;
         },
       }),
-      continueRoom: ({ rooms }, { id }) =>
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        sendTo(rooms[id]!, { type: "CONTINUE" }),
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      continueRoom: sendTo((context, event) => context.rooms[event.id]!, {
+        type: "CONTINUE",
+      }),
     },
     guards: {
       roomExists: ({ rooms }, { id }) => !!rooms[id],

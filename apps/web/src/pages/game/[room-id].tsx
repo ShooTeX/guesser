@@ -100,6 +100,7 @@ export default function Game() {
       {data.host.id === user?.id && data.hostInfo && (
         <div className="absolute top-4 right-4">
           <Controls
+            roomId={roomId || ""}
             playlistName={data.hostInfo.playlistName}
             questionsCount={data.hostInfo.questionCount}
             currentQuestion={data.hostInfo.currentQuestion}
