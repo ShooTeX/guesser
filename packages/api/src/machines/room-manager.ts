@@ -120,13 +120,13 @@ export const roomManagerMachine = createMachine(
   {
     actions: {
       createRoom: assign({
-        rooms: (context, { id, context: roomContext }) => ({
-          ...context.rooms,
+        rooms: ({ rooms }, { id, context: roomContext }) => ({
+          ...rooms,
           [id]: spawn(roomMachine.withContext(roomContext)),
         }),
       }),
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      stopRoom: stop((context, { id }) => context.rooms[id]!),
+      stopRoom: stop(({ rooms }, { id }) => rooms[id]!),
       removeRoom: assign({
         rooms: (context, { id }) => {
           const rooms = context.rooms;
@@ -137,7 +137,7 @@ export const roomManagerMachine = createMachine(
       }),
     },
     guards: {
-      roomExists: (context, { id }) => !!context.rooms[id],
+      roomExists: ({ rooms }, { id }) => !!rooms[id],
     },
   }
 );
