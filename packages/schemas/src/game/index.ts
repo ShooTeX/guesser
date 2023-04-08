@@ -42,3 +42,7 @@ export const joinRoomSchema = z.object({
 export const createRoomSchema = z.object({
   playlistId: playlistSchema.shape.id,
 });
+
+export const continueRoomSchema = z.object({
+  id: z.string(),
+});
