@@ -120,7 +120,6 @@ export default function Game() {
       onData: (data) => {
         setData(data);
       },
-      onError: console.error,
     }
   );
 

@@ -216,7 +216,6 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
 
   const reorder = (id: string) => {
     const order = reorderData.findIndex((question) => question.id === id);
-    console.log(order);
     if (
       !data ||
       order === -1 ||
@@ -230,7 +229,6 @@ export const QuestionsList = ({ playlistId }: QuestionsProperties) => {
     });
   };
 
-  // TODO: skeleton?
   if (isLoading) {
     return (
       <div className="flex h-80 items-center justify-center rounded-md border border-slate-200 dark:border-slate-700">

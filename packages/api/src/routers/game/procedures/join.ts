@@ -40,7 +40,6 @@ export const join = publicProcedure
       const subscription = room.subscribe(({ context, matches, value }) => {
         const { players, questions, currentQuestion, host, playlistName } =
           context;
-        console.log(players);
         const question = questions[currentQuestion];
         if (!question) {
           throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
