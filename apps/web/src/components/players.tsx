@@ -37,7 +37,7 @@ export const Players = ({ players, host }: PlayersProperties) => {
               {player.username}
             </span>
             <span className="text-sm leading-tight text-slate-500 dark:text-slate-400">
-              {player.score}
+              {player.score} {player.connected && "connected"}
             </span>
           </div>
         </div>
