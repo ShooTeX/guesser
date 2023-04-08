@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/trpc";
+import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import type { AppRouter } from "@guesser/api";
 import type { inferProcedureOutput } from "@trpc/server";
@@ -16,6 +17,7 @@ import { motion } from "framer-motion";
 import { Copy, Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import Balancer from "react-wrap-balancer";
 
 const copyToClipboard = async (value: string) => {
   await navigator.clipboard.writeText(value);
@@ -31,7 +33,7 @@ const Waiting = ({
   host: PlayersProperties["host"];
 }) => {
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center">
+    <div className="flex w-full flex-col items-center justify-center">
       <Players players={players} host={host} />
       <div className="mt-4 flex w-full max-w-sm items-center space-x-2">
         <Input type="password" value={roomId} disabled />
@@ -42,6 +44,40 @@ const Waiting = ({
         >
           <Copy className="h-4 w-4" />
         </Button>
+      </div>
+    </div>
+  );
+};
+
+type PlayingProperties = ScreenProperties;
+
+const Playing = ({ data }: PlayingProperties) => {
+  return (
+    <div className="flex w-[800px] flex-col justify-center">
+      <Players players={data.players} host={data.host} />
+      <div className="flex h-60 items-center justify-center">
+        <h1 className="scroll-m-20 text-center text-2xl font-semibold tracking-tight">
+          <Balancer>{data.question.question}</Balancer>
+        </h1>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        {data.answers.map((answer) => (
+          <Button
+            key={answer.id}
+            size="lg"
+            variant={data.state === "revealing_answer" ? "subtle" : "outline"}
+            disabled={
+              data.state === "revealing_answer" &&
+              data.correctAnswer !== answer.id
+            }
+            className={cn(
+              data.correctAnswer === answer.id &&
+                "bg-green-700 font-bold disabled:text-green-500 dark:bg-green-700 disabled:dark:text-green-50 pointer-events-none"
+            )}
+          >
+            {answer.answer}
+          </Button>
+        ))}
       </div>
     </div>
   );
@@ -58,7 +94,12 @@ const Screen = ({ data, roomId }: ScreenProperties) => {
       <Waiting roomId={roomId || ""} players={data.players} host={data.host} />
     );
   }
-  return <div>{data.question.question}</div>;
+
+  if (data.state === "end") {
+    return "end";
+  }
+
+  return <Playing data={data} roomId={roomId} />;
 };
 
 export default function Game() {

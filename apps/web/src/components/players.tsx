@@ -10,7 +10,7 @@ export type PlayersProperties = {
 
 export const Players = ({ players, host }: PlayersProperties) => {
   return (
-    <div className="flex gap-4">
+    <div className="flex items-center justify-center gap-4">
       <div className="flex items-center gap-2">
         <Avatar>
           <AvatarImage src={host.avatar} alt={host.username} />
