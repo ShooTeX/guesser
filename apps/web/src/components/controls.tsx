@@ -1,11 +1,9 @@
 import { api } from "@/lib/trpc";
-import { Settings2, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 
 export type ControlsProperties = {
-  open: boolean;
-  onOpen: () => void;
   onClose: () => void;
   state: string;
   currentQuestion: number;
@@ -15,8 +13,6 @@ export type ControlsProperties = {
 };
 
 export const Controls = ({
-  open,
-  onOpen,
   onClose,
   state,
   currentQuestion,
@@ -25,19 +21,6 @@ export const Controls = ({
   roomId,
 }: ControlsProperties) => {
   const continueRoomMutation = api.game.continueRoom.useMutation();
-  if (!open) {
-    return (
-      <Button
-        variant="outline"
-        className="w-10 rounded-full p-0"
-        onClick={() => onOpen()}
-        type="button"
-      >
-        <Settings2 className="h-4 w-4" />
-      </Button>
-    );
-  }
-
   return (
     <div className="rounded-md border border-slate-200 dark:border-slate-700 dark:bg-slate-800">
       <div className="flex justify-center bg-slate-200 py-1 px-4 dark:bg-slate-700">

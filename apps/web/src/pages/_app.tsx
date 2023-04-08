@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Inter as FontSans } from "next/font/google";
 import { api } from "@/lib/trpc";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Toaster } from "@/components/ui/toaster";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ function App({ Component, pageProps }: AppProps) {
       <ClerkProvider {...pageProps}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <Component {...pageProps} />
+          <Toaster />
         </ThemeProvider>
       </ClerkProvider>
     </>
