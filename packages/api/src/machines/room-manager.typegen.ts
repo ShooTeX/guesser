@@ -39,13 +39,14 @@ export interface Typegen1 {
     services: never;
   };
   eventsCausingActions: {
+    continueRoom: "CONTINUE_ROOM";
     createRoom: "CREATE_ROOM";
     removeRoom: "REMOVE_ROOM";
     stopRoom: "REMOVE_ROOM";
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {
-    roomExists: "REMOVE_ROOM";
+    roomExists: "CONTINUE_ROOM" | "REMOVE_ROOM";
   };
   eventsCausingServices: {};
   matchesStates: "running";

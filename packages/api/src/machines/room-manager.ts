@@ -7,7 +7,7 @@ import {
   createMachine,
   spawn,
 } from "xstate";
-import { stop } from "xstate/lib/actions";
+import { stop, sendTo } from "xstate/lib/actions";
 import { z } from "zod";
 
 export const roomMachine = createMachine(
@@ -100,7 +100,8 @@ export const roomManagerMachine = createMachine(
             id: string;
             context: ContextFrom<typeof roomMachine>;
           }
-        | { type: "REMOVE_ROOM"; id: string },
+        | { type: "REMOVE_ROOM"; id: string }
+        | { type: "CONTINUE_ROOM"; id: string },
     },
     initial: "running",
     states: {
@@ -111,6 +112,10 @@ export const roomManagerMachine = createMachine(
           },
           REMOVE_ROOM: {
             actions: ["stopRoom", "removeRoom"],
+            cond: "roomExists",
+          },
+          CONTINUE_ROOM: {
+            actions: "continueRoom",
             cond: "roomExists",
           },
         },
@@ -135,6 +140,9 @@ export const roomManagerMachine = createMachine(
           return rooms;
         },
       }),
+      continueRoom: ({ rooms }, { id }) =>
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        sendTo(rooms[id]!, { type: "CONTINUE" }),
     },
     guards: {
       roomExists: ({ rooms }, { id }) => !!rooms[id],
