@@ -12,9 +12,10 @@ import { useUser } from "@clerk/nextjs";
 import type { AppRouter } from "@guesser/api";
 import type { inferProcedureOutput } from "@trpc/server";
 import type { inferObservableValue } from "@trpc/server/observable";
+import { motion } from "framer-motion";
 import { Copy, Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const copyToClipboard = async (value: string) => {
   await navigator.clipboard.writeText(value);
@@ -66,6 +67,7 @@ export default function Game() {
   const roomId = router.query["room-id"] as string | undefined;
   const [controlsOpen, setControlsOpen] = useState(true);
   const { toast } = useToast();
+  const constraintsReference = useRef(null);
   const [data, setData] = useState<
     | inferObservableValue<inferProcedureOutput<AppRouter["game"]["join"]>>
     | undefined
@@ -131,9 +133,18 @@ export default function Game() {
   };
 
   return (
-    <div className="relative">
+    <div
+      className="flex h-screen w-full flex-col items-center justify-center"
+      ref={constraintsReference}
+    >
       {data.host.id === user?.id && data.hostInfo && controlsOpen && (
-        <div className="absolute top-4 right-4">
+        <motion.div
+          className="absolute top-4 right-4"
+          drag
+          dragElastic={false}
+          dragMomentum={false}
+          dragConstraints={constraintsReference}
+        >
           <Controls
             roomId={roomId || ""}
             playlistName={data.hostInfo.playlistName}
@@ -142,7 +153,7 @@ export default function Game() {
             state={data.state}
             onClose={() => handleControlsClose()}
           />
-        </div>
+        </motion.div>
       )}
       <Screen data={data} roomId={roomId || ""} />
     </div>
