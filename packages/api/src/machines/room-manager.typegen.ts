@@ -14,12 +14,15 @@ export interface Typegen0 {
   };
   eventsCausingActions: {
     addPlayer: "JOIN";
+    connectPlayer: "JOIN";
+    disconnectPlayer: "DISCONNECT";
     nextQuestion: "CONTINUE";
     removePlayer: "DISCONNECT";
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {
     hasNoMoreQuestions: "CONTINUE";
+    playerExists: "DISCONNECT" | "JOIN";
   };
   eventsCausingServices: {};
   matchesStates: "end" | "revealing_answer" | "showing_question" | "waiting";

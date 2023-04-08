@@ -28,7 +28,6 @@ export const roomMachine = createMachine(
         on: {
           CONTINUE: {
             target: "showing_question",
-            actions: () => console.log("CONTINUE"),
           },
           JOIN: {
             actions: "addPlayer",
@@ -61,6 +60,16 @@ export const roomMachine = createMachine(
       },
       end: {},
     },
+    on: {
+      JOIN: {
+        actions: "connectPlayer",
+        cond: "playerExists",
+      },
+      DISCONNECT: {
+        actions: "disconnectPlayer",
+        cond: "playerExists",
+      },
+    },
   },
   {
     actions: {
@@ -76,11 +85,38 @@ export const roomMachine = createMachine(
           return context.players.filter((player) => player.id !== id);
         },
       }),
+      connectPlayer: assign({
+        players: ({ players }, event) => {
+          const player = players.find(
+            (player) => player.id === event.player.id
+          );
+
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          player!.connected = true;
+
+          return players;
+        },
+      }),
+      disconnectPlayer: assign({
+        players: ({ players }, event) => {
+          const player = players.find((player) => player.id === event.id);
+
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          player!.connected = true;
+
+          return players;
+        },
+      }),
       nextQuestion: assign({
         currentQuestion: (context) => context.currentQuestion + 1,
       }),
     },
     guards: {
+      playerExists: ({ players }, event) =>
+        players.some(
+          (player) =>
+            player.id === (event.type === "JOIN" ? event.player.id : event.id)
+        ),
       hasNoMoreQuestions: (context) =>
         context.questions.length <= context.currentQuestion + 1,
     },
