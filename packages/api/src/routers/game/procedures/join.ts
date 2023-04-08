@@ -15,7 +15,7 @@ const gameSchema = zu.useTypedParsers(unsafeGameSchema);
 export const join = publicProcedure
   .input(joinRoomSchema)
   .subscription(async ({ ctx: _, input }) => {
-    const room = roomManager.getSnapshot().context.rooms[input.id];
+    const room = roomManager.getSnapshot().context.rooms.get(input.id);
 
     if (!room) {
       throw new TRPCError({ code: "NOT_FOUND" });

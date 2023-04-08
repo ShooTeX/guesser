@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { playerSchema, roomSchema } from "@guesser/schemas";
-import {
-  ActorRefFrom,
-  assign,
-  ContextFrom,
-  createMachine,
-  spawn,
-} from "xstate";
+import { ActorRefFrom, ContextFrom, createMachine, spawn } from "xstate";
+import { assign } from "@xstate/immer";
 import { stop, sendTo } from "xstate/lib/actions";
 import { z } from "zod";
 
@@ -74,44 +69,27 @@ export const roomMachine = createMachine(
   },
   {
     actions: {
-      addPlayer: assign({
-        players: (context, { player }) => {
-          if (player.id === context.host.id) return context.players;
-          return [...context.players, player];
-        },
+      addPlayer: assign((context, event) => {
+        if (event.player.id === context.host.id) return;
+
+        context.players.push(event.player);
       }),
-      removePlayer: assign({
-        players: (context, { id }) => {
-          if (id === context.host.id) return context.players;
-          return context.players.filter((player) => player.id !== id);
-        },
+      removePlayer: assign((context, event) => {
+        if (event.id === context.host.id) return;
+
+        context.players = context.players.filter(
+          (player) => player.id !== event.id
+        );
       }),
-      connectPlayer: assign({
-        players: ({ players }, event) => {
-          const player = players.find(
-            (player) => player.id === event.player.id
-          );
-
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          player!.connected = true;
-
-          return players;
-        },
+      connectPlayer: assign(({ players }, event) => {
+        players.find((player) => player.id === event.player.id)!.connected =
+          true;
       }),
-      disconnectPlayer: assign({
-        players: ({ players }, event) => {
-          const player = players.find((player) => player.id === event.id);
-
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          player!.connected = false;
-
-          console.log(players);
-
-          return players;
-        },
+      disconnectPlayer: assign(({ players }, event) => {
+        players.find((player) => player.id === event.id)!.connected = false;
       }),
-      nextQuestion: assign({
-        currentQuestion: (context) => context.currentQuestion + 1,
+      nextQuestion: assign((context) => {
+        context.currentQuestion++;
       }),
     },
     guards: {
@@ -165,23 +143,16 @@ export const roomManagerMachine = createMachine(
   },
   {
     actions: {
-      createRoom: assign({
-        rooms: ({ rooms }, { id, context: roomContext }) => ({
-          ...rooms,
-          [id]: spawn(roomMachine.withContext(roomContext)),
-        }),
+      createRoom: assign((context, event) => {
+        context.rooms.set(
+          event.id,
+          spawn(roomMachine.withContext(event.context))
+        );
       }),
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       stopRoom: stop(({ rooms }, { id }) => rooms.get(id)!),
-      removeRoom: assign({
-        rooms: (context, { id }) => {
-          const rooms = context.rooms;
-          rooms.delete(id);
-
-          return rooms;
-        },
+      removeRoom: assign((context, event) => {
+        context.rooms.delete(event.id);
       }),
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       continueRoom: sendTo((context, event) => context.rooms.get(event.id)!, {
         type: "CONTINUE",
       }),

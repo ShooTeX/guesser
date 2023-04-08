@@ -1,7 +1,9 @@
+import { enableMapSet } from "immer";
 import { router } from "../create-router";
 import { gameRouter as game } from "./game/_router";
 import { playlistsRouter as playlists } from "./playlists/_router";
 import { questionsRouter as questions } from "./questions/_router";
+enableMapSet();
 
 export const appRouter = router({
   playlists,

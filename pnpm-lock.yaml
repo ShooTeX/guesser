@@ -195,6 +195,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.54.1
       '@typescript-eslint/parser': ^5.55.0
       '@xstate/cli': ^0.4.2
+      '@xstate/immer': ^0.3.2
       drizzle-kit: 0.17.1-609a4f0
       drizzle-orm: 0.23.2
       eslint: 8.36.0
@@ -205,6 +206,7 @@ importers:
       eslint-plugin-xstate: ^1.1.0
       fastify: ^4.14.1
       fastify-plugin: ^4.5.0
+      immer: ^9.0.21
       mysql2: ^3.2.0
       nanoid: ^4.0.1
       prettier: ^2.8.7
@@ -220,9 +222,11 @@ importers:
       '@guesser/schemas': link:../schemas
       '@planetscale/database': 1.6.0
       '@trpc/server': 10.18.0
+      '@xstate/immer': 0.3.2_immer@9.0.21+xstate@4.37.1
       drizzle-orm: 0.23.2_7wrgmb4pybenke4ozfnne7qf3u
       fastify: 4.15.0
       fastify-plugin: 4.5.0
+      immer: 9.0.21
       mysql2: 3.2.0
       nanoid: 4.0.1
       remeda: 1.9.1
@@ -2250,6 +2254,16 @@ packages:
       - prettier
       - supports-color
     dev: true
+
+  /@xstate/immer/0.3.2_immer@9.0.21+xstate@4.37.1:
+    resolution: {integrity: sha512-Ez1Q+xG43eHIQsLUiZWozohEg4hx5eA7qeexf0UjhmKxZPPlWs5c6Hks8PsRB7NMxGIBTS9Dg6ueQXhcuhxeAg==}
+    peerDependencies:
+      immer: ^9.0.6
+      xstate: ^4.36.0
+    dependencies:
+      immer: 9.0.21
+      xstate: 4.37.1
+    dev: false
 
   /@xstate/machine-extractor/0.9.1_xstate@4.37.1:
     resolution: {integrity: sha512-0Oe1WDvMj22k6mEuZiOZsEKbt5VyghzEyu9kTzFipjyCeXkXjZhNX6GrxNBMk3ze0FPdx90aAQDrZ1HVNOPzcA==}
@@ -4367,6 +4381,10 @@ packages:
   /ignore/5.2.4:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
     engines: {node: '>= 4'}
+
+  /immer/9.0.21:
+    resolution: {integrity: sha512-bc4NBHqOqSfRW7POMkHd51LvClaeMXpm8dx0e8oE2GORbq5aRK7Bxl4FyzVLdGtLmvLKL7BTDBG5ACQm4HWjTA==}
+    dev: false
 
   /import-fresh/3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
