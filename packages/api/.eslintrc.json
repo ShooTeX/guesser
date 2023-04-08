@@ -24,7 +24,7 @@
   ],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/strict",
     "plugin:unicorn/recommended",
     "plugin:xstate/recommended",
     "plugin:prettier/recommended"
@@ -56,6 +56,10 @@
       }
     ],
     "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/consistent-type-definitions": [
+      "error",
+      "type"
+    ],
     "@typescript-eslint/no-misused-promises": [
       2,
       {

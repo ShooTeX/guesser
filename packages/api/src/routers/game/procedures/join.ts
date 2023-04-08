@@ -23,17 +23,13 @@ export const join = publicProcedure
 
     const user = await clerkClient.users.getUser(input.userId);
 
-    if (!user) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-
     room.send({
       type: "JOIN",
       player: {
         id: user.id,
         avatar: user.profileImageUrl,
         score: 0,
-        username: user.firstName || user.username || "",
+        username: user.firstName ?? user.username ?? "",
         connected: true,
       },
     });

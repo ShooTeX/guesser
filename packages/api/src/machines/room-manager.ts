@@ -133,7 +133,7 @@ export const roomManagerMachine = createMachine(
     tsTypes: {} as import("./room-manager.typegen").Typegen1,
     schema: {
       context: {} as {
-        rooms: { [id: string]: ActorRefFrom<typeof roomMachine> };
+        rooms: Record<string, ActorRefFrom<typeof roomMachine>>;
       },
       events: {} as
         | {

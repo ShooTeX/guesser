@@ -34,7 +34,7 @@ export const createRoom = protectedProcedure
         questions,
         host: {
           id: user.id,
-          username: user.firstName || user.username || "",
+          username: user.firstName ?? user.username ?? "",
           avatar: user.profileImageUrl,
         },
         players: [],

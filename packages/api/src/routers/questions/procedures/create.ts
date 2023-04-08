@@ -24,7 +24,7 @@ export const create = protectedProcedure
       await ctx.database.insert(questions).values({
         id: id,
         userId: ctx.auth.userId,
-        order: countSelect?.count || 0,
+        order: countSelect?.count ?? 0,
         ...questionInput,
       } satisfies QuestionInsert);
 

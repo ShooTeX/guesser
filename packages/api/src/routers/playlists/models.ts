@@ -34,7 +34,7 @@ export const getPlaylists = async (
     .where(
       and(
         eq(playlists.userId, auth.userId),
-        ...(input?.id ? [eq(playlists.id, input?.id)] : [])
+        ...(input?.id ? [eq(playlists.id, input.id)] : [])
       )
     );
 
