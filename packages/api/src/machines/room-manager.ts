@@ -102,7 +102,9 @@ export const roomMachine = createMachine(
           const player = players.find((player) => player.id === event.id);
 
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          player!.connected = true;
+          player!.connected = false;
+
+          console.log(players);
 
           return players;
         },
