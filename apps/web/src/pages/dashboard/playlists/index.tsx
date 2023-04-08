@@ -103,8 +103,10 @@ const Empty = () => (
         You have no playlists. Add one below.
       </p>
       <CreateForm>
-        <Plus className="mr-1 h-4 w-4" />
-        Create Playlist
+        <Button type="button">
+          <Plus className="mr-1 h-4 w-4" />
+          Create Playlist
+        </Button>
       </CreateForm>
     </div>
   </div>

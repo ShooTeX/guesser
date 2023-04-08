@@ -96,7 +96,7 @@ const Screen = ({ data, roomId }: ScreenProperties) => {
   }
 
   if (data.state === "end") {
-    return "end";
+    return <p>end</p>;
   }
 
   return <Playing data={data} roomId={roomId} />;
