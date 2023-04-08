@@ -13,6 +13,7 @@ import { z } from "zod";
 export const roomMachine = createMachine(
   {
     preserveActionOrder: true,
+    predictableActionArguments: true,
     id: "room",
     tsTypes: {} as import("./room-manager.typegen").Typegen0,
     schema: {
@@ -127,6 +128,7 @@ export const roomMachine = createMachine(
 
 export const roomManagerMachine = createMachine(
   {
+    predictableActionArguments: true,
     id: "roomManager",
     tsTypes: {} as import("./room-manager.typegen").Typegen1,
     schema: {

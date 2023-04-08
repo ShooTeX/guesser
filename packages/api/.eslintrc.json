@@ -26,9 +26,17 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:unicorn/recommended",
+    "plugin:xstate/recommended",
     "plugin:prettier/recommended"
   ],
   "rules": {
+    "xstate/event-names": [
+      "warn"
+    ],
+    "xstate/state-names": [
+      "warn",
+      "snakeCase"
+    ],
     "unicorn/no-useless-undefined": [
       "error",
       {

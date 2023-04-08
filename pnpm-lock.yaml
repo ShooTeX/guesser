@@ -202,6 +202,7 @@ importers:
       eslint-plugin-prettier: ^4.2.1
       eslint-plugin-unicorn: ^45.0.2
       eslint-plugin-unused-imports: ^2.0.0
+      eslint-plugin-xstate: ^1.1.0
       fastify: ^4.14.1
       fastify-plugin: ^4.5.0
       mysql2: ^3.2.0
@@ -240,6 +241,7 @@ importers:
       eslint-plugin-prettier: 4.2.1_ywlv3zveqg2kxfq44lflihh5mm
       eslint-plugin-unicorn: 45.0.2_eslint@8.36.0
       eslint-plugin-unused-imports: 2.0.0_pjgbsoxltfjhart6hcjsvw66hu
+      eslint-plugin-xstate: 1.1.0_eslint@8.36.0
       prettier: 2.8.7
       typescript: 4.9.5
       vitest: 0.29.7
@@ -3793,6 +3795,19 @@ packages:
       eslint-rule-composer: 0.3.0
     dev: true
 
+  /eslint-plugin-xstate/1.1.0_eslint@8.36.0:
+    resolution: {integrity: sha512-NKgrV/YwwJvKXDq+cTERgLLTxBr7Uxsz2NZYic3e1sqcs7u56uRZDWDk6q7pYquNqqX2AT5X8Urn6qHs4lv8PQ==}
+    engines: {node: '>=8.0.0'}
+    peerDependencies:
+      eslint: ^7.1.0||^8.17.0
+    dependencies:
+      eslint: 8.36.0
+      lodash.camelcase: 4.3.0
+      lodash.snakecase: 4.1.1
+      lodash.upperfirst: 4.3.1
+      sanctuary: 3.1.0
+    dev: true
+
   /eslint-rule-composer/0.3.0:
     resolution: {integrity: sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==}
     engines: {node: '>=4.0.0'}
@@ -4734,11 +4749,23 @@ packages:
     dependencies:
       p-locate: 5.0.0
 
+  /lodash.camelcase/4.3.0:
+    resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
+    dev: true
+
   /lodash.merge/4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
+  /lodash.snakecase/4.1.1:
+    resolution: {integrity: sha512-QZ1d4xoBHYUeuouhEq3lk3Uq7ldgyFXGBhg04+oRLnIz8o9T65Eh+8YdroUwn846zchkA9yDsDl5CVVaV2nqYw==}
+    dev: true
+
   /lodash.throttle/4.1.1:
     resolution: {integrity: sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==}
+    dev: true
+
+  /lodash.upperfirst/4.3.1:
+    resolution: {integrity: sha512-sReKOYJIJf74dhJONhU4e0/shzi1trVbSWDOhKYE5XV2O+H7Sb2Dihwuc7xWxVl+DgFPyTqIN3zMfT9cq5iWDg==}
     dev: true
 
   /lodash/4.17.21:
@@ -5786,6 +5813,62 @@ packages:
   /safer-buffer/2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
     dev: false
+
+  /sanctuary-def/0.22.0:
+    resolution: {integrity: sha512-lywS27TfuPHzelMh6M1YWBcB//Lom4Gko/tGjKYbDPkPet1B5KplsSdjY+5sF4mwp6+PDUodsk/Y3Uskrc/ebw==}
+    dependencies:
+      sanctuary-either: 2.1.0
+      sanctuary-show: 2.0.0
+      sanctuary-type-classes: 12.1.0
+      sanctuary-type-identifiers: 3.0.0
+    dev: true
+
+  /sanctuary-either/2.1.0:
+    resolution: {integrity: sha512-AsQCma2yGAVS7Dlxme/09NZWQfcXBNylVmkuvarp8uOe9otSwClOgQyyePN2OxO4hTf3Au1Ck4ggm+97Je06kA==}
+    dependencies:
+      sanctuary-show: 2.0.0
+      sanctuary-type-classes: 12.1.0
+    dev: true
+
+  /sanctuary-maybe/2.1.0:
+    resolution: {integrity: sha512-xCmvaEkYaIz5klWUrsgvgORKTL3bVYxATp7HyGBY0ZCu9tHJtSYDTpwnqMkRknHFIU986Kr2M/dJdiFvuc6UCQ==}
+    dependencies:
+      sanctuary-show: 2.0.0
+      sanctuary-type-classes: 12.1.0
+    dev: true
+
+  /sanctuary-pair/2.1.0:
+    resolution: {integrity: sha512-yY1JzzIJ/Ex7rjN8NmQLB7yv6GVzNeaMvxoYSW8w1ReLQI0n2sGOVCnAVipZuCv7wmfd+BavSXp59rklJeYytw==}
+    dependencies:
+      sanctuary-show: 2.0.0
+      sanctuary-type-classes: 12.1.0
+    dev: true
+
+  /sanctuary-show/2.0.0:
+    resolution: {integrity: sha512-REj4ZiioUXnDLj6EpJ9HcYDIEGaEexmB9Fg5o6InZR9f0x5PfnnC21QeU9SZ9E7G8zXSZPNjy8VRUK4safbesw==}
+    dev: true
+
+  /sanctuary-type-classes/12.1.0:
+    resolution: {integrity: sha512-oWP071Q88dEgJwxHLZp8tc7DoS+mWmYhYOuhP85zznPpIxV1ZjJfyRvcR59YCazyFxyFeBif7bJx1giLhDZW0Q==}
+    dependencies:
+      sanctuary-type-identifiers: 3.0.0
+    dev: true
+
+  /sanctuary-type-identifiers/3.0.0:
+    resolution: {integrity: sha512-YFXYcG0Ura1dSPd/1xLYtE2XAWUEsBHhMTZvYBOvwT8MeFQwdUOCMm2DC+r94z6H93FVq0qxDac8/D7QpJj6Mg==}
+    dev: true
+
+  /sanctuary/3.1.0:
+    resolution: {integrity: sha512-yTpWmslb5Q2jXcHYeIfCzJksIpe3pngBaFBDpjdPXONWyVSB3hBVDZZ8EmitohaMZqjLB+JREeEL0YOVtdxILA==}
+    dependencies:
+      sanctuary-def: 0.22.0
+      sanctuary-either: 2.1.0
+      sanctuary-maybe: 2.1.0
+      sanctuary-pair: 2.1.0
+      sanctuary-show: 2.0.0
+      sanctuary-type-classes: 12.1.0
+      sanctuary-type-identifiers: 3.0.0
+    dev: true
 
   /scheduler/0.23.0:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
