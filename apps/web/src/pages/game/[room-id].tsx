@@ -1,3 +1,4 @@
+import { Controls } from "@/components/controls";
 import { Logo } from "@/components/logo";
 import type { PlayersProperties } from "@/components/players";
 import { Players } from "@/components/players";
@@ -43,10 +44,25 @@ const Waiting = ({
   );
 };
 
+type ScreenProperties = {
+  data: inferObservableValue<inferProcedureOutput<AppRouter["game"]["join"]>>;
+  roomId: string;
+};
+
+const Screen = ({ data, roomId }: ScreenProperties) => {
+  if (data.state === "waiting") {
+    return (
+      <Waiting roomId={roomId || ""} players={data.players} host={data.host} />
+    );
+  }
+  return <div>hello!</div>;
+};
+
 export default function Game() {
   const { user } = useUser();
   const router = useRouter();
   const roomId = router.query["room-id"] as string | undefined;
+  const [controlsOpen, setControlsOpen] = useState(true);
   const [data, setData] = useState<
     | inferObservableValue<inferProcedureOutput<AppRouter["game"]["join"]>>
     | undefined
@@ -79,11 +95,18 @@ export default function Game() {
     );
   }
 
-  if (data.state === "waiting") {
-    return (
-      <Waiting roomId={roomId || ""} players={data.players} host={data.host} />
-    );
-  }
-
-  return <div>hello!</div>;
+  return (
+    <div className="relative">
+      {data.host.id === user?.id && (
+        <div className="absolute top-4 right-4">
+          <Controls
+            open={controlsOpen}
+            onOpen={() => setControlsOpen(true)}
+            onClose={() => setControlsOpen(false)}
+          />
+        </div>
+      )}
+      <Screen data={data} roomId={roomId || ""} />
+    </div>
+  );
 }
