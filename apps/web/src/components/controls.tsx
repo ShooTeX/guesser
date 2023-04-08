@@ -47,7 +47,7 @@ export const Controls = ({
           <p className="truncate text-right font-semibold">{playlistName}</p>
           <p>Question</p>
           <p className="text-right">
-            <span className="font-semibold">{currentQuestion}</span> of{" "}
+            <span className="font-semibold">{currentQuestion + 1}</span> of{" "}
             <span className="font-semibold">{questionsCount}</span>
           </p>
           <p>State</p>
