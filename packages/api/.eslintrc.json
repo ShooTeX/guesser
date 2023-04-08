@@ -30,6 +30,9 @@
     "plugin:prettier/recommended"
   ],
   "rules": {
+    "no-param-reassign": [
+      "error"
+    ],
     "xstate/event-names": [
       "warn"
     ],

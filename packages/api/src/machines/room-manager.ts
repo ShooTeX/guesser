@@ -133,7 +133,7 @@ export const roomManagerMachine = createMachine(
     tsTypes: {} as import("./room-manager.typegen").Typegen1,
     schema: {
       context: {} as {
-        rooms: Record<string, ActorRefFrom<typeof roomMachine>>;
+        rooms: Map<string, ActorRefFrom<typeof roomMachine>>;
       },
       events: {} as
         | {
@@ -172,22 +172,22 @@ export const roomManagerMachine = createMachine(
         }),
       }),
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      stopRoom: stop(({ rooms }, { id }) => rooms[id]!),
+      stopRoom: stop(({ rooms }, { id }) => rooms.get(id)!),
       removeRoom: assign({
         rooms: (context, { id }) => {
           const rooms = context.rooms;
-          delete rooms[id];
+          rooms.delete(id);
 
           return rooms;
         },
       }),
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      continueRoom: sendTo((context, event) => context.rooms[event.id]!, {
+      continueRoom: sendTo((context, event) => context.rooms.get(event.id)!, {
         type: "CONTINUE",
       }),
     },
     guards: {
-      roomExists: ({ rooms }, { id }) => !!rooms[id],
+      roomExists: ({ rooms }, { id }) => rooms.has(id),
     },
   }
 );
