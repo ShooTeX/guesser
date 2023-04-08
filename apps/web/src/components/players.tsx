@@ -2,6 +2,7 @@ import type { gameSchema } from "@guesser/schemas";
 import type { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Separator } from "./ui/separator";
+import { WifiOff } from "lucide-react";
 
 export type PlayersProperties = {
   players: z.infer<typeof gameSchema>["players"];
@@ -29,15 +30,26 @@ export const Players = ({ players, host }: PlayersProperties) => {
       {players.map((player) => (
         <div key={player.id} className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src={player.avatar} alt={player.username} />
-            <AvatarFallback>{player.username[0]}</AvatarFallback>
+            {player.connected ? (
+              <>
+                <AvatarImage src={player.avatar} alt={player.username} />
+                <AvatarFallback>{player.username[0]}</AvatarFallback>
+              </>
+            ) : (
+              <>
+                <AvatarImage src="" alt={player.username} />
+                <AvatarFallback className="dark:bg-red-500">
+                  <WifiOff className="dark:text-red-100" />
+                </AvatarFallback>
+              </>
+            )}
           </Avatar>
           <div className="flex flex-col justify-center">
             <span className="text-lg font-semibold leading-tight text-slate-900 dark:text-slate-50">
               {player.username}
             </span>
             <span className="text-sm leading-tight text-slate-500 dark:text-slate-400">
-              {player.score} {player.connected && "connected"}
+              {player.score}
             </span>
           </div>
         </div>
