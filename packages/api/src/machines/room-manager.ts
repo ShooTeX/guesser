@@ -157,6 +157,7 @@ export const roomManagerMachine = createMachine(
             type: "GUESS_IN_ROOM";
             userId: z.infer<typeof playerSchema>["id"];
             answerId: z.infer<typeof answerSchema>["id"];
+            roomId: string;
           },
     },
     initial: "running",
@@ -196,6 +197,14 @@ export const roomManagerMachine = createMachine(
       continueRoom: sendTo((context, event) => context.rooms.get(event.id)!, {
         type: "CONTINUE",
       }),
+      guessInRoom: sendTo(
+        (context, event) => context.rooms.get(event.roomId)!,
+        (_, event) => ({
+          type: "GUESS",
+          answerId: event.answerId,
+          userId: event.userId,
+        })
+      ),
     },
     guards: {
       roomExists: ({ rooms }, { id }) => rooms.has(id),

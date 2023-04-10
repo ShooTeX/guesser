@@ -41,7 +41,7 @@ export interface Typegen1 {
   };
   invokeSrcNameMap: {};
   missingImplementations: {
-    actions: "guessInRoom";
+    actions: never;
     delays: never;
     guards: never;
     services: never;
