@@ -16,13 +16,17 @@ export interface Typegen0 {
     addPlayer: "JOIN";
     connectPlayer: "JOIN";
     disconnectPlayer: "DISCONNECT";
+    distributePoints: "CONTINUE";
     nextQuestion: "CONTINUE";
+    playerGuess: "GUESS";
     removePlayer: "DISCONNECT";
+    resetGuesses: "CONTINUE";
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {
     clientIsNotHost: "DISCONNECT" | "JOIN";
     hasNoMoreQuestions: "CONTINUE";
+    playerDidNotGuess: "GUESS";
     playerExists: "DISCONNECT" | "JOIN";
   };
   eventsCausingServices: {};

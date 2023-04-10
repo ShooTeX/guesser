@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { playerSchema, roomSchema } from "@guesser/schemas";
+import { answerSchema, playerSchema, roomSchema } from "@guesser/schemas";
 import { ActorRefFrom, ContextFrom, createMachine, spawn } from "xstate";
 import { assign } from "@xstate/immer";
 import { stop, sendTo } from "xstate/lib/actions";
@@ -16,7 +16,12 @@ export const roomMachine = createMachine(
       events: {} as
         | { type: "CONTINUE" }
         | { type: "JOIN"; player: z.infer<typeof playerSchema> }
-        | { type: "DISCONNECT"; id: z.infer<typeof playerSchema>["id"] },
+        | { type: "DISCONNECT"; id: z.infer<typeof playerSchema>["id"] }
+        | {
+            type: "GUESS";
+            userId: z.infer<typeof playerSchema>["id"];
+            answerId: z.infer<typeof answerSchema>["id"];
+          },
     },
     initial: "waiting",
     states: {
@@ -40,6 +45,10 @@ export const roomMachine = createMachine(
           CONTINUE: {
             target: "revealing_answer",
           },
+          GUESS: {
+            actions: ["playerGuess"],
+            cond: "playerDidNotGuess",
+          },
         },
       },
       revealing_answer: {
@@ -51,7 +60,7 @@ export const roomMachine = createMachine(
             },
             {
               target: "showing_question",
-              actions: "nextQuestion",
+              actions: ["resetGuesses", "distributePoints", "nextQuestion"],
             },
           ],
         },
@@ -89,6 +98,27 @@ export const roomMachine = createMachine(
       nextQuestion: assign((context) => {
         context.currentQuestion++;
       }),
+      playerGuess: assign((context, event) => {
+        context.players.find((player) => player.id === event.userId)!.guess =
+          event.answerId;
+      }),
+      resetGuesses: assign((context) => {
+        for (const player of context.players) {
+          player.guess = undefined;
+        }
+      }),
+      distributePoints: assign((context) => {
+        for (const player of context.players) {
+          if (
+            player.guess ===
+            context.questions[context.currentQuestion]?.answers.find(
+              (answer) => answer.correct
+            )?.id
+          ) {
+            player.score = player.score + 5;
+          }
+        }
+      }),
     },
     guards: {
       clientIsNotHost: ({ host }, event) =>
@@ -100,6 +130,8 @@ export const roomMachine = createMachine(
         ),
       hasNoMoreQuestions: (context) =>
         context.questions.length <= context.currentQuestion + 1,
+      playerDidNotGuess: (context, event) =>
+        !context.players.find((player) => player.id === event.userId)?.guess,
     },
   }
 );
