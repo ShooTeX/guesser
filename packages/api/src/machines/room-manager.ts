@@ -52,6 +52,7 @@ export const roomMachine = createMachine(
         },
       },
       revealing_answer: {
+        entry: ["distributePoints"],
         on: {
           CONTINUE: [
             {
@@ -60,7 +61,7 @@ export const roomMachine = createMachine(
             },
             {
               target: "showing_question",
-              actions: ["distributePoints", "resetGuesses", "nextQuestion"],
+              actions: ["resetGuesses", "nextQuestion"],
             },
           ],
         },
