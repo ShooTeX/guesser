@@ -25,6 +25,7 @@ export const roomMachine = createMachine(
         | {
             type: "NEXT_PLAYLIST";
             questions: z.infer<typeof roomSchema>["questions"];
+            playlistName: z.infer<typeof roomSchema>["playlistName"];
           },
     },
     initial: "waiting",
@@ -123,6 +124,7 @@ export const roomMachine = createMachine(
       nextPlaylist: assign((context, event) => {
         context.currentQuestion = 0;
         context.questions = event.questions;
+        context.playlistName = event.playlistName;
       }),
       distributePoints: assign((context) => {
         for (const player of context.players) {
@@ -180,6 +182,7 @@ export const roomManagerMachine = createMachine(
             type: "NEXT_PLAYLIST_IN_ROOM";
             roomId: string;
             questions: z.infer<typeof roomSchema>["questions"];
+            playlistName: z.infer<typeof roomSchema>["playlistName"];
           },
     },
     initial: "running",
@@ -237,6 +240,7 @@ export const roomManagerMachine = createMachine(
         (_, event) => ({
           type: "NEXT_PLAYLIST",
           questions: event.questions,
+          playlistName: event.playlistName,
         })
       ),
     },
