@@ -16,12 +16,20 @@ export const join = publicProcedure
   .input(joinRoomSchema)
   .subscription(async ({ ctx: _, input }) => {
     const room = roomManager.getSnapshot().context.rooms.get(input.id);
+    const roomSnapshot = room?.getSnapshot();
 
-    if (!room) {
+    if (!room || !roomSnapshot) {
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
     const user = await clerkClient.users.getUser(input.userId);
+
+    if (
+      !roomSnapshot.matches("waiting") &&
+      !roomSnapshot.context.players.some((player) => player.id === user.id)
+    ) {
+      throw new TRPCError({ code: "FORBIDDEN" });
+    }
 
     room.send({
       type: "JOIN",
