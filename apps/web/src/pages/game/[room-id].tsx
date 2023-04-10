@@ -121,6 +121,10 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
   );
 };
 
+const End = ({ data }: ScreenProperties) => {
+  return <Players players={data.players} host={data.host} />;
+};
+
 type ScreenProperties = {
   data: inferObservableValue<inferProcedureOutput<AppRouter["game"]["join"]>>;
   roomId: string;
@@ -134,7 +138,7 @@ const Screen = ({ data, roomId }: ScreenProperties) => {
   }
 
   if (data.state === "end") {
-    return <p>end</p>;
+    return <End data={data} roomId={roomId} />;
   }
 
   return <Playing data={data} roomId={roomId} />;
