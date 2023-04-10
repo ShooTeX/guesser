@@ -2,6 +2,7 @@ import { Controls } from "@/components/controls";
 import { Logo } from "@/components/logo";
 import type { PlayersProperties } from "@/components/players";
 import { Players } from "@/components/players";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -18,6 +19,7 @@ import { Copy, Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import Balancer from "react-wrap-balancer";
+import { groupBy, pipe } from "remeda";
 
 const copyToClipboard = async (value: string) => {
   await navigator.clipboard.writeText(value);
@@ -65,6 +67,11 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
     guessMutation.mutate({ id, roomId });
   };
 
+  const guesses = pipe(
+    data.players,
+    groupBy((player) => player.guess || "dq")
+  );
+
   return (
     <div className="flex w-[800px] flex-col justify-center">
       <Players players={data.players} host={data.host} />
@@ -75,28 +82,39 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
       </div>
       <div className="grid grid-cols-2 gap-4">
         {data.answers.map((answer) => (
-          <Button
-            key={answer.id}
-            size="lg"
-            onClick={() => handleGuess(answer.id)}
-            variant={
-              data.state === "revealing_answer" || userGuess === answer.id
-                ? "subtle"
-                : "outline"
-            }
-            disabled={
-              data.state === "revealing_answer"
-                ? data.correctAnswer !== answer.id
-                : !!userGuess && userGuess !== answer.id
-            }
-            className={cn(
-              (isHost || userGuess) && "pointer-events-none",
-              data.correctAnswer === answer.id &&
-                "bg-green-700 font-bold dark:bg-green-700 pointer-events-none"
-            )}
-          >
-            {answer.answer}
-          </Button>
+          <div key={answer.id} className="relative">
+            <div className="absolute left-2 -top-3 z-10 flex gap-1">
+              {data.state === "revealing_answer" &&
+                guesses?.[answer.id]?.map((player) => (
+                  <Avatar className="h-6 w-6" key={player.id}>
+                    <AvatarImage src={player.avatar} />
+                    <AvatarFallback>{player.username[0]}</AvatarFallback>
+                  </Avatar>
+                ))}
+            </div>
+            <Button
+              size="lg"
+              onClick={() => handleGuess(answer.id)}
+              variant={
+                data.state === "revealing_answer" || userGuess === answer.id
+                  ? "subtle"
+                  : "outline"
+              }
+              disabled={
+                data.state === "revealing_answer"
+                  ? data.correctAnswer !== answer.id
+                  : !!userGuess && userGuess !== answer.id
+              }
+              className={cn(
+                "w-full",
+                (isHost || userGuess) && "pointer-events-none",
+                data.correctAnswer === answer.id &&
+                  "bg-green-700 font-bold dark:bg-green-700 pointer-events-none"
+              )}
+            >
+              {answer.answer}
+            </Button>
+          </div>
         ))}
       </div>
     </div>
