@@ -55,8 +55,9 @@ const Playing = ({ data }: PlayingProperties) => {
   const { user } = useUser();
 
   const isHost = user?.id === data.host.id;
-  const userGuessed = !!data.players.find((player) => player.id === user?.id)
-    ?.guess;
+  const userGuess = data.players.find(
+    (player) => player.id === user?.id
+  )?.guess;
 
   return (
     <div className="flex w-[800px] flex-col justify-center">
@@ -71,13 +72,18 @@ const Playing = ({ data }: PlayingProperties) => {
           <Button
             key={answer.id}
             size="lg"
-            variant={data.state === "revealing_answer" ? "subtle" : "outline"}
+            variant={
+              data.state === "revealing_answer" || userGuess === answer.id
+                ? "subtle"
+                : "outline"
+            }
             disabled={
-              data.state === "revealing_answer" &&
-              data.correctAnswer !== answer.id
+              (userGuess && userGuess !== answer.id) ||
+              (data.state === "revealing_answer" &&
+                data.correctAnswer !== answer.id)
             }
             className={cn(
-              (isHost || userGuessed) && "pointer-events-none",
+              (isHost || userGuess) && "pointer-events-none",
               data.correctAnswer === answer.id &&
                 "bg-green-700 font-bold disabled:text-green-500 dark:bg-green-700 disabled:dark:text-green-50 pointer-events-none"
             )}
