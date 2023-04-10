@@ -52,6 +52,12 @@ const Waiting = ({
 type PlayingProperties = ScreenProperties;
 
 const Playing = ({ data }: PlayingProperties) => {
+  const { user } = useUser();
+
+  const isHost = user?.id === data.host.id;
+  const userGuessed = !!data.players.find((player) => player.id === user?.id)
+    ?.guess;
+
   return (
     <div className="flex w-[800px] flex-col justify-center">
       <Players players={data.players} host={data.host} />
@@ -71,6 +77,7 @@ const Playing = ({ data }: PlayingProperties) => {
               data.correctAnswer !== answer.id
             }
             className={cn(
+              (isHost || userGuessed) && "pointer-events-none",
               data.correctAnswer === answer.id &&
                 "bg-green-700 font-bold disabled:text-green-500 dark:bg-green-700 disabled:dark:text-green-50 pointer-events-none"
             )}

@@ -1,7 +1,6 @@
 import { api } from "@/lib/trpc";
 import { X } from "lucide-react";
 import { Button } from "./ui/button";
-import { Separator } from "./ui/separator";
 
 export type ControlsProperties = {
   onClose: () => void;
@@ -22,8 +21,8 @@ export const Controls = ({
 }: ControlsProperties) => {
   const continueRoomMutation = api.game.continueRoom.useMutation();
   return (
-    <div className="rounded-md border border-slate-200 dark:border-slate-700 dark:bg-slate-800">
-      <div className="flex justify-center bg-slate-200 py-1 px-4 dark:bg-slate-700">
+    <div className="overflow-hidden rounded-md border border-slate-100 dark:border-slate-600 dark:bg-slate-700">
+      <div className="flex justify-center bg-slate-100 py-1 px-4 dark:bg-slate-600">
         <small className="flex-1 text-sm font-medium leading-none">
           Host controls
         </small>
@@ -45,7 +44,6 @@ export const Controls = ({
             {state.replace("_", " ")}
           </p>
         </div>
-        <Separator />
         <div className="flex flex-col gap-2">
           <Button
             className="w-full"
