@@ -3,6 +3,7 @@ import type { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Separator } from "./ui/separator";
 import { WifiOff } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export type PlayersProperties = {
   players: z.infer<typeof gameSchema>["players"];
@@ -29,7 +30,12 @@ export const Players = ({ players, host }: PlayersProperties) => {
       {players.length > 0 && <Separator orientation="vertical" />}
       {players.map((player) => (
         <div key={player.id} className="flex items-center gap-2">
-          <Avatar className="border-green border">
+          <Avatar
+            className={cn(
+              !!player.guess &&
+                "outline outline-2 outline-offset-2 outline-slate-500"
+            )}
+          >
             {player.connected ? (
               <>
                 <AvatarImage src={player.avatar} alt={player.username} />
