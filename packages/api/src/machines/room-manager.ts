@@ -21,6 +21,10 @@ export const roomMachine = createMachine(
             type: "GUESS";
             userId: z.infer<typeof playerSchema>["id"];
             answerId: z.infer<typeof answerSchema>["id"];
+          }
+        | {
+            type: "NEXT_PLAYLIST";
+            questions: z.infer<typeof roomSchema>["questions"];
           },
     },
     initial: "waiting",
@@ -53,6 +57,7 @@ export const roomMachine = createMachine(
       },
       revealing_answer: {
         entry: ["distributePoints"],
+        exit: ["resetGuesses"],
         on: {
           CONTINUE: [
             {
@@ -61,12 +66,19 @@ export const roomMachine = createMachine(
             },
             {
               target: "showing_question",
-              actions: ["resetGuesses", "nextQuestion"],
+              actions: ["nextQuestion"],
             },
           ],
         },
       },
-      end: {},
+      end: {
+        on: {
+          NEXT_PLAYLIST: {
+            target: "showing_question",
+            actions: "nextPlaylist",
+          },
+        },
+      },
     },
     on: {
       JOIN: {
@@ -107,6 +119,10 @@ export const roomMachine = createMachine(
         for (const player of context.players) {
           player.guess = undefined;
         }
+      }),
+      nextPlaylist: assign((context, event) => {
+        context.currentQuestion = 0;
+        context.questions = event.questions;
       }),
       distributePoints: assign((context) => {
         for (const player of context.players) {
@@ -159,6 +175,11 @@ export const roomManagerMachine = createMachine(
             userId: z.infer<typeof playerSchema>["id"];
             answerId: z.infer<typeof answerSchema>["id"];
             roomId: string;
+          }
+        | {
+            type: "NEXT_PLAYLIST_IN_ROOM";
+            roomId: string;
+            questions: z.infer<typeof roomSchema>["questions"];
           },
     },
     initial: "running",
@@ -178,6 +199,10 @@ export const roomManagerMachine = createMachine(
           },
           GUESS_IN_ROOM: {
             actions: "guessInRoom",
+            cond: "roomExists",
+          },
+          NEXT_PLAYLIST_IN_ROOM: {
+            actions: "nextPlaylistInRoom",
             cond: "roomExists",
           },
         },
@@ -207,10 +232,22 @@ export const roomManagerMachine = createMachine(
           userId: event.userId,
         })
       ),
+      nextPlaylistInRoom: sendTo(
+        (context, event) => context.rooms.get(event.roomId)!,
+        (_, event) => ({
+          type: "NEXT_PLAYLIST",
+          questions: event.questions,
+        })
+      ),
     },
     guards: {
       roomExists: ({ rooms }, event) =>
-        rooms.has(event.type === "GUESS_IN_ROOM" ? event.roomId : event.id),
+        rooms.has(
+          event.type === "GUESS_IN_ROOM" ||
+            event.type === "NEXT_PLAYLIST_IN_ROOM"
+            ? event.roomId
+            : event.id
+        ),
     },
   }
 );

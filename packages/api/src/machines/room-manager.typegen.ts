@@ -4,6 +4,7 @@ export interface Typegen0 {
   "@@xstate/typegen": true;
   internalEvents: {
     "xstate.init": { type: "xstate.init" };
+    "xstate.stop": { type: "xstate.stop" };
   };
   invokeSrcNameMap: {};
   missingImplementations: {
@@ -17,10 +18,11 @@ export interface Typegen0 {
     connectPlayer: "JOIN";
     disconnectPlayer: "DISCONNECT";
     distributePoints: "CONTINUE";
+    nextPlaylist: "NEXT_PLAYLIST";
     nextQuestion: "CONTINUE";
     playerGuess: "GUESS";
     removePlayer: "DISCONNECT";
-    resetGuesses: "CONTINUE";
+    resetGuesses: "CONTINUE" | "xstate.stop";
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {
@@ -50,12 +52,17 @@ export interface Typegen1 {
     continueRoom: "CONTINUE_ROOM";
     createRoom: "CREATE_ROOM";
     guessInRoom: "GUESS_IN_ROOM";
+    nextPlaylistInRoom: "NEXT_PLAYLIST_IN_ROOM";
     removeRoom: "REMOVE_ROOM";
     stopRoom: "REMOVE_ROOM";
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {
-    roomExists: "CONTINUE_ROOM" | "GUESS_IN_ROOM" | "REMOVE_ROOM";
+    roomExists:
+      | "CONTINUE_ROOM"
+      | "GUESS_IN_ROOM"
+      | "NEXT_PLAYLIST_IN_ROOM"
+      | "REMOVE_ROOM";
   };
   eventsCausingServices: {};
   matchesStates: "running";
