@@ -55,7 +55,7 @@ export interface Typegen1 {
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {
-    roomExists: "CONTINUE_ROOM" | "REMOVE_ROOM";
+    roomExists: "CONTINUE_ROOM" | "GUESS_IN_ROOM" | "REMOVE_ROOM";
   };
   eventsCausingServices: {};
   matchesStates: "running";

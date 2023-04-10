@@ -177,6 +177,7 @@ export const roomManagerMachine = createMachine(
           },
           GUESS_IN_ROOM: {
             actions: "guessInRoom",
+            cond: "roomExists",
           },
         },
       },
@@ -207,7 +208,8 @@ export const roomManagerMachine = createMachine(
       ),
     },
     guards: {
-      roomExists: ({ rooms }, { id }) => rooms.has(id),
+      roomExists: ({ rooms }, event) =>
+        rooms.has(event.type === "GUESS_IN_ROOM" ? event.roomId : event.id),
     },
   }
 );
