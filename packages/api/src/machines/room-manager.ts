@@ -152,7 +152,12 @@ export const roomManagerMachine = createMachine(
             context: ContextFrom<typeof roomMachine>;
           }
         | { type: "REMOVE_ROOM"; id: string }
-        | { type: "CONTINUE_ROOM"; id: string },
+        | { type: "CONTINUE_ROOM"; id: string }
+        | {
+            type: "GUESS_IN_ROOM";
+            userId: z.infer<typeof playerSchema>["id"];
+            answerId: z.infer<typeof answerSchema>["id"];
+          },
     },
     initial: "running",
     states: {
@@ -168,6 +173,9 @@ export const roomManagerMachine = createMachine(
           CONTINUE_ROOM: {
             actions: "continueRoom",
             cond: "roomExists",
+          },
+          GUESS_IN_ROOM: {
+            actions: "guessInRoom",
           },
         },
       },

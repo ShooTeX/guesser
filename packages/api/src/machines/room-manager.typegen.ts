@@ -41,7 +41,7 @@ export interface Typegen1 {
   };
   invokeSrcNameMap: {};
   missingImplementations: {
-    actions: never;
+    actions: "guessInRoom";
     delays: never;
     guards: never;
     services: never;
@@ -49,6 +49,7 @@ export interface Typegen1 {
   eventsCausingActions: {
     continueRoom: "CONTINUE_ROOM";
     createRoom: "CREATE_ROOM";
+    guessInRoom: "GUESS_IN_ROOM";
     removeRoom: "REMOVE_ROOM";
     stopRoom: "REMOVE_ROOM";
   };
