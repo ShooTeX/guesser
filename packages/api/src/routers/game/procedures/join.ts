@@ -26,6 +26,7 @@ export const join = publicProcedure
 
     if (
       !roomSnapshot.matches("waiting") &&
+      roomSnapshot.context.host.id !== user.id &&
       !roomSnapshot.context.players.some((player) => player.id === user.id)
     ) {
       throw new TRPCError({ code: "FORBIDDEN" });

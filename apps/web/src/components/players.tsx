@@ -29,7 +29,7 @@ export const Players = ({ players, host }: PlayersProperties) => {
       {players.length > 0 && <Separator orientation="vertical" />}
       {players.map((player) => (
         <div key={player.id} className="flex items-center gap-2">
-          <Avatar>
+          <Avatar className="border-green border">
             {player.connected ? (
               <>
                 <AvatarImage src={player.avatar} alt={player.username} />
