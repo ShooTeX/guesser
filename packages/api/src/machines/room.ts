@@ -1,6 +1,7 @@
 import type { roomSchema, playerSchema, answerSchema } from "@guesser/schemas";
 import { assign } from "@xstate/immer";
 import { createMachine } from "xstate";
+import { log } from "xstate/lib/actions";
 import type { z } from "zod";
 
 export const roomMachine = createMachine(
@@ -35,11 +36,11 @@ export const roomMachine = createMachine(
             target: "showing_question",
           },
           JOIN: {
-            actions: "addPlayer",
+            actions: ["addPlayer", log()],
             cond: "clientIsNotHost",
           },
           DISCONNECT: {
-            actions: "removePlayer",
+            actions: ["removePlayer", log()],
             cond: "clientIsNotHost",
           },
         },
@@ -50,7 +51,7 @@ export const roomMachine = createMachine(
             target: "revealing_answer",
           },
           GUESS: {
-            actions: ["playerGuess"],
+            actions: ["playerGuess", log()],
             cond: "playerDidNotGuess",
           },
         },
@@ -75,18 +76,18 @@ export const roomMachine = createMachine(
         on: {
           NEXT_PLAYLIST: {
             target: "showing_question",
-            actions: "nextPlaylist",
+            actions: ["nextPlaylist", log()],
           },
         },
       },
     },
     on: {
       JOIN: {
-        actions: "connectPlayer",
+        actions: ["connectPlayer", log()],
         cond: "playerExists",
       },
       DISCONNECT: {
-        actions: "disconnectPlayer",
+        actions: ["disconnectPlayer", log()],
         cond: "playerExists",
       },
     },
