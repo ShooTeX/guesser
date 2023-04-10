@@ -51,13 +51,19 @@ const Waiting = ({
 
 type PlayingProperties = ScreenProperties;
 
-const Playing = ({ data }: PlayingProperties) => {
+const Playing = ({ data, roomId }: PlayingProperties) => {
   const { user } = useUser();
 
   const isHost = user?.id === data.host.id;
   const userGuess = data.players.find(
     (player) => player.id === user?.id
   )?.guess;
+
+  const guessMutation = api.game.guess.useMutation();
+
+  const handleGuess = (id: string) => {
+    guessMutation.mutate({ id, roomId });
+  };
 
   return (
     <div className="flex w-[800px] flex-col justify-center">
@@ -72,20 +78,21 @@ const Playing = ({ data }: PlayingProperties) => {
           <Button
             key={answer.id}
             size="lg"
+            onClick={() => handleGuess(answer.id)}
             variant={
               data.state === "revealing_answer" || userGuess === answer.id
                 ? "subtle"
                 : "outline"
             }
             disabled={
-              (userGuess && userGuess !== answer.id) ||
-              (data.state === "revealing_answer" &&
-                data.correctAnswer !== answer.id)
+              data.state === "revealing_answer"
+                ? data.correctAnswer !== answer.id
+                : !!userGuess && userGuess !== answer.id
             }
             className={cn(
               (isHost || userGuess) && "pointer-events-none",
               data.correctAnswer === answer.id &&
-                "bg-green-700 font-bold disabled:text-green-500 dark:bg-green-700 disabled:dark:text-green-50 pointer-events-none"
+                "bg-green-700 font-bold dark:bg-green-700 pointer-events-none"
             )}
           >
             {answer.answer}
