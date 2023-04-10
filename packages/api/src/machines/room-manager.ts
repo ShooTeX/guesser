@@ -60,7 +60,7 @@ export const roomMachine = createMachine(
             },
             {
               target: "showing_question",
-              actions: ["resetGuesses", "distributePoints", "nextQuestion"],
+              actions: ["distributePoints", "resetGuesses", "nextQuestion"],
             },
           ],
         },
