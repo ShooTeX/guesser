@@ -46,3 +46,7 @@ export const createRoomSchema = z.object({
 export const continueRoomSchema = z.object({
   id: z.string(),
 });
+
+export const guessSchema = answerSchema.pick({ id: true }).extend({
+  roomId: z.string(),
+});
