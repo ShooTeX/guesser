@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "postinstall": "typegen",
+    "postinstall": "pnpm typegen",
     "lint": "eslint .",
     "migrate": "pnpm drizzle-kit generate:mysql",
     "push": "pnpm drizzle-kit push:mysql",
