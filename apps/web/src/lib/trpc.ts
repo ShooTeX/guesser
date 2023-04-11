@@ -3,14 +3,13 @@ import { createWSClient, httpBatchLink, splitLink, wsLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { getCookie } from "typescript-cookie";
-import { NEXT_PUBLIC_API_URL } from "./environment";
 
 global.WebSocket = global.WebSocket || undefined;
 
 const batchLink = httpBatchLink({
-  url: NEXT_PUBLIC_API_URL.includes("localhost")
-    ? `http://${NEXT_PUBLIC_API_URL}/trpc`
-    : `https://${NEXT_PUBLIC_API_URL}/trpc`,
+  url: process.env.NEXT_PUBLIC_API_URL
+    ? `https://${process.env.NEXT_PUBLIC_API_URL}/trpc`
+    : "http://localhost:3001/trpc",
   headers() {
     return {
       Authorization: getCookie("__session"),
@@ -23,7 +22,9 @@ const getLinks = () => {
     return batchLink;
   }
 
-  const wsClient = createWSClient({ url: `ws://${NEXT_PUBLIC_API_URL}/trpc` });
+  const wsClient = createWSClient({
+    url: `ws://${process.env.NEXT_PUBLIC_API_URL || "localhost:3001"}/trpc`,
+  });
   return wsLink<AppRouter>({ client: wsClient });
 };
 
