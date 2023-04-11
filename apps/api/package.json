@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "npx tsx watch .",
     "lint": "eslint .",
-    "build": "npx esbuild . --bundle --minify --platform=node --outfile=dist/main.js --target=node16"
+    "build": "npx esbuild . --bundle --minify --platform=node --outfile=dist/main.js --target=node16",
+    "start": "node ./dist/main.js"
   },
   "keywords": [],
   "author": "",
