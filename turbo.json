@@ -11,6 +11,10 @@
       "outputs": [
         "dist/**",
         ".next/**"
+      ],
+      "env": [
+        "API_URL",
+        "DATABASE_URL"
       ]
     },
     "lint": {
