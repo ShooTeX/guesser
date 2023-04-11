@@ -7,8 +7,8 @@ import { getCookie } from "typescript-cookie";
 global.WebSocket = global.WebSocket || undefined;
 
 function getBaseUrl() {
-  if (process.env.API_URL) return `https://${process.env.API_URL}`;
-  console.log("no env");
+  if (process.env.NEXT_PUBLIC_API_URL)
+    return `https://${process.env.NEXT_PUBLIC_API_URL}`;
   return `http://localhost:${process.env.PORT ?? 3001}`;
 }
 
