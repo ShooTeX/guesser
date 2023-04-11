@@ -6,10 +6,13 @@ import { getCookie } from "typescript-cookie";
 
 global.WebSocket = global.WebSocket || undefined;
 
+function getBaseUrl() {
+  if (process.env.API_URL) return `https://${process.env.API_URL}`;
+  return `http://localhost:${process.env.PORT ?? 3001}`;
+}
+
 const batchLink = httpBatchLink({
-  url: process.env.NEXT_PUBLIC_API_URL
-    ? `https://${process.env.NEXT_PUBLIC_API_URL}/trpc`
-    : "http://localhost:3001/trpc",
+  url: `${getBaseUrl()}/trpc`,
   headers() {
     return {
       Authorization: getCookie("__session"),
@@ -23,7 +26,7 @@ const getLinks = () => {
   }
 
   const wsClient = createWSClient({
-    url: `ws://${process.env.NEXT_PUBLIC_API_URL || "localhost:3001"}/trpc`,
+    url: `${getBaseUrl().replace("http", "ws")}/trpc`,
   });
   return wsLink<AppRouter>({ client: wsClient });
 };
