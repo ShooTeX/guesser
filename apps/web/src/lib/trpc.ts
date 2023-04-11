@@ -5,14 +5,12 @@ import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { getCookie } from "typescript-cookie";
 import { API_URL } from "./environment";
 
-function getBaseUrl() {
-  return API_URL;
-}
-
 global.WebSocket = global.WebSocket || undefined;
 
 const batchLink = httpBatchLink({
-  url: `http://${getBaseUrl()}/trpc`,
+  url: API_URL.includes("localhost")
+    ? `http://${API_URL}/trpc`
+    : `https://${API_URL}/trpc`,
   headers() {
     return {
       Authorization: getCookie("__session"),
@@ -25,7 +23,7 @@ const getLinks = () => {
     return batchLink;
   }
 
-  const wsClient = createWSClient({ url: `ws://${getBaseUrl()}/trpc` });
+  const wsClient = createWSClient({ url: `ws://${API_URL}/trpc` });
   return wsLink<AppRouter>({ client: wsClient });
 };
 
