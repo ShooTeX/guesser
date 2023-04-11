@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { appRouter, createContext } from "@guesser/api";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import fastify from "fastify";
 import ws from "@fastify/websocket";
@@ -7,7 +8,6 @@ import getPort from "get-port";
 import { CLIENT_ORIGIN, PORT } from "./environment";
 import { clerkPlugin } from "@clerk/fastify";
 import cors from "@fastify/cors";
-import { appRouter, createContext } from "@guesser/api";
 
 const server = fastify({
   maxParamLength: 5000,
