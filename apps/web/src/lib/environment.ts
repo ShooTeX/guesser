@@ -1,7 +1,5 @@
 import { parseEnv, z } from "znv";
 
-console.log(process.env);
-
 export const { NODE_ENV, VERCEL_URL, API_URL } = parseEnv(process.env, {
   NODE_ENV: z
     .enum(["development", "test", "production"])
