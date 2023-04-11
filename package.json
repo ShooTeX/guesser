@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "start": "turbo run start",
     "dev": "dotenv -c -- turbo run dev",
     "lint": "turbo run lint",
     "db:migrate": "dotenv -c -- turbo run migrate",
