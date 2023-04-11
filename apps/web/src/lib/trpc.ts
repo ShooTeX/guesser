@@ -3,9 +3,10 @@ import { createWSClient, httpBatchLink, splitLink, wsLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { getCookie } from "typescript-cookie";
+import { API_URL } from "./environment";
 
 function getBaseUrl() {
-  return `localhost:3001`;
+  return API_URL;
 }
 
 global.WebSocket = global.WebSocket || undefined;
