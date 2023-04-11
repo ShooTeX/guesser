@@ -8,6 +8,7 @@ global.WebSocket = global.WebSocket || undefined;
 
 function getBaseUrl() {
   if (process.env.API_URL) return `https://${process.env.API_URL}`;
+  console.log("no env");
   return `http://localhost:${process.env.PORT ?? 3001}`;
 }
 
