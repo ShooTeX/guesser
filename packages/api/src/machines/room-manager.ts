@@ -20,7 +20,7 @@ export const roomManagerMachine = createMachine(
         | {
             type: "CREATE_ROOM";
             id: string;
-            context: ContextFrom<typeof roomMachine>;
+            context: Omit<ContextFrom<typeof roomMachine>, "id">;
           }
         | { type: "REMOVE_ROOM"; id: string }
         | { type: "CONTINUE_ROOM"; id: string }
@@ -69,7 +69,10 @@ export const roomManagerMachine = createMachine(
       createRoom: assign((context, event) => {
         context.rooms.set(
           event.id,
-          spawn(roomMachine.withContext(event.context))
+          spawn(
+            roomMachine.withContext({ ...event.context, id: event.id }),
+            event.id
+          )
         );
       }),
       stopRoom: stop(({ rooms }, { id }) => rooms.get(id)!),

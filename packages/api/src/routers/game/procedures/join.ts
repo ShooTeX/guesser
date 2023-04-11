@@ -7,8 +7,8 @@ import { publicProcedure } from "../../../create-router";
 import { roomManager } from "../interpreters";
 import { zu } from "zod_utilz";
 import type { StateValueFrom } from "xstate";
-import type { roomMachine } from "../../../machines/room-manager";
 import { clerkClient } from "@clerk/fastify";
+import type { roomMachine } from "../../../machines/room";
 
 const gameSchema = zu.useTypedParsers(unsafeGameSchema);
 

@@ -1,8 +1,9 @@
 import type { roomSchema, playerSchema, answerSchema } from "@guesser/schemas";
 import { assign } from "@xstate/immer";
 import { createMachine } from "xstate";
-import { log } from "xstate/lib/actions";
+import { log, sendParent } from "xstate/lib/actions";
 import type { z } from "zod";
+import { activityMachine } from "./activity";
 
 export const roomMachine = createMachine(
   {
@@ -29,6 +30,13 @@ export const roomMachine = createMachine(
           },
     },
     initial: "waiting",
+    invoke: {
+      src: activityMachine,
+      autoForward: true,
+      onDone: {
+        target: "timeout",
+      },
+    },
     states: {
       waiting: {
         on: {
@@ -79,6 +87,13 @@ export const roomMachine = createMachine(
             actions: ["nextPlaylist", log()],
           },
         },
+      },
+      timeout: {
+        entry: sendParent((context) => ({
+          type: "REMOVE_ROOM",
+          id: context.id,
+        })),
+        type: "final",
       },
     },
     on: {

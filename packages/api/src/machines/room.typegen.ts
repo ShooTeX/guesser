@@ -3,6 +3,11 @@
 export interface Typegen0 {
   "@@xstate/typegen": true;
   internalEvents: {
+    "done.invoke.room:invocation[0]": {
+      type: "done.invoke.room:invocation[0]";
+      data: unknown;
+      __tip: "See the XState TS docs to learn how to strongly type this.";
+    };
     "xstate.init": { type: "xstate.init" };
     "xstate.stop": { type: "xstate.stop" };
   };
@@ -22,7 +27,7 @@ export interface Typegen0 {
     nextQuestion: "CONTINUE";
     playerGuess: "GUESS";
     removePlayer: "DISCONNECT";
-    resetGuesses: "CONTINUE" | "xstate.stop";
+    resetGuesses: "CONTINUE" | "done.invoke.room:invocation[0]" | "xstate.stop";
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {
@@ -32,6 +37,11 @@ export interface Typegen0 {
     playerExists: "DISCONNECT" | "JOIN";
   };
   eventsCausingServices: {};
-  matchesStates: "end" | "revealing_answer" | "showing_question" | "waiting";
+  matchesStates:
+    | "end"
+    | "revealing_answer"
+    | "showing_question"
+    | "timeout"
+    | "waiting";
   tags: never;
 }

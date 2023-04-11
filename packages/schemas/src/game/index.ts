@@ -12,6 +12,7 @@ export const playerSchema = z.object({
 });
 
 export const roomSchema = z.object({
+  id: z.string(),
   playlistName: playlistSchema.shape.name,
   questions: questionSchema.array(),
   currentQuestion: z.number().finite().min(0).nonnegative(),
