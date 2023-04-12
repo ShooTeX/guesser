@@ -34,15 +34,21 @@ const Waiting = ({
   players: PlayersProperties["players"];
   host: PlayersProperties["host"];
 }) => {
+  const shareLink = `https://${
+    process.env.VERCEL_URL || "localhost:3000"
+  }/game/${roomId}`;
+  const slHiddenCode = `https://${
+    process.env.VERCEL_URL || "localhost:3000"
+  }/game/${roomId.replace(/./g, "•")}`;
   return (
     <div className="flex w-full flex-col items-center justify-center">
       <Players players={players} host={host} />
       <div className="mt-4 flex w-full max-w-sm items-center space-x-2">
-        <Input type="password" value={roomId} disabled />
+        <Input value={slHiddenCode} className="pointer-events-none" disabled />
         <Button
           type="button"
           variant="subtle"
-          onClick={() => copyToClipboard(roomId)}
+          onClick={() => copyToClipboard(shareLink)}
         >
           <Copy className="h-4 w-4" />
         </Button>
