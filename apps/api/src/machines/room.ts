@@ -118,16 +118,19 @@ export const roomMachine = createMachine(
         );
       }),
       connectPlayer: assign(({ players }, event) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         players.find((player) => player.id === event.player.id)!.connected =
           true;
       }),
       disconnectPlayer: assign(({ players }, event) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         players.find((player) => player.id === event.id)!.connected = false;
       }),
       nextQuestion: assign((context) => {
         context.currentQuestion++;
       }),
       playerGuess: assign((context, event) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         context.players.find((player) => player.id === event.userId)!.guess =
           event.answerId;
       }),

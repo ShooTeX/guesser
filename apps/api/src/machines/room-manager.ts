@@ -75,14 +75,17 @@ export const roomManagerMachine = createMachine(
           )
         );
       }),
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       stopRoom: stop(({ rooms }, { id }) => rooms.get(id)!),
       removeRoom: assign((context, event) => {
         context.rooms.delete(event.id);
       }),
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       continueRoom: sendTo((context, event) => context.rooms.get(event.id)!, {
         type: "CONTINUE",
       }),
       guessInRoom: sendTo(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         (context, event) => context.rooms.get(event.roomId)!,
         (_, event) => ({
           type: "GUESS",
