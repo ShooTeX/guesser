@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@guesser/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,7 +11,7 @@
   "dependencies": {
     "@clerk/nextjs": "^4.11.11",
     "@guesser/schemas": "workspace:*",
-    "api": "workspace:*",
+    "@guesser/api": "workspace:*",
     "@hookform/resolvers": "^3.0.0",
     "@radix-ui/react-avatar": "^1.0.2",
     "@radix-ui/react-checkbox": "^1.0.3",

@@ -99,6 +99,7 @@ importers:
   apps/web:
     specifiers:
       '@clerk/nextjs': ^4.11.11
+      '@guesser/api': workspace:*
       '@guesser/schemas': workspace:*
       '@hookform/resolvers': ^3.0.0
       '@radix-ui/react-avatar': ^1.0.2
@@ -122,7 +123,6 @@ importers:
       '@types/react-dom': 18.0.11
       '@typescript-eslint/eslint-plugin': ^5.54.1
       '@typescript-eslint/parser': ^5.54.1
-      api: workspace:*
       autoprefixer: 10.4.14
       class-variance-authority: ^0.4.0
       clsx: ^1.2.1
@@ -153,6 +153,7 @@ importers:
       zod: ^3.21.4
     dependencies:
       '@clerk/nextjs': 4.11.13_ld2jel3hspngo3u5lti2kgl2sq
+      '@guesser/api': link:../api
       '@guesser/schemas': link:../../packages/schemas
       '@hookform/resolvers': 3.0.0_react-hook-form@7.43.7
       '@radix-ui/react-avatar': 1.0.2_biqbaboplfbrettd7655fr4n2y
@@ -170,7 +171,6 @@ importers:
       '@trpc/next': 10.18.0_fk7ybuwqrs7skzzxcj6wjc5c3i
       '@trpc/react-query': 10.18.0_rcvfzig2xktluz4p7kugxqlbwi
       '@trpc/server': 10.18.0
-      api: link:../api
       autoprefixer: 10.4.14_postcss@8.4.21
       class-variance-authority: 0.4.0_typescript@5.0.2
       clsx: 1.2.1
