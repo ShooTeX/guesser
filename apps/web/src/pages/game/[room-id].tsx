@@ -94,9 +94,10 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
   };
 
   const answerItem: Variants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0, x: 10 },
     show: {
       opacity: 1,
+      x: 0,
     },
   };
 
