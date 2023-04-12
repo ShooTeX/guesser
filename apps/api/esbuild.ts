@@ -13,5 +13,6 @@ void (async function () {
     format: "cjs",
     sourcemap: true,
     plugins: [esbuildPluginPino({ transports: ["pino-pretty"] })],
+    external: ["immer"],
   });
 })();
