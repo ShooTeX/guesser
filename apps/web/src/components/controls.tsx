@@ -5,6 +5,8 @@ import { PlaylistSelect } from "./playlist-select";
 import { useState } from "react";
 import { Switch } from "./ui/switch";
 import { Separator } from "./ui/separator";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/router";
 
 export type ControlsProperties = {
   onClose: () => void;
@@ -23,9 +25,42 @@ export const Controls = ({
   playlistName,
   roomId,
 }: ControlsProperties) => {
+  const router = useRouter();
+  const { user, isLoaded, isSignedIn } = useUser();
   const [playlistSelectOpen, setPlaylistSelectOpen] = useState(false);
+  const [twitchEnabled, setTwitchEnabled] = useState(false);
   const continueRoomMutation = api.game.continueRoom.useMutation();
   const nextPlaylistMutation = api.game.nextPlaylist.useMutation();
+  const handleTwitchSwitch = async () => {
+    if (!isLoaded || !isSignedIn) {
+      return;
+    }
+    const oauth = user.verifiedExternalAccounts.find(
+      (oauth) => oauth.provider === "twitch"
+    );
+
+    if (!oauth) {
+      return;
+    }
+
+    if (oauth.approvedScopes.includes("channel:manage:poll")) {
+      setTwitchEnabled((value) => !value);
+      return;
+    }
+
+    console.log(router);
+
+    const response = await oauth.reauthorize({
+      additionalScopes: ["channel:manage:polls"],
+      redirectUrl: router.asPath,
+    });
+
+    if (!response.verification?.externalVerificationRedirectURL) {
+      return;
+    }
+
+    await router.push(response.verification.externalVerificationRedirectURL);
+  };
   return (
     <>
       <PlaylistSelect
@@ -62,7 +97,11 @@ export const Controls = ({
             <p className="col-span-2 flex items-center gap-1">
               Twitch integration
             </p>
-            <Switch className="ml-auto dark:data-[state=unchecked]:bg-slate-800" />
+            <Switch
+              checked={twitchEnabled}
+              className="ml-auto dark:data-[state=unchecked]:bg-slate-800"
+              onClick={handleTwitchSwitch}
+            />
           </div>
           <div className="flex flex-col gap-2">
             {state === "end" ? (
