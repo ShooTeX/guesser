@@ -1,0 +1,11 @@
+import { protectedProcedure } from "@/trpc/create-router";
+import { playlistSchema, getPlaylistsSchema } from "@guesser/schemas";
+import { z } from "zod";
+import { getPlaylists } from "../models";
+
+export const get = protectedProcedure
+  .output(z.array(playlistSchema))
+  .input(getPlaylistsSchema)
+  .query(({ ctx, input }) => {
+    return getPlaylists(ctx, input);
+  });

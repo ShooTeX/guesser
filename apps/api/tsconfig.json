@@ -11,6 +11,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   }
 }

@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
-import { appRouter, createContext } from "@guesser/api";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import fastify from "fastify";
 import ws from "@fastify/websocket";
 import getPort from "get-port";
-import { CLIENT_ORIGIN, PORT } from "./environment";
 import { clerkPlugin } from "@clerk/fastify";
 import cors from "@fastify/cors";
+import { appRouter } from "./routers/_app";
+import { createContext } from "./trpc/create-context";
+import { enableMapSet } from "immer";
+enableMapSet();
 
 const server = fastify({
   maxParamLength: 5000,
@@ -19,7 +21,7 @@ void server.register(clerkPlugin);
 void server.register(ws);
 
 void server.register(cors, {
-  origin: CLIENT_ORIGIN,
+  origin: process.env.CLIENT_ORIGIN,
   allowedHeaders: ["Authorization", "content-type"],
 });
 
@@ -34,7 +36,9 @@ void (async () => {
   try {
     await server.listen({
       host: "0.0.0.0",
-      port: await getPort({ port: [PORT, 3000, 3001, 3002] }),
+      port: await getPort({
+        port: [Number(process.env.PORT || 3000), 3001, 3002],
+      }),
     });
   } catch (error) {
     server.log.error(error);
