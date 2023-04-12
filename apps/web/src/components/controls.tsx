@@ -3,6 +3,8 @@ import { X } from "lucide-react";
 import { Button } from "./ui/button";
 import { PlaylistSelect } from "./playlist-select";
 import { useState } from "react";
+import { Switch } from "./ui/switch";
+import { Separator } from "./ui/separator";
 
 export type ControlsProperties = {
   onClose: () => void;
@@ -56,6 +58,11 @@ export const Controls = ({
             <p className="col-span-2 truncate text-right font-semibold uppercase">
               {state.replace("_", " ")}
             </p>
+            <Separator className="col-span-3 dark:bg-slate-600" />
+            <p className="col-span-2 flex items-center gap-1">
+              Twitch integration
+            </p>
+            <Switch className="ml-auto dark:data-[state=unchecked]:bg-slate-800" />
           </div>
           <div className="flex flex-col gap-2">
             {state === "end" ? (
