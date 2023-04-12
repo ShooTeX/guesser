@@ -83,17 +83,20 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
     groupBy((player) => player.guess || "dq")
   );
 
-  const answerContainer: Variants = {
+  const answerContainerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
+        duration: 0,
+        delay: 0.5,
+        when: "beforeChildren",
         staggerChildren: 0.5,
       },
     },
   };
 
-  const answerItem: Variants = {
+  const answerItemVariants: Variants = {
     hidden: { opacity: 0, x: 10 },
     show: {
       opacity: 1,
@@ -101,18 +104,32 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
     },
   };
 
+  const questionVariants: Variants = {
+    hidden: { opacity: 0, y: -50 },
+    show: {
+      opacity: 1,
+      y: 0,
+    },
+  };
+
   return (
     <div className="flex w-[800px] flex-col justify-center">
       <Players players={data.players} host={data.host} />
       <div className="flex h-60 items-center justify-center">
-        <h1 className="scroll-m-20 text-center text-2xl font-semibold tracking-tight">
+        <motion.h1
+          key={data.question.id}
+          variants={questionVariants}
+          initial="hidden"
+          animate="show"
+          className="scroll-m-20 text-center text-2xl font-semibold tracking-tight"
+        >
           <Balancer>{data.question.question}</Balancer>
-        </h1>
+        </motion.h1>
       </div>
       <motion.div
         key={data.question.id}
         className="grid grid-cols-2 gap-4"
-        variants={answerContainer}
+        variants={answerContainerVariants}
         initial="hidden"
         animate="show"
       >
@@ -120,7 +137,7 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
           <motion.div
             key={answer.id}
             className="relative"
-            variants={answerItem}
+            variants={answerItemVariants}
           >
             <div className="absolute left-2 -top-3 z-10 flex gap-1">
               {data.state === "revealing_answer" &&
