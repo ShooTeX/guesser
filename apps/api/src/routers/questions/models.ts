@@ -1,8 +1,8 @@
-import type { Question, Answer } from "@/database/schemas";
-import { questions, answers } from "@/database/schemas";
-import type { Context } from "@/trpc/create-context";
 import { eq, and } from "drizzle-orm/expressions";
 import { pipe, groupBy, values, compact, map } from "remeda";
+import type { Question, Answer } from "../../database/schemas";
+import { questions, answers } from "../../database/schemas";
+import type { Context } from "../../trpc/create-context";
 
 const nestAnswers = (rows: { question: Question; answer: Answer | null }[]) => {
   return pipe(

@@ -1,8 +1,8 @@
-import { getPlaylists } from "@/routers/playlists/models";
-import { getQuestions } from "@/routers/questions/models";
-import { protectedProcedure } from "@/trpc/create-router";
 import { nextPlaylistSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
+import { protectedProcedure } from "../../../trpc/create-router";
+import { getPlaylists } from "../../playlists/models";
+import { getQuestions } from "../../questions/models";
 import { roomManager } from "../interpreters";
 
 export const nextPlaylist = protectedProcedure

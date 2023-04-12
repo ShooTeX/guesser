@@ -1,6 +1,6 @@
-import { protectedProcedure } from "@/trpc/create-router";
 import { playlistSchema, getPlaylistsSchema } from "@guesser/schemas";
 import { z } from "zod";
+import { protectedProcedure } from "../../../trpc/create-router";
 import { getPlaylists } from "../models";
 
 export const get = protectedProcedure

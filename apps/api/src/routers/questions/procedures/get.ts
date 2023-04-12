@@ -1,5 +1,5 @@
-import { protectedProcedure } from "@/trpc/create-router";
 import { questionSchema, getQuestionsSchema } from "@guesser/schemas";
+import { protectedProcedure } from "../../../trpc/create-router";
 import { getQuestions } from "../models";
 
 export const get = protectedProcedure

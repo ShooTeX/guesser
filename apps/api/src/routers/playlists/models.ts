@@ -1,9 +1,9 @@
 import type { getPlaylistsSchema } from "@guesser/schemas";
 import type { z } from "zod";
 import { and, eq } from "drizzle-orm/expressions";
-import { questions, playlists } from "@/database/schemas";
-import { countQuery } from "@/utils/count-query";
-import type { Context } from "@/trpc/create-context";
+import { questions, playlists } from "../../database/schemas";
+import type { Context } from "../../trpc/create-context";
+import { countQuery } from "../../utils/count-query";
 
 type gpContext = Context & {
   auth: {

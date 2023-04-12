@@ -3,7 +3,7 @@ import { create } from "./procedures/create";
 import { edit } from "./procedures/edit";
 import { remove } from "./procedures/remove";
 import { incrementPlayCount } from "./procedures/increment-play-count";
-import { router } from "@/trpc/create-router";
+import { router } from "../../trpc/create-router";
 
 export const playlistsRouter = router({
   get,

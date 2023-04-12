@@ -1,4 +1,4 @@
-import { router } from "@/trpc/create-router";
+import { router } from "../../trpc/create-router";
 import { continueRoom } from "./procedures/continue-room";
 import { createRoom } from "./procedures/create-room";
 import { guess } from "./procedures/guess";

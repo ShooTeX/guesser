@@ -1,8 +1,8 @@
-import { questions } from "@/database/schemas";
-import { protectedProcedure } from "@/trpc/create-router";
 import { questionSchema, reorderQuestionSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
 import { and, eq, gt, gte, lt, lte } from "drizzle-orm/expressions";
+import { questions } from "../../../database/schemas";
+import { protectedProcedure } from "../../../trpc/create-router";
 
 export const reorder = protectedProcedure
   .output(questionSchema.pick({ order: true, id: true }).array())

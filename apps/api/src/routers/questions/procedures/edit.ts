@@ -1,8 +1,8 @@
-import { questions, answers } from "@/database/schemas";
-import { protectedProcedure } from "@/trpc/create-router";
 import { editQuestionSchema, questionSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm/expressions";
+import { questions, answers } from "../../../database/schemas";
+import { protectedProcedure } from "../../../trpc/create-router";
 import { getQuestions } from "../models";
 
 export const edit = protectedProcedure

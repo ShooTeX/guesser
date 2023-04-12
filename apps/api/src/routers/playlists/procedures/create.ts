@@ -1,8 +1,8 @@
-import { playlists } from "@/database/schemas";
-import { protectedProcedure } from "@/trpc/create-router";
 import { playlistSchema, createPlaylistSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
 import { nanoid } from "nanoid";
+import { playlists } from "../../../database/schemas";
+import { protectedProcedure } from "../../../trpc/create-router";
 import { getPlaylists } from "../models";
 
 export const create = protectedProcedure

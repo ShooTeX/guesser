@@ -1,6 +1,6 @@
-import { protectedProcedure } from "@/trpc/create-router";
 import { guessSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
+import { protectedProcedure } from "../../../trpc/create-router";
 import { roomManager } from "../interpreters";
 
 export const guess = protectedProcedure

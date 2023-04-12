@@ -1,11 +1,11 @@
-import type { QuestionInsert, AnswerInsert } from "@/database/schemas";
-import { questions, answers } from "@/database/schemas";
-import { protectedProcedure } from "@/trpc/create-router";
-import { countQuery } from "@/utils/count-query";
 import { questionSchema, createQuestionSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm/expressions";
 import { nanoid } from "nanoid";
+import type { QuestionInsert, AnswerInsert } from "../../../database/schemas";
+import { questions, answers } from "../../../database/schemas";
+import { protectedProcedure } from "../../../trpc/create-router";
+import { countQuery } from "../../../utils/count-query";
 import { getQuestions } from "../models";
 
 export const create = protectedProcedure
