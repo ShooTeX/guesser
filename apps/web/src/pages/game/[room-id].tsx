@@ -15,6 +15,7 @@ import type { AppRouter } from "@guesser/api";
 import type { inferProcedureOutput } from "@trpc/server";
 import type { inferObservableValue } from "@trpc/server/observable";
 import type { Variants } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { Copy, Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
@@ -94,6 +95,7 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
         staggerChildren: 0.5,
       },
     },
+    exit: { opacity: 0 },
   };
 
   const answerItemVariants: Variants = {
@@ -110,69 +112,78 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
       opacity: 1,
       y: 0,
     },
+    exit: {
+      opacity: 0,
+    },
   };
 
   return (
     <div className="flex w-[800px] flex-col justify-center">
       <Players players={data.players} host={data.host} />
       <div className="flex h-60 items-center justify-center">
-        <motion.h1
+        <AnimatePresence mode="wait">
+          <motion.h1
+            key={data.question.id}
+            variants={questionVariants}
+            initial="hidden"
+            animate="show"
+            exit="exit"
+            className="scroll-m-20 text-center text-2xl font-semibold tracking-tight"
+          >
+            <Balancer>{data.question.question}</Balancer>
+          </motion.h1>
+        </AnimatePresence>
+      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
           key={data.question.id}
-          variants={questionVariants}
+          className="grid grid-cols-2 gap-4"
+          variants={answerContainerVariants}
           initial="hidden"
           animate="show"
-          className="scroll-m-20 text-center text-2xl font-semibold tracking-tight"
+          exit="exit"
         >
-          <Balancer>{data.question.question}</Balancer>
-        </motion.h1>
-      </div>
-      <motion.div
-        key={data.question.id}
-        className="grid grid-cols-2 gap-4"
-        variants={answerContainerVariants}
-        initial="hidden"
-        animate="show"
-      >
-        {data.answers.map((answer) => (
-          <motion.div
-            key={answer.id}
-            className="relative"
-            variants={answerItemVariants}
-          >
-            <div className="absolute left-2 -top-3 z-10 flex gap-1">
-              {data.state === "revealing_answer" &&
-                guesses?.[answer.id]?.map((player) => (
-                  <Avatar className="h-6 w-6" key={player.id}>
-                    <AvatarImage src={player.avatar} />
-                    <AvatarFallback>{player.username[0]}</AvatarFallback>
-                  </Avatar>
-                ))}
-            </div>
-            <Button
-              size="lg"
-              onClick={() => handleGuess(answer.id)}
-              variant={
-                data.state === "revealing_answer" || userGuess === answer.id
-                  ? "subtle"
-                  : "outline"
-              }
-              disabled={
-                data.state === "revealing_answer"
-                  ? data.correctAnswer !== answer.id
-                  : !!userGuess && userGuess !== answer.id
-              }
-              className={cn(
-                "w-full",
-                (isHost || userGuess) && "pointer-events-none",
-                data.correctAnswer === answer.id &&
-                  "bg-green-700 font-bold dark:bg-green-700 pointer-events-none"
-              )}
+          {data.answers.map((answer) => (
+            <motion.div
+              className="relative"
+              variants={answerItemVariants}
+              key={answer.id}
             >
-              {answer.answer}
-            </Button>
-          </motion.div>
-        ))}
-      </motion.div>
+              <div className="absolute left-2 -top-3 z-10 flex gap-1">
+                {data.state === "revealing_answer" &&
+                  guesses?.[answer.id]?.map((player) => (
+                    <Avatar className="h-6 w-6" key={player.id}>
+                      <AvatarImage src={player.avatar} />
+                      <AvatarFallback>{player.username[0]}</AvatarFallback>
+                    </Avatar>
+                  ))}
+              </div>
+              <Button
+                size="lg"
+                onClick={() => handleGuess(answer.id)}
+                variant={
+                  data.state === "revealing_answer" || userGuess === answer.id
+                    ? "subtle"
+                    : "outline"
+                }
+                disabled={
+                  data.state === "revealing_answer"
+                    ? data.correctAnswer !== answer.id
+                    : !!userGuess && userGuess !== answer.id
+                }
+                className={cn(
+                  "w-full",
+                  (isHost || userGuess) && "pointer-events-none",
+                  data.correctAnswer === answer.id &&
+                    "bg-green-700 font-bold dark:bg-green-700 pointer-events-none"
+                )}
+              >
+                {answer.answer}
+              </Button>
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 };
