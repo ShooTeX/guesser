@@ -14,6 +14,7 @@ import { useUser } from "@clerk/nextjs";
 import type { AppRouter } from "@guesser/api";
 import type { inferProcedureOutput } from "@trpc/server";
 import type { inferObservableValue } from "@trpc/server/observable";
+import type { Variants } from "framer-motion";
 import { motion } from "framer-motion";
 import { Copy, Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
@@ -82,6 +83,23 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
     groupBy((player) => player.guess || "dq")
   );
 
+  const answerContainer: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.5,
+      },
+    },
+  };
+
+  const answerItem: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+    },
+  };
+
   return (
     <div className="flex w-[800px] flex-col justify-center">
       <Players players={data.players} host={data.host} />
@@ -90,9 +108,19 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
           <Balancer>{data.question.question}</Balancer>
         </h1>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <motion.div
+        key={data.question.id}
+        className="grid grid-cols-2 gap-4"
+        variants={answerContainer}
+        initial="hidden"
+        animate="show"
+      >
         {data.answers.map((answer) => (
-          <div key={answer.id} className="relative">
+          <motion.div
+            key={answer.id}
+            className="relative"
+            variants={answerItem}
+          >
             <div className="absolute left-2 -top-3 z-10 flex gap-1">
               {data.state === "revealing_answer" &&
                 guesses?.[answer.id]?.map((player) => (
@@ -124,9 +152,9 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
             >
               {answer.answer}
             </Button>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 };
