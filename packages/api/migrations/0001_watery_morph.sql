@@ -1,1 +1,0 @@
-ALTER TABLE answers ADD `order` smallint NOT NULL;

@@ -6,6 +6,7 @@ import ws from "@fastify/websocket";
 import getPort from "get-port";
 import { clerkPlugin } from "@clerk/fastify";
 import cors from "@fastify/cors";
+import type { AppRouter as AppRouterType } from "./routers/_app";
 import { appRouter } from "./routers/_app";
 import { createContext } from "./trpc/create-context";
 import { enableMapSet } from "immer";
@@ -45,3 +46,5 @@ void (async () => {
     process.exit(1);
   }
 })();
+
+export type AppRouter = AppRouterType;

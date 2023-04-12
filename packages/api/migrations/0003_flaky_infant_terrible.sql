@@ -1,1 +1,0 @@
-ALTER TABLE playlists ADD `short_desc` text;

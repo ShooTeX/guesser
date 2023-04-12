@@ -1,7 +1,7 @@
-import type { AppRouter } from "@guesser/api";
 import { createWSClient, httpBatchLink, splitLink, wsLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import type { AppRouter } from "api";
 import { getCookie } from "typescript-cookie";
 
 global.WebSocket = global.WebSocket || undefined;

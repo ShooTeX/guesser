@@ -1,1 +1,0 @@
-DROP INDEX order_idx ON `questions`;
