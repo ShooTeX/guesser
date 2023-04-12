@@ -94,6 +94,7 @@ export const roomManagerMachine = createMachine(
         })
       ),
       nextPlaylistInRoom: sendTo(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         (context, event) => context.rooms.get(event.roomId)!,
         (_, event) => ({
           type: "NEXT_PLAYLIST",
