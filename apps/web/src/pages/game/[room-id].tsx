@@ -35,10 +35,14 @@ const Waiting = ({
   host: PlayersProperties["host"];
 }) => {
   const shareLink = `https://${
-    process.env.VERCEL_URL || "localhost:3000"
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.NEXT_PUBLIC_VERCEL_URL ??
+    "localhost:3000"
   }/game/${roomId}`;
   const slHiddenCode = `https://${
-    process.env.VERCEL_URL || "localhost:3000"
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.NEXT_PUBLIC_VERCEL_URL ??
+    "localhost:3000"
   }/game/${roomId.replace(/./g, "•")}`;
   return (
     <div className="flex w-full flex-col items-center justify-center">
