@@ -24,47 +24,52 @@ export const setTwitchIntegration = protectedProcedure
       });
     }
 
-    const user = await clerkClient.users.getUser(ctx.auth.userId);
+    const twitchClient = async () => {
+      if (!input.value) {
+        return;
+      }
+      const user = await clerkClient.users.getUser(ctx.auth.userId);
 
-    const twitchId = user.externalAccounts.find(
-      (account) => account.provider === "oauth_twitch"
-    )?.id;
+      const twitchId = user.externalAccounts.find(
+        (account) => account.provider === "oauth_twitch"
+      )?.id;
 
-    if (!twitchId) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "Twitch not authorized",
+      if (!twitchId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Twitch not authorized",
+        });
+      }
+
+      const [twitchAuth] = await clerkClient.users.getUserOauthAccessToken(
+        ctx.auth.userId,
+        "oauth_twitch"
+      );
+
+      if (!twitchAuth) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Twitch not authorized",
+        });
+      }
+
+      if (!twitchAuth.scopes?.includes("channel:manage:polls")) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Missing scope: channel:manage:polls",
+        });
+      }
+
+      return initTwitch({
+        userId: twitchId,
+        token: twitchAuth.token,
       });
-    }
-
-    const [twitchAuth] = await clerkClient.users.getUserOauthAccessToken(
-      ctx.auth.userId,
-      "oauth_twitch"
-    );
-
-    if (!twitchAuth) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "Twitch not authorized",
-      });
-    }
-
-    if (!twitchAuth.scopes?.includes("channel:manage:polls")) {
-      throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "Missing scope: channel:manage:polls",
-      });
-    }
-
-    const twitchClient = initTwitch({
-      userId: twitchId,
-      token: twitchAuth.token,
-    });
+    };
 
     roomManager.send({
       type: "SET_TWITCH_INTEGRATION_IN_ROOM",
       id: input.id,
-      value: twitchClient,
+      value: await twitchClient(),
     });
 
     const updatedSnapshot = roomManager

@@ -40,7 +40,7 @@ export const roomManagerMachine = createMachine(
         | {
             type: "SET_TWITCH_INTEGRATION_IN_ROOM";
             id: string;
-            value: ReturnType<typeof initTwitch>;
+            value?: ReturnType<typeof initTwitch>;
           },
     },
     initial: "running",
