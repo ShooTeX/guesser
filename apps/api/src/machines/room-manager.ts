@@ -35,6 +35,11 @@ export const roomManagerMachine = createMachine(
             roomId: string;
             questions: z.infer<typeof roomSchema>["questions"];
             playlistName: z.infer<typeof roomSchema>["playlistName"];
+          }
+        | {
+            type: "SET_TWITCH_INTEGRATION_IN_ROOM";
+            id: string;
+            value: boolean;
           },
     },
     initial: "running",
@@ -58,6 +63,10 @@ export const roomManagerMachine = createMachine(
           },
           NEXT_PLAYLIST_IN_ROOM: {
             actions: "nextPlaylistInRoom",
+            cond: "roomExists",
+          },
+          SET_TWITCH_INTEGRATION_IN_ROOM: {
+            actions: "setTwitchIntegrationInRoom",
             cond: "roomExists",
           },
         },
@@ -100,6 +109,14 @@ export const roomManagerMachine = createMachine(
           type: "NEXT_PLAYLIST",
           questions: event.questions,
           playlistName: event.playlistName,
+        })
+      ),
+      setTwitchIntegrationInRoom: sendTo(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        (context, event) => context.rooms.get(event.id)!,
+        (_, event) => ({
+          type: "SET_TWITCH_INTEGRATION",
+          value: event.value,
         })
       ),
     },

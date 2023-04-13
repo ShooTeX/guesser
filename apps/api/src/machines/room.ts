@@ -16,6 +16,7 @@ export const roomMachine = createMachine(
       context: {} as z.infer<typeof roomSchema>,
       events: {} as
         | { type: "CONTINUE" }
+        | { type: "SET_TWITCH_INTEGRATION"; value: boolean }
         | { type: "JOIN"; player: z.infer<typeof playerSchema> }
         | { type: "DISCONNECT"; id: z.infer<typeof playerSchema>["id"] }
         | {
@@ -105,10 +106,16 @@ export const roomMachine = createMachine(
         actions: ["disconnectPlayer"],
         cond: "playerExists",
       },
+      SET_TWITCH_INTEGRATION: {
+        actions: ["setTwitchIntegration"],
+      },
     },
   },
   {
     actions: {
+      setTwitchIntegration: assign((context, event) => {
+        context.integrations.twitch = event.value;
+      }),
       addPlayer: assign((context, event) => {
         context.players.push(event.player);
       }),
