@@ -32,7 +32,7 @@ export const setTwitchIntegration = protectedProcedure
 
       const twitchId = user.externalAccounts.find(
         (account) => account.provider === "oauth_twitch"
-      )?.id;
+      )?.externalId;
 
       if (!twitchId) {
         throw new TRPCError({
@@ -53,12 +53,14 @@ export const setTwitchIntegration = protectedProcedure
         });
       }
 
-      if (!twitchAuth.scopes?.includes("channel:manage:polls")) {
+      if (!twitchAuth.scopes?.includes("channel:manage:predictions")) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Missing scope: channel:manage:polls",
+          message: "Missing scope: channel:manage:predictions",
         });
       }
+
+      // TODO: need to check if affiliated/partner
 
       return initTwitch({
         userId: twitchId,

@@ -49,7 +49,7 @@ export const Controls = ({
       return;
     }
 
-    if (oauth.approvedScopes.includes("channel:manage:poll")) {
+    if (oauth.approvedScopes.includes("channel:manage:predictions")) {
       setTwitchIntegrationMutation.mutate({
         id: roomId,
         value: !twitchEnabled,
@@ -58,7 +58,7 @@ export const Controls = ({
     }
 
     const response = await oauth.reauthorize({
-      additionalScopes: ["channel:manage:polls"],
+      additionalScopes: ["channel:manage:predictions"],
       redirectUrl: router.asPath,
     });
 

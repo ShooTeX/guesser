@@ -115,12 +115,15 @@ export const roomMachine = createMachine(
         cond: "playerExists",
       },
       SET_TWITCH_INTEGRATION: {
-        actions: ["setTwitchIntegration"],
+        actions: ["setTwitchIntegration", "createPoll"],
       },
     },
   },
   {
     actions: {
+      createPoll: async (context) => {
+        await context.integrations.twitch?.createPoll();
+      },
       setTwitchIntegration: assign((context, event) => {
         context.integrations.twitch = event.value;
       }),

@@ -6,12 +6,20 @@ type initTwitchProperties = {
 };
 
 export function initTwitch({ userId, token }: initTwitchProperties) {
+  const client = got.extend({
+    prefixUrl: "https://api.twitch.tv/helix",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Client-Id": process.env.TWITCH_CLIENT_ID,
+    },
+    retry: {
+      limit: 0,
+    },
+  });
+
   return {
     async createPoll() {
-      const result = await got.post("https://api.twitch.tv/helix/polls", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const result = await client.post("polls", {
         json: {
           broadcaster_id: userId,
           title: "Does it work?",

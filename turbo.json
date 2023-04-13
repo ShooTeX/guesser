@@ -16,7 +16,8 @@
         "CLIENT_ORIGIN",
         "NEXT_PUBLIC_API_URL",
         "NEXT_PUBLIC_SITE_URL",
-        "DATABASE_URL"
+        "DATABASE_URL",
+        "TWITCH_CLIENT_ID"
       ]
     },
     "lint": {
