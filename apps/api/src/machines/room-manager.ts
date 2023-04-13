@@ -5,6 +5,7 @@ import { assign } from "@xstate/immer";
 import { stop, sendTo } from "xstate/lib/actions";
 import type { z } from "zod";
 import { roomMachine } from "./room";
+import { initTwitch } from "../lib/twitch";
 
 export const roomManagerMachine = createMachine(
   {
@@ -39,7 +40,7 @@ export const roomManagerMachine = createMachine(
         | {
             type: "SET_TWITCH_INTEGRATION_IN_ROOM";
             id: string;
-            value: boolean;
+            value: ReturnType<typeof initTwitch>;
           },
     },
     initial: "running",

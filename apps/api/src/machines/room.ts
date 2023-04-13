@@ -3,6 +3,7 @@ import { assign } from "@xstate/immer";
 import { createMachine } from "xstate";
 import { sendParent } from "xstate/lib/actions";
 import type { z } from "zod";
+import type { initTwitch } from "../lib/twitch";
 import { activityMachine } from "./activity";
 
 export const roomMachine = createMachine(
@@ -13,10 +14,17 @@ export const roomMachine = createMachine(
     // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     tsTypes: {} as import("./room.typegen").Typegen0,
     schema: {
-      context: {} as z.infer<typeof roomSchema>,
+      context: {} as z.infer<typeof roomSchema> & {
+        integrations: {
+          twitch?: ReturnType<typeof initTwitch>;
+        };
+      },
       events: {} as
         | { type: "CONTINUE" }
-        | { type: "SET_TWITCH_INTEGRATION"; value: boolean }
+        | {
+            type: "SET_TWITCH_INTEGRATION";
+            value: ReturnType<typeof initTwitch> | undefined;
+          }
         | { type: "JOIN"; player: z.infer<typeof playerSchema> }
         | { type: "DISCONNECT"; id: z.infer<typeof playerSchema>["id"] }
         | {

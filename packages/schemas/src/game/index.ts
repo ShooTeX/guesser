@@ -18,9 +18,6 @@ export const roomSchema = z.object({
   currentQuestion: z.number().finite().min(0).nonnegative(),
   players: playerSchema.array(),
   host: playerSchema.pick({ id: true, username: true, avatar: true }),
-  integrations: z.object({
-    twitch: z.boolean().default(true),
-  }),
 });
 
 export const gameSchema = roomSchema

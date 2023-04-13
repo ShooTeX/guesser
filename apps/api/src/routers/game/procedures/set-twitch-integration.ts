@@ -1,11 +1,13 @@
+import { clerkClient } from "@clerk/fastify";
 import { setTwitchIntegrationSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
+import { initTwitch } from "../../../lib/twitch";
 import { protectedProcedure } from "../../../trpc/create-router";
 import { roomManager } from "../interpreters";
 
 export const setTwitchIntegration = protectedProcedure
   .input(setTwitchIntegrationSchema)
-  .mutation(({ ctx, input }) => {
+  .mutation(async ({ ctx, input }) => {
     const roomSnapshot = roomManager
       .getSnapshot()
       .context.rooms.get(input.id)
@@ -22,10 +24,47 @@ export const setTwitchIntegration = protectedProcedure
       });
     }
 
+    const user = await clerkClient.users.getUser(ctx.auth.userId);
+
+    const twitchId = user.externalAccounts.find(
+      (account) => account.provider === "twitch"
+    )?.id;
+
+    if (!twitchId) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Twitch not authorized",
+      });
+    }
+
+    const [twitchAuth] = await clerkClient.users.getUserOauthAccessToken(
+      ctx.auth.userId,
+      "oauth_twitch"
+    );
+
+    if (!twitchAuth) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Twitch not authorized",
+      });
+    }
+
+    if (!twitchAuth.scopes?.includes("channel:manage:polls")) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "Missing scope: channel:manage:polls",
+      });
+    }
+
+    const twitchClient = initTwitch({
+      userId: twitchId,
+      token: twitchAuth.token,
+    });
+
     roomManager.send({
       type: "SET_TWITCH_INTEGRATION_IN_ROOM",
       id: input.id,
-      value: input.value,
+      value: twitchClient,
     });
 
     const updatedSnapshot = roomManager
@@ -40,5 +79,5 @@ export const setTwitchIntegration = protectedProcedure
       });
     }
 
-    return { enabled: updatedSnapshot.context.integrations.twitch };
+    return { enabled: !!updatedSnapshot.context.integrations.twitch };
   });

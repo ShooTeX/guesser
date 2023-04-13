@@ -30,7 +30,7 @@ export const createRoom = protectedProcedure
       type: "CREATE_ROOM",
       id,
       context: {
-        integrations: { twitch: false },
+        integrations: { twitch: undefined },
         playlistName: playlist.name,
         questions,
         host: {
