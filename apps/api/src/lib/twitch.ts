@@ -18,12 +18,12 @@ export function initTwitch({ userId, token }: initTwitchProperties) {
   });
 
   return {
-    async createPoll() {
-      const result = await client.post("polls", {
+    async createPrediction() {
+      const result = await client.post("predictions", {
         json: {
           broadcaster_id: userId,
           title: "Does it work?",
-          choices: [
+          outcomes: [
             {
               title: "YES!",
             },
@@ -31,7 +31,7 @@ export function initTwitch({ userId, token }: initTwitchProperties) {
               title: "YES!",
             },
           ],
-          duration: 15,
+          prediction_window: 30,
         },
       });
       return result;
