@@ -2,7 +2,7 @@ import type { answerSchema, playerSchema, roomSchema } from "@guesser/schemas";
 import type { ActorRefFrom, ContextFrom } from "xstate";
 import { createMachine, spawn } from "xstate";
 import { assign } from "@xstate/immer";
-import { stop, sendTo, log } from "xstate/lib/actions";
+import { stop, sendTo } from "xstate/lib/actions";
 import type { z } from "zod";
 import { roomMachine } from "./room";
 
@@ -42,10 +42,10 @@ export const roomManagerMachine = createMachine(
       running: {
         on: {
           CREATE_ROOM: {
-            actions: ["createRoom", log()],
+            actions: ["createRoom"],
           },
           REMOVE_ROOM: {
-            actions: ["stopRoom", "removeRoom", log()],
+            actions: ["stopRoom", "removeRoom"],
             cond: "roomExists",
           },
           CONTINUE_ROOM: {
