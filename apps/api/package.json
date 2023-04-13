@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "postinstall": "pnpm typegen",
-    "dev": "tsx watch .",
+    "dev": "concurrently \"pnpm tsx watch .\" \"pnpm typegen --watch\"",
     "dev:typegen": "xstate typegen src/machines/**/*.ts --watch",
     "lint": "eslint .",
     "build": "tsx esbuild.ts",
@@ -48,6 +48,7 @@
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.55.0",
     "@xstate/cli": "^0.4.2",
+    "concurrently": "^8.0.1",
     "drizzle-kit": "0.17.1-609a4f0",
     "esbuild": "^0.17.11",
     "eslint": "8.36.0",
