@@ -4,6 +4,7 @@ import { createRoom } from "./procedures/create-room";
 import { guess } from "./procedures/guess";
 import { join } from "./procedures/join";
 import { nextPlaylist } from "./procedures/next-playlist";
+import { setTwitchIntegration } from "./procedures/set-twitch-integration";
 
 export const gameRouter = router({
   join,
@@ -11,4 +12,5 @@ export const gameRouter = router({
   continueRoom,
   guess,
   nextPlaylist,
+  setTwitchIntegration,
 });

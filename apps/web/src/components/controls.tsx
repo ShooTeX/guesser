@@ -1,5 +1,5 @@
 import { api } from "@/lib/trpc";
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { PlaylistSelect } from "./playlist-select";
 import { useState } from "react";
@@ -31,6 +31,12 @@ export const Controls = ({
   const [twitchEnabled, setTwitchEnabled] = useState(false);
   const continueRoomMutation = api.game.continueRoom.useMutation();
   const nextPlaylistMutation = api.game.nextPlaylist.useMutation();
+  const setTwitchIntegrationMutation =
+    api.game.setTwitchIntegration.useMutation({
+      onSuccess: (data) => {
+        setTwitchEnabled(data.enabled);
+      },
+    });
   const handleTwitchSwitch = async () => {
     if (!isLoaded || !isSignedIn) {
       return;
@@ -44,11 +50,12 @@ export const Controls = ({
     }
 
     if (oauth.approvedScopes.includes("channel:manage:poll")) {
-      setTwitchEnabled((value) => !value);
+      setTwitchIntegrationMutation.mutate({
+        id: roomId,
+        value: !twitchEnabled,
+      });
       return;
     }
-
-    console.log(router);
 
     const response = await oauth.reauthorize({
       additionalScopes: ["channel:manage:polls"],
@@ -96,6 +103,9 @@ export const Controls = ({
             <Separator className="col-span-3 dark:bg-slate-600" />
             <p className="col-span-2 flex items-center gap-1">
               Twitch integration
+              {setTwitchIntegrationMutation.isLoading && (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              )}
             </p>
             <Switch
               checked={twitchEnabled}
