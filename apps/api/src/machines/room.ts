@@ -122,7 +122,7 @@ export const roomMachine = createMachine(
   {
     actions: {
       createPoll: async (context) => {
-        await context.integrations.twitch?.createPoll();
+        await context.integrations.twitch?.createPrediction();
       },
       setTwitchIntegration: assign((context, event) => {
         context.integrations.twitch = event.value;
