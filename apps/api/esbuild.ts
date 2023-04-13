@@ -11,7 +11,6 @@ void (async function () {
     bundle: true,
     platform: "node",
     format: "cjs",
-    sourcemap: true,
     plugins: [esbuildPluginPino({ transports: ["pino-pretty"] })],
     external: ["immer"],
   });
