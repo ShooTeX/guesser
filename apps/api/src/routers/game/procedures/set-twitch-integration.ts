@@ -27,7 +27,7 @@ export const setTwitchIntegration = protectedProcedure
     const user = await clerkClient.users.getUser(ctx.auth.userId);
 
     const twitchId = user.externalAccounts.find(
-      (account) => account.provider === "twitch"
+      (account) => account.provider === "oauth_twitch"
     )?.id;
 
     if (!twitchId) {
