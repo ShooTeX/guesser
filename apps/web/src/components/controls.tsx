@@ -108,7 +108,6 @@ export const Controls = ({
               )}
             </p>
             <Switch
-              disabled={true}
               checked={twitchEnabled}
               className="ml-auto dark:data-[state=unchecked]:bg-slate-800"
               onClick={handleTwitchSwitch}

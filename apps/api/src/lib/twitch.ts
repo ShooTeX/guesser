@@ -19,21 +19,24 @@ export function initTwitch({ userId, token }: initTwitchProperties) {
 
   return {
     async createPrediction() {
-      const result = await client.post("predictions", {
-        json: {
-          broadcaster_id: userId,
-          title: "Does it work?",
-          outcomes: [
-            {
-              title: "YES!",
-            },
-            {
-              title: "YES!",
-            },
-          ],
-          prediction_window: 30,
-        },
-      });
+      const result = await client
+        .post("predictions", {
+          json: {
+            broadcaster_id: userId,
+            title: "Does it work?",
+            outcomes: [
+              {
+                title: "YES!",
+              },
+              {
+                title: "NO!",
+              },
+            ],
+            prediction_window: 30,
+          },
+        })
+        .json()
+        .catch(console.error);
       return result;
     },
   };
