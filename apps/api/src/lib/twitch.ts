@@ -52,6 +52,7 @@ type initTwitchProperties = {
 export function initTwitchClient({ userId, token }: initTwitchProperties) {
   const options: ZodiosOptions = {
     axiosConfig: {
+      timeout: 10_000,
       headers: {
         Authorization: `Bearer ${token}`,
         "Client-Id": process.env.TWITCH_CLIENT_ID,
