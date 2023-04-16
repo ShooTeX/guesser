@@ -1,4 +1,4 @@
-import type { ZodiosEndpointDefinition, ZodiosOptions } from "@zodios/core";
+import type { ZodiosOptions } from "@zodios/core";
 import { Zodios } from "@zodios/core";
 import { z } from "zod";
 
@@ -50,38 +50,40 @@ export function initTwitchClient({ userId, token }: initTwitchProperties) {
     },
   };
 
-  const endpoints: ZodiosEndpointDefinition[] = [
-    {
-      method: "get",
-      path: `/users?id=${userId}`,
-      alias: "getUser",
-      response: responseSchema(userSchema),
-    },
-    {
-      method: "post",
-      path: "/predictions",
-      alias: "createPrediction",
-      response: responseSchema(predictionSchema),
-      parameters: [
-        {
-          name: "input",
-          type: "Body",
-          schema: z.object({
-            title: z.string(),
-            outcomes: z
-              .array(
-                z.object({
-                  title: z.string(),
-                })
-              )
-              .min(2)
-              .max(10),
-            prediction_window: z.number().finite().min(30).max(1800),
-          }),
-        },
-      ],
-    },
-  ];
-
-  return new Zodios("https://api.twitch.tv/helix", endpoints, options);
+  return new Zodios(
+    "https://api.twitch.tv/helix",
+    [
+      {
+        method: "get",
+        path: `/users?id=${userId}`,
+        alias: "getUser",
+        response: responseSchema(userSchema),
+      },
+      {
+        method: "post",
+        path: "/predictions",
+        alias: "createPrediction",
+        response: responseSchema(predictionSchema),
+        parameters: [
+          {
+            name: "input",
+            type: "Body",
+            schema: z.object({
+              title: z.string(),
+              outcomes: z
+                .array(
+                  z.object({
+                    title: z.string(),
+                  })
+                )
+                .min(2)
+                .max(10),
+              prediction_window: z.number().finite().min(30).max(1800),
+            }),
+          },
+        ],
+      },
+    ],
+    options
+  );
 }
