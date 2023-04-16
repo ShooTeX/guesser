@@ -60,12 +60,21 @@ export const setTwitchIntegration = protectedProcedure
         });
       }
 
-      // TODO: need to check if affiliated/partner
-
-      return initTwitchClient({
+      const client = initTwitchClient({
         userId: twitchId,
         token: twitchAuth.token,
       });
+
+      const twitchUser = await client.getUser();
+
+      if (twitchUser.data[0]?.broadcaster_type === "") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Broadcaster is not affiliate or partner",
+        });
+      }
+
+      return client;
     };
 
     roomManager.send({

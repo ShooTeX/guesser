@@ -3,7 +3,7 @@ import { assign } from "@xstate/immer";
 import { createMachine } from "xstate";
 import { sendParent } from "xstate/lib/actions";
 import type { z } from "zod";
-import type { initTwitchClient } from "../lib/twitch";
+import type { TwitchClient } from "../lib/twitch";
 import { activityMachine } from "./activity";
 
 export const roomMachine = createMachine(
@@ -16,14 +16,14 @@ export const roomMachine = createMachine(
     schema: {
       context: {} as z.infer<typeof roomSchema> & {
         integrations: {
-          twitch?: ReturnType<typeof initTwitchClient>;
+          twitch?: TwitchClient;
         };
       },
       events: {} as
         | { type: "CONTINUE" }
         | {
             type: "SET_TWITCH_INTEGRATION";
-            value: ReturnType<typeof initTwitchClient> | undefined;
+            value?: TwitchClient;
           }
         | { type: "JOIN"; player: z.infer<typeof playerSchema> }
         | { type: "DISCONNECT"; id: z.infer<typeof playerSchema>["id"] }
@@ -122,7 +122,11 @@ export const roomMachine = createMachine(
   {
     actions: {
       createPoll: async (context) => {
-        await context.integrations.twitch?.createPrediction();
+        const test = await context.integrations.twitch?.createPrediction({
+          title: "Does it work?",
+          prediction_window: 30,
+          outcomes: [{ title: "YES!" }, { title: "No :(" }],
+        });
       },
       setTwitchIntegration: assign((context, event) => {
         context.integrations.twitch = event.value;

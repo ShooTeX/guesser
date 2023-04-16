@@ -1,14 +1,14 @@
 import type { ZodiosOptions } from "@zodios/core";
 import { Zodios } from "@zodios/core";
-import { z } from "zod";
+import { array, z } from "zod";
 
-const responseSchema = <T extends z.ZodTypeAny>(schema: T) => {
+const response = <T extends z.ZodTypeAny>(schema: T) => {
   return z.object({
     data: z.array(schema),
   });
 };
 
-const userSchema = z.object({
+const user = z.object({
   id: z.string(),
   broadcaster_type: z.union([
     z.literal("affiliate"),
@@ -17,7 +17,13 @@ const userSchema = z.object({
   ]),
 });
 
-const predictionSchema = z.object({
+const outcome = z.object({
+  id: z.string(),
+  title: z.string(),
+  channel_points: z.number(),
+});
+
+const prediction = z.object({
   id: z.string(),
   title: z.string(),
   status: z.union([
@@ -26,14 +32,17 @@ const predictionSchema = z.object({
     z.literal("LOCKED"),
     z.literal("RESOLVED"),
   ]),
-  outcomes: z.array(
-    z.object({
-      id: z.string(),
-      title: z.string(),
-      channel_points: z.number(),
-    })
-  ),
+  outcomes: z.array(outcome).min(2).max(10),
+  prediction_window: z.number().finite().min(30).max(1800),
 });
+
+const createPredictionParameters = prediction
+  .pick({ title: true, prediction_window: true })
+  .extend({
+    outcomes: array(outcome.pick({ title: true }))
+      .min(2)
+      .max(10),
+  });
 
 type initTwitchProperties = {
   token: string;
@@ -57,29 +66,18 @@ export function initTwitchClient({ userId, token }: initTwitchProperties) {
         method: "get",
         path: `/users?id=${userId}`,
         alias: "getUser",
-        response: responseSchema(userSchema),
+        response: response(user),
       },
       {
         method: "post",
         path: "/predictions",
         alias: "createPrediction",
-        response: responseSchema(predictionSchema),
+        response: response(prediction),
         parameters: [
           {
             name: "input",
             type: "Body",
-            schema: z.object({
-              title: z.string(),
-              outcomes: z
-                .array(
-                  z.object({
-                    title: z.string(),
-                  })
-                )
-                .min(2)
-                .max(10),
-              prediction_window: z.number().finite().min(30).max(1800),
-            }),
+            schema: createPredictionParameters,
           },
         ],
       },
@@ -87,3 +85,5 @@ export function initTwitchClient({ userId, token }: initTwitchProperties) {
     options
   );
 }
+
+export type TwitchClient = ReturnType<typeof initTwitchClient>;
