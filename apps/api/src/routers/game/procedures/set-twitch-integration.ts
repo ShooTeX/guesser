@@ -1,7 +1,7 @@
 import { clerkClient } from "@clerk/fastify";
 import { setTwitchIntegrationSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
-import { initTwitch } from "../../../lib/twitch";
+import { initTwitchClient } from "../../../lib/twitch";
 import { protectedProcedure } from "../../../trpc/create-router";
 import { roomManager } from "../interpreters";
 
@@ -62,7 +62,7 @@ export const setTwitchIntegration = protectedProcedure
 
       // TODO: need to check if affiliated/partner
 
-      return initTwitch({
+      return initTwitchClient({
         userId: twitchId,
         token: twitchAuth.token,
       });
