@@ -122,6 +122,12 @@ export const roomMachine = createMachine(
   {
     actions: {
       createPoll: async (context) => {
+        const otherTest = await context.integrations.twitch?.endPrediction({
+          id: "asdf",
+          broadcaster_id: "asdf",
+          status: "asdf",
+        });
+
         const test = await context.integrations.twitch?.createPrediction({
           title: "Does it work?",
           prediction_window: 30,

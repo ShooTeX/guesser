@@ -8,13 +8,18 @@ const response = <T extends z.ZodTypeAny>(schema: T) => {
   });
 };
 
+const withBroadcasterId = <T extends z.AnyZodObject>(
+  schema: T,
+  broadcaster_id: string
+) => {
+  return schema.extend({
+    broadcaster_id: z.literal(broadcaster_id).default(broadcaster_id),
+  });
+};
+
 const user = z.object({
   id: z.string(),
-  broadcaster_type: z.union([
-    z.literal("affiliate"),
-    z.literal("partner"),
-    z.literal(""),
-  ]),
+  broadcaster_type: z.enum(["affiliate", "partner", ""]),
 });
 
 const outcome = z.object({
@@ -23,26 +28,32 @@ const outcome = z.object({
   channel_points: z.number(),
 });
 
+const predictionStatus = z.enum(["ACTIVE", "CANCELED", "LOCKED", "RESOLVED"]);
+
 const prediction = z.object({
   id: z.string(),
+  broadcaster_id: z.string(),
   title: z.string(),
-  status: z.union([
-    z.literal("ACTIVE"),
-    z.literal("CANCELED"),
-    z.literal("LOCKED"),
-    z.literal("RESOLVED"),
-  ]),
+  status: predictionStatus,
   outcomes: z.array(outcome).min(2).max(10),
   prediction_window: z.number().finite().min(30).max(1800),
 });
 
 const createPredictionParameters = prediction
-  .pick({ title: true, prediction_window: true })
+  .pick({ title: true, prediction_window: true, broadcaster_id: true })
   .extend({
     outcomes: array(outcome.pick({ title: true }))
       .min(2)
       .max(10),
   });
+
+const endPredictionParameters = z.union([
+  prediction.pick({ id: true, broadcaster_id: true, status: true }),
+  prediction.pick({ id: true, broadcaster_id: true }).extend({
+    status: z.literal(predictionStatus.enum.RESOLVED),
+    winning_outcome_id: outcome.shape.id,
+  }),
+]);
 
 type initTwitchProperties = {
   token: string;
@@ -51,6 +62,7 @@ type initTwitchProperties = {
 
 export function initTwitchClient({ userId, token }: initTwitchProperties) {
   const options: ZodiosOptions = {
+    sendDefaults: true,
     axiosConfig: {
       timeout: 10_000,
       headers: {
@@ -78,7 +90,20 @@ export function initTwitchClient({ userId, token }: initTwitchProperties) {
           {
             name: "input",
             type: "Body",
-            schema: createPredictionParameters,
+            schema: withBroadcasterId(createPredictionParameters, userId),
+          },
+        ],
+      },
+      {
+        method: "patch",
+        path: "/predictions",
+        alias: "endPrediction",
+        response: response(prediction),
+        parameters: [
+          {
+            name: "input",
+            type: "Body",
+            schema: withBroadcasterId(endPredictionParameters, userId),
           },
         ],
       },
