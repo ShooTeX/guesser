@@ -1,10 +1,13 @@
 import type { roomSchema, playerSchema, answerSchema } from "@guesser/schemas";
 import { assign } from "@xstate/immer";
+import type { ActorRefFrom } from "xstate";
+import { spawn } from "xstate";
 import { createMachine } from "xstate";
 import { sendParent } from "xstate/lib/actions";
 import type { z } from "zod";
 import type { TwitchClient } from "../lib/twitch";
 import { activityMachine } from "./activity";
+import { predictionsMachine } from "./predictions";
 
 export const roomMachine = createMachine(
   {
@@ -16,7 +19,7 @@ export const roomMachine = createMachine(
     schema: {
       context: {} as z.infer<typeof roomSchema> & {
         integrations: {
-          twitch?: TwitchClient;
+          twitch?: ActorRefFrom<typeof predictionsMachine>;
         };
       },
       events: {} as
@@ -121,10 +124,14 @@ export const roomMachine = createMachine(
   },
   {
     actions: {
+      // TODO: predictionsMachine is not stopped if integration is disabled
+      // keep this in mind if performance issues occur
       setTwitchIntegration: assign((context, event) => {
-        context.integrations.twitch = event.value;
         const player = context.players.find((player) => player.id === "TWITCH");
         if (event.value) {
+          context.integrations.twitch = spawn(
+            predictionsMachine.withContext({ client: event.value })
+          );
           if (!player) {
             context.players.push({
               connected: true,
@@ -140,7 +147,7 @@ export const roomMachine = createMachine(
             return;
           }
         }
-        if (!event.value && player) {
+        if (!event.value && player && player) {
           player.connected = false;
         }
       }),
@@ -191,15 +198,6 @@ export const roomMachine = createMachine(
           }
         }
       }),
-    },
-    services: {
-      createPoll: async (context) => {
-        await context.integrations.twitch?.createPrediction({
-          title: "Test!",
-          outcomes: [{ title: "Yes" }, { title: "No" }],
-          prediction_window: 30,
-        });
-      },
     },
     guards: {
       clientIsNotHost: ({ host }, event) =>
