@@ -123,6 +123,26 @@ export const roomMachine = createMachine(
     actions: {
       setTwitchIntegration: assign((context, event) => {
         context.integrations.twitch = event.value;
+        const player = context.players.find((player) => player.id === "TWITCH");
+        if (event.value) {
+          if (!player) {
+            context.players.push({
+              connected: true,
+              id: "TWITCH",
+              username: "Chat",
+              score: 0,
+              avatar: "https://i.imgur.com/38fKR25.png",
+            });
+            return;
+          }
+          if (player) {
+            player.connected = true;
+            return;
+          }
+        }
+        if (!event.value && player) {
+          player.connected = false;
+        }
       }),
       addPlayer: assign((context, event) => {
         context.players.push(event.player);
