@@ -115,24 +115,12 @@ export const roomMachine = createMachine(
         cond: "playerExists",
       },
       SET_TWITCH_INTEGRATION: {
-        actions: ["setTwitchIntegration", "createPoll"],
+        actions: ["setTwitchIntegration"],
       },
     },
   },
   {
     actions: {
-      createPoll: async (context) => {
-        const otherTest = await context.integrations.twitch?.endPrediction({
-          status: "ACTIVE",
-          id: "asdf",
-        });
-
-        const test = await context.integrations.twitch?.createPrediction({
-          title: "Does it work?",
-          prediction_window: 30,
-          outcomes: [{ title: "YES!" }, { title: "No :(" }],
-        });
-      },
       setTwitchIntegration: assign((context, event) => {
         context.integrations.twitch = event.value;
       }),
@@ -183,6 +171,15 @@ export const roomMachine = createMachine(
           }
         }
       }),
+    },
+    services: {
+      createPoll: async (context) => {
+        await context.integrations.twitch?.createPrediction({
+          title: "Test!",
+          outcomes: [{ title: "Yes" }, { title: "No" }],
+          prediction_window: 30,
+        });
+      },
     },
     guards: {
       clientIsNotHost: ({ host }, event) =>
