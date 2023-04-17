@@ -8,15 +8,6 @@ const response = <T extends z.ZodTypeAny>(schema: T) => {
   });
 };
 
-const withBroadcasterId = <T extends z.AnyZodObject>(
-  schema: T,
-  broadcaster_id: string
-) => {
-  return schema.extend({
-    broadcaster_id: z.literal(broadcaster_id).default(broadcaster_id),
-  });
-};
-
 const user = z.object({
   id: z.string(),
   broadcaster_type: z.enum(["affiliate", "partner", ""]),
@@ -47,20 +38,13 @@ const createPredictionParameters = prediction
       .max(10),
   });
 
-const endPredictionParameters = (broadcaster_id: string) =>
-  z.union([
-    withBroadcasterId(
-      prediction.pick({ id: true, broadcaster_id: true, status: true }),
-      broadcaster_id
-    ),
-    withBroadcasterId(
-      prediction.pick({ id: true, broadcaster_id: true }).extend({
-        status: z.literal(predictionStatus.enum.RESOLVED),
-        winning_outcome_id: outcome.shape.id,
-      }),
-      broadcaster_id
-    ),
-  ]);
+const endPredictionParameters = z.union([
+  prediction.pick({ id: true, broadcaster_id: true, status: true }),
+  prediction.pick({ id: true, broadcaster_id: true }).extend({
+    status: z.literal(predictionStatus.enum.RESOLVED),
+    winning_outcome_id: outcome.shape.id,
+  }),
+]);
 
 type initTwitchProperties = {
   token: string;
@@ -97,7 +81,10 @@ export function initTwitchClient({ userId, token }: initTwitchProperties) {
           {
             name: "input",
             type: "Body",
-            schema: withBroadcasterId(createPredictionParameters, userId),
+            schema: createPredictionParameters.transform((data) => ({
+              ...data,
+              broadcaster_id: data.broadcaster_id || userId,
+            })),
           },
         ],
       },
@@ -110,7 +97,10 @@ export function initTwitchClient({ userId, token }: initTwitchProperties) {
           {
             name: "input",
             type: "Body",
-            schema: endPredictionParameters(userId),
+            schema: endPredictionParameters.transform((data) => ({
+              ...data,
+              broadcaster_id: data.broadcaster_id || userId,
+            })),
           },
         ],
       },
