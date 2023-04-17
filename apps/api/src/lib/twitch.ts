@@ -23,7 +23,7 @@ const predictionStatus = z.enum(["ACTIVE", "CANCELED", "LOCKED", "RESOLVED"]);
 
 const prediction = z.object({
   id: z.string(),
-  broadcaster_id: z.string(),
+  broadcaster_id: z.string().optional(),
   title: z.string(),
   status: predictionStatus,
   outcomes: z.array(outcome).min(2).max(10),
@@ -79,7 +79,7 @@ export function initTwitchClient({ userId, token }: initTwitchProperties) {
         response: response(prediction),
         parameters: [
           {
-            name: "input",
+            name: "prediction",
             type: "Body",
             schema: createPredictionParameters.transform((data) => ({
               ...data,
@@ -95,7 +95,7 @@ export function initTwitchClient({ userId, token }: initTwitchProperties) {
         response: response(prediction),
         parameters: [
           {
-            name: "input",
+            name: "prediction",
             type: "Body",
             schema: endPredictionParameters.transform((data) => ({
               ...data,
