@@ -47,13 +47,20 @@ const createPredictionParameters = prediction
       .max(10),
   });
 
-const endPredictionParameters = z.union([
-  prediction.pick({ id: true, broadcaster_id: true, status: true }),
-  prediction.pick({ id: true, broadcaster_id: true }).extend({
-    status: z.literal(predictionStatus.enum.RESOLVED),
-    winning_outcome_id: outcome.shape.id,
-  }),
-]);
+const endPredictionParameters = (broadcaster_id: string) =>
+  z.union([
+    withBroadcasterId(
+      prediction.pick({ id: true, broadcaster_id: true, status: true }),
+      broadcaster_id
+    ),
+    withBroadcasterId(
+      prediction.pick({ id: true, broadcaster_id: true }).extend({
+        status: z.literal(predictionStatus.enum.RESOLVED),
+        winning_outcome_id: outcome.shape.id,
+      }),
+      broadcaster_id
+    ),
+  ]);
 
 type initTwitchProperties = {
   token: string;
@@ -103,7 +110,7 @@ export function initTwitchClient({ userId, token }: initTwitchProperties) {
           {
             name: "input",
             type: "Body",
-            schema: withBroadcasterId(endPredictionParameters, userId),
+            schema: endPredictionParameters(userId),
           },
         ],
       },
