@@ -123,11 +123,6 @@ export const roomMachine = createMachine(
     actions: {
       setTwitchIntegration: assign((context, event) => {
         context.integrations.twitch = event.value;
-        void event.value?.createPrediction({
-          title: "test",
-          prediction_window: 30,
-          outcomes: [{ title: "Yes" }, { title: "No" }],
-        });
       }),
       addPlayer: assign((context, event) => {
         context.players.push(event.player);
