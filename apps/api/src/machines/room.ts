@@ -50,6 +50,7 @@ export const roomMachine = createMachine(
         };
         resolvePrediction: {
           data: Awaited<ReturnType<TwitchClient["endPrediction"]>>["data"];
+          error: string;
         };
         cancelPrediction: {
           data: Awaited<ReturnType<TwitchClient["endPrediction"]>>["data"];
@@ -81,7 +82,6 @@ export const roomMachine = createMachine(
         },
       },
       showing_question: {
-        id: "showingQuestion",
         on: {
           GUESS: {
             actions: ["playerGuess"],
@@ -94,16 +94,16 @@ export const roomMachine = createMachine(
             always: [
               {
                 cond: "isTwitchEnabled",
-                target: "#showingQuestion.creating_prediction",
+                target: "#room.showing_question.creating_prediction",
               },
-              { target: "#showingQuestion.done" },
+              { target: "#room.showing_question.done" },
             ],
           },
           done: {
             on: {
               CONTINUE: [
                 {
-                  target: "#showingQuestion.resolving_prediction",
+                  target: "#room.showing_question.resolving_prediction",
                   cond: "isTwitchEnabled",
                 },
                 {
@@ -116,11 +116,11 @@ export const roomMachine = createMachine(
             invoke: {
               src: "createPrediction",
               onDone: {
-                target: "#showingQuestion.done",
+                target: "#room.showing_question.done",
                 actions: "assignPrediction",
               },
               onError: {
-                target: "#showingQuestion.done",
+                target: "#room.showing_question.done",
                 actions: log(),
               },
             },
@@ -128,13 +128,13 @@ export const roomMachine = createMachine(
           resolving_prediction: {
             invoke: {
               src: "resolvePrediction",
+              onError: {
+                target: "#room.showing_question.canceling_prediction",
+                actions: log(),
+              },
               onDone: {
                 target: "#room.revealing_answer",
                 actions: ["setPredictionGuess", "resetCurrentPrediction"],
-              },
-              onError: {
-                target: "#showingQuestion.canceling_prediction",
-                actions: log(),
               },
             },
           },
@@ -341,7 +341,9 @@ export const roomMachine = createMachine(
           context.currentQuestion
         ]?.answers.findIndex((answer) => answer.correct);
 
-        if (!correctAnswerIndex || correctAnswerIndex === -1)
+        console.log(correctAnswerIndex);
+
+        if (correctAnswerIndex === undefined || correctAnswerIndex === -1)
           throw new Error("Correct answer could not be found");
 
         const winning_outcome_id =
