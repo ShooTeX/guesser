@@ -95,5 +95,5 @@ export const setTwitchIntegration = protectedProcedure
       });
     }
 
-    return { enabled: !!updatedSnapshot.context.integrations.twitch };
+    return { enabled: !!updatedSnapshot.context.twitch };
   });

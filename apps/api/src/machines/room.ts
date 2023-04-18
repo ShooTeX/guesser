@@ -88,9 +88,17 @@ export const roomMachine = createMachine(
             cond: "playerDidNotGuess",
           },
         },
-        initial: "done",
-        always: { cond: "isTwitchEnabled", target: ".creating_prediction" },
+        initial: "init",
         states: {
+          init: {
+            always: [
+              {
+                cond: "isTwitchEnabled",
+                target: "#showingQuestion.creating_prediction",
+              },
+              { target: "#showingQuestion.done" },
+            ],
+          },
           done: {
             on: {
               CONTINUE: [
