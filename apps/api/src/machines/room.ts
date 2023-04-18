@@ -59,6 +59,7 @@ export const roomMachine = createMachine(
     },
     initial: "waiting",
     invoke: {
+      id: "activityMachine",
       src: activityMachine,
       onDone: {
         target: "timeout",

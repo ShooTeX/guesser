@@ -7,10 +7,11 @@ import { Switch } from "./ui/switch";
 import { Separator } from "./ui/separator";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
+import type { RoomStateValues } from "@guesser/api";
 
 export type ControlsProperties = {
   onClose: () => void;
-  state: string;
+  state: RoomStateValues;
   currentQuestion: number;
   questionsCount: number;
   playlistName: string;
@@ -98,7 +99,7 @@ export const Controls = ({
             </p>
             <p>State</p>
             <p className="col-span-2 truncate text-right font-semibold uppercase">
-              {state.replace("_", " ")}
+              {state.toString().replace("_", " ")}
             </p>
             <Separator className="col-span-3 dark:bg-slate-600" />
             <p className="col-span-2 flex items-center gap-1">
