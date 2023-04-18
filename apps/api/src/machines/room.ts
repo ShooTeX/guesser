@@ -60,7 +60,6 @@ export const roomMachine = createMachine(
     initial: "waiting",
     invoke: {
       src: activityMachine,
-      autoForward: true,
       onDone: {
         target: "timeout",
       },
