@@ -37,6 +37,7 @@ export const gameSchema = roomSchema
 
 export const joinRoomSchema = z.object({
   id: z.string(),
+  // INFO: probably should be token
   userId: z.string(),
 });
 
