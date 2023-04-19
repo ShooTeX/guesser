@@ -57,6 +57,10 @@ const start = async () => {
   }
 };
 
+process.on("SIGTERM", () => {
+  void server.close();
+});
+
 void start();
 
 export type AppRouter = AppRouterType;
