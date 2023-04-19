@@ -2,7 +2,7 @@ import type { roomSchema, playerSchema, answerSchema } from "@guesser/schemas";
 import { assign } from "@xstate/immer";
 import { maxBy } from "remeda";
 import { createMachine } from "xstate";
-import { log, sendParent } from "xstate/lib/actions";
+import { forwardTo, log, sendParent } from "xstate/lib/actions";
 import type { z } from "zod";
 import type { TwitchClient } from "../lib/twitch";
 import { activityMachine } from "./activity";
@@ -28,6 +28,8 @@ export const roomMachine = createMachine(
       },
       events: {} as
         | { type: "CONTINUE" }
+        | { type: "ACTIVITY" }
+        | { type: "TIMEOUT" }
         | {
             type: "SET_TWITCH_INTEGRATION";
             value?: TwitchClient;
@@ -58,13 +60,16 @@ export const roomMachine = createMachine(
       },
     },
     initial: "waiting",
-    invoke: {
-      id: "activityMachine",
-      src: activityMachine,
-      onDone: {
-        target: "timeout",
+    invoke: [
+      {
+        id: "activityMachine",
+        src: activityMachine,
       },
-    },
+      {
+        id: "activityTracker",
+        src: "activityTracker",
+      },
+    ],
     states: {
       waiting: {
         on: {
@@ -186,6 +191,12 @@ export const roomMachine = createMachine(
       },
     },
     on: {
+      ACTIVITY: {
+        actions: forwardTo("activityMachine"),
+      },
+      TIMEOUT: {
+        target: "timeout",
+      },
       JOIN: {
         actions: ["connectPlayer"],
         cond: "playerExists",
@@ -341,8 +352,6 @@ export const roomMachine = createMachine(
           context.currentQuestion
         ]?.answers.findIndex((answer) => answer.correct);
 
-        console.log(correctAnswerIndex);
-
         if (correctAnswerIndex === undefined || correctAnswerIndex === -1)
           throw new Error("Correct answer could not be found");
 
@@ -371,6 +380,14 @@ export const roomMachine = createMachine(
         });
 
         return data;
+      },
+      // eslint-disable-next-line unicorn/consistent-function-scoping
+      activityTracker: () => (callback, onReceive) => {
+        onReceive((event) => {
+          if (event.type === "CONTINUE") {
+            callback("ACTIVITY");
+          }
+        });
       },
     },
     guards: {

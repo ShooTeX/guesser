@@ -1,4 +1,5 @@
 import { createMachine } from "xstate";
+import { sendParent } from "xstate/lib/actions";
 
 export const activityMachine = createMachine({
   id: "activityMachine",
@@ -14,12 +15,13 @@ export const activityMachine = createMachine({
         },
       },
       on: {
-        CONTINUE: {
+        ACTIVITY: {
           target: "running",
         },
       },
     },
     timeout: {
+      entry: sendParent("TIMEOUT"),
       type: "final",
     },
   },
