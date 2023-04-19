@@ -2,10 +2,9 @@ import type { roomSchema, playerSchema, answerSchema } from "@guesser/schemas";
 import { assign } from "@xstate/immer";
 import { maxBy } from "remeda";
 import { createMachine } from "xstate";
-import { forwardTo, log, sendParent } from "xstate/lib/actions";
+import { log, sendParent } from "xstate/lib/actions";
 import type { z } from "zod";
 import type { TwitchClient } from "../lib/twitch";
-import { activityMachine } from "./activity";
 
 export const roomMachine = createMachine(
   {
@@ -28,8 +27,6 @@ export const roomMachine = createMachine(
       },
       events: {} as
         | { type: "CONTINUE" }
-        | { type: "ACTIVITY" }
-        | { type: "TIMEOUT" }
         | {
             type: "SET_TWITCH_INTEGRATION";
             value?: TwitchClient;
@@ -60,16 +57,6 @@ export const roomMachine = createMachine(
       },
     },
     initial: "waiting",
-    invoke: [
-      {
-        id: "activityMachine",
-        src: activityMachine,
-      },
-      {
-        id: "activityTracker",
-        src: "activityTracker",
-      },
-    ],
     states: {
       waiting: {
         on: {
@@ -191,12 +178,6 @@ export const roomMachine = createMachine(
       },
     },
     on: {
-      ACTIVITY: {
-        actions: forwardTo("activityMachine"),
-      },
-      TIMEOUT: {
-        target: "timeout",
-      },
       JOIN: {
         actions: ["connectPlayer"],
         cond: "playerExists",
@@ -380,14 +361,6 @@ export const roomMachine = createMachine(
         });
 
         return data;
-      },
-      // eslint-disable-next-line unicorn/consistent-function-scoping
-      activityTracker: () => (callback, onReceive) => {
-        onReceive((event) => {
-          if (event.type === "CONTINUE") {
-            callback("ACTIVITY");
-          }
-        });
       },
     },
     guards: {
