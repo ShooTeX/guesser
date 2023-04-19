@@ -207,15 +207,24 @@ export const roomMachine = createMachine(
         const player = context.players.find((player) => player.id === "TWITCH");
         if (!player) return;
 
-        const outcomeWithMostPoints = maxBy(
+        // INFO: select what should be selected as guess?
+
+        // const outcomeWithMostPoints = maxBy(
+        //   prediction.outcomes,
+        //   (outcome) => outcome.channel_points
+        // );
+
+        const outcomeWithMostUsers = maxBy(
           prediction.outcomes,
-          (outcome) => outcome.channel_points
+          (outcome) => outcome.users
         );
+
+        if (!outcomeWithMostUsers) return;
 
         const answerId =
           currentQuestion.answers[
             prediction.outcomes.findIndex(
-              (outcome) => outcome.id === outcomeWithMostPoints?.id
+              (outcome) => outcome.id === outcomeWithMostUsers?.id
             )
           ]?.id;
 
@@ -347,7 +356,6 @@ export const roomMachine = createMachine(
           status: "RESOLVED",
           winning_outcome_id,
         });
-
         return data;
       },
       cancelPrediction: async (context) => {

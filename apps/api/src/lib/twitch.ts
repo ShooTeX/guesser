@@ -17,6 +17,7 @@ const outcome = z.object({
   id: z.string(),
   title: z.string(),
   channel_points: z.number(),
+  users: z.number(),
 });
 
 const predictionStatus = z.enum(["ACTIVE", "CANCELED", "LOCKED", "RESOLVED"]);
@@ -28,6 +29,7 @@ const prediction = z.object({
   status: predictionStatus,
   outcomes: z.array(outcome).min(2).max(10),
   prediction_window: z.number().finite().min(30).max(1800),
+  winning_outcome_id: z.string().nullish(),
 });
 
 const createPredictionParameters = prediction
@@ -39,9 +41,16 @@ const createPredictionParameters = prediction
   });
 
 const endPredictionParameters = z.union([
-  prediction.pick({ id: true, broadcaster_id: true, status: true }),
+  prediction
+    .pick({
+      id: true,
+      broadcaster_id: true,
+    })
+    .extend({
+      status: predictionStatus.exclude(["RESOLVED"]),
+    }),
   prediction.pick({ id: true, broadcaster_id: true }).extend({
-    status: z.literal(predictionStatus.enum.RESOLVED),
+    status: predictionStatus.extract(["RESOLVED"]),
     winning_outcome_id: outcome.shape.id,
   }),
 ]);
