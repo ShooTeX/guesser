@@ -2,7 +2,7 @@ import type { roomSchema, playerSchema, answerSchema } from "@guesser/schemas";
 import { assign } from "@xstate/immer";
 import { maxBy } from "remeda";
 import { createMachine } from "xstate";
-import { log, sendParent } from "xstate/lib/actions";
+import { log, raise, sendParent } from "xstate/lib/actions";
 import type { z } from "zod";
 import type { TwitchClient } from "../lib/twitch";
 
@@ -11,6 +11,7 @@ export const roomMachine = createMachine(
     preserveActionOrder: true,
     predictableActionArguments: true,
     id: "room",
+    type: "parallel",
     // eslint-disable-next-line @typescript-eslint/consistent-type-imports
     tsTypes: {} as import("./room.typegen").Typegen0,
     schema: {
@@ -27,6 +28,7 @@ export const roomMachine = createMachine(
       },
       events: {} as
         | { type: "CONTINUE" }
+        | { type: "TIMEOUT" }
         | {
             type: "SET_TWITCH_INTEGRATION";
             value?: TwitchClient;
@@ -56,138 +58,163 @@ export const roomMachine = createMachine(
         };
       },
     },
-    initial: "waiting",
     states: {
-      waiting: {
-        on: {
-          CONTINUE: {
-            target: "showing_question",
+      timer: {
+        initial: "idle",
+        states: {
+          idle: {
+            after: {
+              6000: "timeout",
+            },
+            on: {
+              "*": {
+                cond: (_, event) => !event.type.startsWith("xstate.after"),
+                target: "idle",
+              },
+            },
           },
-          JOIN: {
-            actions: ["addPlayer"],
-            cond: "clientIsNotHost",
-          },
-          DISCONNECT: {
-            actions: ["removePlayer"],
-            cond: "clientIsNotHost",
+          timeout: {
+            entry: raise("TIMEOUT"),
           },
         },
       },
-      showing_question: {
+      game: {
+        id: "game",
+        initial: "waiting",
         on: {
-          GUESS: {
-            actions: ["playerGuess"],
-            cond: "playerDidNotGuess",
+          TIMEOUT: ".timeout",
+          JOIN: {
+            actions: ["connectPlayer"],
+            cond: "playerExists",
+          },
+          DISCONNECT: {
+            actions: ["disconnectPlayer"],
+            cond: "playerExists",
+          },
+          SET_TWITCH_INTEGRATION: {
+            actions: ["setTwitchIntegration"],
           },
         },
-        initial: "init",
         states: {
-          init: {
-            always: [
-              {
-                cond: "isTwitchEnabled",
-                target: "#room.showing_question.creating_prediction",
+          waiting: {
+            on: {
+              CONTINUE: {
+                target: "showing_question",
               },
-              { target: "#room.showing_question.done" },
-            ],
+              JOIN: {
+                actions: ["addPlayer"],
+                cond: "clientIsNotHost",
+              },
+              DISCONNECT: {
+                actions: ["removePlayer"],
+                cond: "clientIsNotHost",
+              },
+            },
           },
-          done: {
+          showing_question: {
+            on: {
+              GUESS: {
+                actions: ["playerGuess"],
+                cond: "playerDidNotGuess",
+              },
+            },
+            initial: "init",
+            states: {
+              init: {
+                always: [
+                  {
+                    cond: "isTwitchEnabled",
+                    target: "#game.showing_question.creating_prediction",
+                  },
+                  { target: "#game.showing_question.done" },
+                ],
+              },
+              done: {
+                on: {
+                  CONTINUE: [
+                    {
+                      target: "#game.showing_question.resolving_prediction",
+                      cond: "isTwitchEnabled",
+                    },
+                    {
+                      target: "#game.revealing_answer",
+                    },
+                  ],
+                },
+              },
+              creating_prediction: {
+                invoke: {
+                  src: "createPrediction",
+                  onDone: {
+                    target: "#game.showing_question.done",
+                    actions: "assignPrediction",
+                  },
+                  onError: {
+                    target: "#game.showing_question.done",
+                    actions: log(),
+                  },
+                },
+              },
+              resolving_prediction: {
+                invoke: {
+                  src: "resolvePrediction",
+                  onError: {
+                    target: "#game.showing_question.canceling_prediction",
+                    actions: log(),
+                  },
+                  onDone: {
+                    target: "#game.revealing_answer",
+                    actions: ["setPredictionGuess", "resetCurrentPrediction"],
+                  },
+                },
+              },
+              canceling_prediction: {
+                exit: "resetCurrentPrediction",
+                invoke: {
+                  src: "cancelPrediction",
+                  onDone: {
+                    target: "#game.revealing_answer",
+                  },
+                  onError: {
+                    target: "#game.revealing_answer",
+                    actions: log(),
+                  },
+                },
+              },
+            },
+          },
+          revealing_answer: {
+            entry: ["distributePoints"],
+            exit: ["resetGuesses"],
             on: {
               CONTINUE: [
                 {
-                  target: "#room.showing_question.resolving_prediction",
-                  cond: "isTwitchEnabled",
+                  target: "end",
+                  cond: "hasNoMoreQuestions",
                 },
                 {
-                  target: "#room.revealing_answer",
+                  target: "showing_question",
+                  actions: ["nextQuestion"],
                 },
               ],
             },
           },
-          creating_prediction: {
-            invoke: {
-              src: "createPrediction",
-              onDone: {
-                target: "#room.showing_question.done",
-                actions: "assignPrediction",
-              },
-              onError: {
-                target: "#room.showing_question.done",
-                actions: log(),
+          end: {
+            on: {
+              NEXT_PLAYLIST: {
+                target: "showing_question",
+                actions: ["nextPlaylist"],
               },
             },
           },
-          resolving_prediction: {
-            invoke: {
-              src: "resolvePrediction",
-              onError: {
-                target: "#room.showing_question.canceling_prediction",
-                actions: log(),
-              },
-              onDone: {
-                target: "#room.revealing_answer",
-                actions: ["setPredictionGuess", "resetCurrentPrediction"],
-              },
-            },
-          },
-          canceling_prediction: {
-            exit: "resetCurrentPrediction",
-            invoke: {
-              src: "cancelPrediction",
-              onDone: {
-                target: "#room.revealing_answer",
-              },
-              onError: {
-                target: "#room.revealing_answer",
-                actions: log(),
-              },
-            },
+          timeout: {
+            entry: sendParent((context) => ({
+              type: "REMOVE_ROOM",
+              id: context.id,
+            })),
+            type: "final",
           },
         },
-      },
-      revealing_answer: {
-        entry: ["distributePoints"],
-        exit: ["resetGuesses"],
-        on: {
-          CONTINUE: [
-            {
-              target: "end",
-              cond: "hasNoMoreQuestions",
-            },
-            {
-              target: "showing_question",
-              actions: ["nextQuestion"],
-            },
-          ],
-        },
-      },
-      end: {
-        on: {
-          NEXT_PLAYLIST: {
-            target: "showing_question",
-            actions: ["nextPlaylist"],
-          },
-        },
-      },
-      timeout: {
-        entry: sendParent((context) => ({
-          type: "REMOVE_ROOM",
-          id: context.id,
-        })),
-        type: "final",
-      },
-    },
-    on: {
-      JOIN: {
-        actions: ["connectPlayer"],
-        cond: "playerExists",
-      },
-      DISCONNECT: {
-        actions: ["disconnectPlayer"],
-        cond: "playerExists",
-      },
-      SET_TWITCH_INTEGRATION: {
-        actions: ["setTwitchIntegration"],
       },
     },
   },
