@@ -64,7 +64,7 @@ export const roomMachine = createMachine(
         states: {
           idle: {
             after: {
-              6000: "timeout",
+              600_000: "timeout",
             },
             on: {
               "*": {
