@@ -259,10 +259,11 @@ export const roomMachine = createMachine(
             return;
           }
         }
-        if (!event.value && player) {
+
+        if (!event.value) {
           context.twitch = undefined;
           if (player) {
-            player.connected = false;
+            context.players.filter((player) => player.id !== "TWITCH");
           }
         }
       }),
