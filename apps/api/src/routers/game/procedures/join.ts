@@ -25,7 +25,7 @@ export const join = publicProcedure
     const user = await clerkClient.users.getUser(input.userId);
 
     if (
-      !roomSnapshot.matches("waiting") &&
+      !roomSnapshot.matches("game.waiting") &&
       roomSnapshot.context.host.id !== user.id &&
       !roomSnapshot.context.players.some((player) => player.id === user.id)
     ) {
@@ -67,7 +67,7 @@ export const join = publicProcedure
           host,
           question,
           answers: question.answers,
-          correctAnswer: matches("revealing_answer")
+          correctAnswer: matches("game.revealing_answer")
             ? correctAnswer
             : undefined,
           ...(input.userId === host.id && {
