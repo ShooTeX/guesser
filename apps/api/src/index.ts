@@ -10,8 +10,7 @@ import type { AppRouter as AppRouterType } from "./routers/_app";
 import { appRouter } from "./routers/_app";
 import { createContext } from "./trpc/create-context";
 import { enableMapSet } from "immer";
-import type { StateValueFrom } from "xstate";
-import type { roomMachine } from "./machines/room";
+import type { RoomStateValue as RoomStateValueType } from "./lib/map-state-values";
 enableMapSet();
 
 const server = fastify({
@@ -65,4 +64,4 @@ void start();
 
 export type AppRouter = AppRouterType;
 
-export type RoomStateValues = StateValueFrom<typeof roomMachine>;
+export type RoomStateValue = RoomStateValueType;

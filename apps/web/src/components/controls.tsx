@@ -7,11 +7,11 @@ import { Switch } from "./ui/switch";
 import { Separator } from "./ui/separator";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
-import type { RoomStateValues } from "@guesser/api";
+import type { RoomStateValue } from "@guesser/api";
 
 export type ControlsProperties = {
   onClose: () => void;
-  state: RoomStateValues;
+  state: RoomStateValue;
   currentQuestion: number;
   questionsCount: number;
   playlistName: string;

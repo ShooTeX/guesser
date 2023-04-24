@@ -4,11 +4,11 @@ import { TRPCError } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import type { z } from "zod";
 import { zu } from "zod_utilz";
-import type { StateValueFrom } from "xstate";
 import { clerkClient } from "@clerk/fastify";
 import { roomManager } from "../interpreters";
-import type { roomMachine } from "../../../machines/room";
 import { publicProcedure } from "../../../trpc/create-router";
+import type { RoomStateValue } from "../../../lib/map-state-values";
+import { mapRoomStateValue } from "../../../lib/map-state-values";
 
 const gameSchema = zu.useTypedParsers(unsafeGameSchema);
 
@@ -43,54 +43,54 @@ export const join = publicProcedure
       },
     });
 
-    return observable<
-      z.infer<typeof gameSchema> & { state: StateValueFrom<typeof roomMachine> }
-    >((emit) => {
-      const subscription = room.subscribe(({ context, matches, value }) => {
-        const { players, questions, currentQuestion, host, playlistName } =
-          context;
-        const question = questions[currentQuestion];
-        if (!question) {
-          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-        }
+    return observable<z.infer<typeof gameSchema> & { state: RoomStateValue }>(
+      (emit) => {
+        const subscription = room.subscribe((state) => {
+          const { players, questions, currentQuestion, host, playlistName } =
+            state.context;
+          const question = questions[currentQuestion];
+          if (!question) {
+            throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+          }
 
-        const correctAnswer = question.answers.find(
-          (answer) => answer.correct
-        )?.id;
+          const correctAnswer = question.answers.find(
+            (answer) => answer.correct
+          )?.id;
 
-        if (!correctAnswer) {
-          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-        }
+          if (!correctAnswer) {
+            throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+          }
 
-        const parsedResponse = gameSchema.parse({
-          players,
-          host,
-          question,
-          answers: question.answers,
-          correctAnswer: matches("game.revealing_answer")
-            ? correctAnswer
-            : undefined,
-          ...(input.userId === host.id && {
-            hostInfo: {
-              currentQuestion,
-              questionCount: questions.length,
-              playlistName,
-            },
-          }),
+          const parsedResponse = gameSchema.parse({
+            players,
+            host,
+            question,
+            answers: question.answers,
+            correctAnswer: state.matches("game.revealing_answer")
+              ? correctAnswer
+              : undefined,
+            ...(input.userId === host.id && {
+              hostInfo: {
+                currentQuestion,
+                questionCount: questions.length,
+                playlistName,
+              },
+            }),
+          });
+
+          emit.next({
+            ...parsedResponse,
+            state: mapRoomStateValue(state),
+          });
         });
+        return () => {
+          room.send({
+            type: "DISCONNECT",
+            id: user.id,
+          });
 
-        emit.next({
-          ...parsedResponse,
-          state: value as StateValueFrom<typeof roomMachine>,
-        });
-      });
-      return () => {
-        room.send({
-          type: "DISCONNECT",
-          id: user.id,
-        });
-
-        subscription.unsubscribe();
-      };
-    });
+          subscription.unsubscribe();
+        };
+      }
+    );
   });
