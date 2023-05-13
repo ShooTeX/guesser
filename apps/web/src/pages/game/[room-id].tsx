@@ -24,7 +24,7 @@ import Balancer from "react-wrap-balancer";
 import { groupBy, pipe } from "remeda";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { nord } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { nord } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 const copyToClipboard = async (value: string) => {
   await navigator.clipboard.writeText(value);
