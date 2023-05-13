@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import Balancer from "react-wrap-balancer";
 import { groupBy, pipe } from "remeda";
+import ReactMarkdown from "react-markdown";
 
 const copyToClipboard = async (value: string) => {
   await navigator.clipboard.writeText(value);
@@ -117,21 +118,32 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
     },
   };
 
+  const markdown = `
+# hello
+\`\`\`js
+const test = "hello";
+\`\`\`
+`;
+
   return (
     <div className="flex w-[800px] flex-col justify-center">
       <Players players={data.players} host={data.host} />
       <div className="flex h-60 items-center justify-center">
         <AnimatePresence mode="wait">
-          <motion.h1
+          <motion.div
             key={data.question.id}
             variants={questionVariants}
             initial="hidden"
             animate="show"
             exit="exit"
-            className="scroll-m-20 text-center text-2xl font-semibold tracking-tight"
           >
-            <Balancer>{data.question.question}</Balancer>
-          </motion.h1>
+            <h1 className="scroll-m-20 text-center text-2xl font-semibold tracking-tight">
+              <Balancer>{data.question.question}</Balancer>
+            </h1>
+            <div className="prose prose-invert mt-4">
+              <ReactMarkdown>{markdown}</ReactMarkdown>
+            </div>
+          </motion.div>
         </AnimatePresence>
       </div>
       <AnimatePresence mode="wait">
