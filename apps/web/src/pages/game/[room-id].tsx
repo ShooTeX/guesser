@@ -25,6 +25,7 @@ import { groupBy, pipe } from "remeda";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { nord } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import RehypeVideo from "rehype-video";
 
 const copyToClipboard = async (value: string) => {
   await navigator.clipboard.writeText(value);
@@ -138,6 +139,12 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
             {data.question.markdown && (
               <div className="prose prose-invert prose-pre:bg-transparent prose-pre:p-0 mt-4">
                 <ReactMarkdown
+                  rehypePlugins={[
+                    [
+                      RehypeVideo,
+                      { details: false, test: /\/(.*)(.mp4|.mov|.webm)$/ },
+                    ],
+                  ]}
                   components={{
                     code({ inline, className, children, ...properties }) {
                       const match = /language-(\w+)/.exec(className || "");
