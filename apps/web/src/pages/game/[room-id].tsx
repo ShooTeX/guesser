@@ -63,9 +63,6 @@ const Waiting = ({
           <Copy className="h-4 w-4" />
         </Button>
       </div>
-      <div className="mt-4">
-        <Logo />
-      </div>
     </div>
   );
 };
@@ -345,6 +342,9 @@ export default function Game() {
           />
         </motion.div>
       )}
+      <div className="absolute top-4 left-4 hidden cursor-pointer lg:block">
+        <Logo />
+      </div>
       <Screen data={data} roomId={roomId || ""} />
     </div>
   );
