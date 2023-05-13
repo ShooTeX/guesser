@@ -19,6 +19,8 @@ import type { PropsWithChildren } from "react";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { api } from "@/lib/trpc";
+import { Label } from "./ui/label";
+import { Badge } from "./ui/badge";
 
 export type QuestionFormProperties = PropsWithChildren &
   (
@@ -226,9 +228,18 @@ const Form = ({
       <div className="flex flex-col gap-4">
         <Textarea
           placeholder="What's the best programming language?"
-          id="message"
           {...register("question")}
         />
+        <div className="grid w-full gap-1.5">
+          <Label htmlFor="markdown" className="flex items-center">
+            Markdown <Badge className="ml-1">Experimental</Badge>
+          </Label>
+          <Textarea
+            placeholder="Best for codeblocks"
+            id="markdown"
+            {...register("markdown")}
+          />
+        </div>
         <Controller
           control={control}
           name="correctAnswerIdx"

@@ -12,7 +12,11 @@ export const edit = protectedProcedure
     async ({ ctx, input: { answers: answersInput, ...questionInput } }) => {
       await ctx.database
         .update(questions)
-        .set({ id: questionInput.id, question: questionInput.question })
+        .set({
+          id: questionInput.id,
+          question: questionInput.question,
+          markdown: questionInput.markdown,
+        })
         .where(
           and(
             eq(questions.id, questionInput.id),

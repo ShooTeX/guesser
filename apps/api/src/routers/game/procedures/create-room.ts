@@ -1,7 +1,8 @@
 import { clerkClient } from "@clerk/fastify";
-import { createRoomSchema } from "@guesser/schemas";
+import { createRoomSchema, questionSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
 import { nanoid } from "nanoid";
+import { z } from "zod";
 import { protectedProcedure } from "../../../trpc/create-router";
 import { getPlaylists } from "../../playlists/models";
 import { getQuestions } from "../../questions/models";
@@ -23,6 +24,15 @@ export const createRoom = protectedProcedure
       throw new TRPCError({ code: "BAD_REQUEST" });
     }
 
+    const parsedQuestions = z.array(questionSchema).safeParse(questions);
+
+    if (!parsedQuestions.success) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: parsedQuestions.error.message,
+      });
+    }
+
     const user = await clerkClient.users.getUser(ctx.auth.userId);
 
     const id = nanoid();
@@ -31,7 +41,7 @@ export const createRoom = protectedProcedure
       id,
       context: {
         playlistName: playlist.name,
-        questions,
+        questions: parsedQuestions.data,
         host: {
           id: user.id,
           username: user.firstName ?? user.username ?? "",

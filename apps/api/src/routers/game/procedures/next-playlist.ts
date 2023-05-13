@@ -1,5 +1,6 @@
-import { nextPlaylistSchema } from "@guesser/schemas";
+import { nextPlaylistSchema, questionSchema } from "@guesser/schemas";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 import { protectedProcedure } from "../../../trpc/create-router";
 import { getPlaylists } from "../../playlists/models";
 import { getQuestions } from "../../questions/models";
@@ -45,10 +46,19 @@ export const nextPlaylist = protectedProcedure
       });
     }
 
+    const parsedQuestions = z.array(questionSchema).safeParse(questions);
+
+    if (!parsedQuestions.success) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: parsedQuestions.error.message,
+      });
+    }
+
     roomManager.send({
       type: "NEXT_PLAYLIST_IN_ROOM",
       roomId: input.roomId,
-      questions,
+      questions: parsedQuestions.data,
       playlistName: playlist.name,
     });
   });
