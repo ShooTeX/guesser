@@ -23,6 +23,8 @@ import { useEffect, useRef, useState } from "react";
 import Balancer from "react-wrap-balancer";
 import { groupBy, pipe } from "remeda";
 import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const copyToClipboard = async (value: string) => {
   await navigator.clipboard.writeText(value);
@@ -119,16 +121,21 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
   };
 
   const markdown = `
-# hello
-\`\`\`js
+\`\`\`ts
+type lul = "hello";
+const test: Type = "hello";
 const test = "hello";
-\`\`\`
-`;
+const test = "hello";
+const test = "hello";
+const test = "hello";
+const test = "hello";
+const test = "hello";
+\`\`\``;
 
   return (
     <div className="flex w-[800px] flex-col justify-center">
       <Players players={data.players} host={data.host} />
-      <div className="flex h-60 items-center justify-center">
+      <div className="flex min-h-full items-center justify-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={data.question.id}
@@ -140,8 +147,30 @@ const test = "hello";
             <h1 className="scroll-m-20 text-center text-2xl font-semibold tracking-tight">
               <Balancer>{data.question.question}</Balancer>
             </h1>
-            <div className="prose prose-invert mt-4">
-              <ReactMarkdown>{markdown}</ReactMarkdown>
+            <div className="prose prose-invert prose-pre:bg-transparent prose-pre:p-0 mt-4">
+              <ReactMarkdown
+                components={{
+                  code({ inline, className, children, ...properties }) {
+                    const match = /language-(\w+)/.exec(className || "");
+                    return !inline && match ? (
+                      <SyntaxHighlighter
+                        {...properties}
+                        style={oneDark}
+                        language={match[1]}
+                        PreTag="div"
+                      >
+                        {String(children).replace(/\n$/, "")}
+                      </SyntaxHighlighter>
+                    ) : (
+                      <code {...properties} className={className}>
+                        {children}
+                      </code>
+                    );
+                  },
+                }}
+              >
+                {markdown}
+              </ReactMarkdown>
             </div>
           </motion.div>
         </AnimatePresence>
