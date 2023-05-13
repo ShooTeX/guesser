@@ -15,6 +15,7 @@ export const questions = mysqlTable(
     id: varchar("id", { length: 21 }).primaryKey(),
     userId: text("user_id").notNull(),
     question: text("question").notNull(),
+    markdown: text("markdown"),
     playlistId: varchar("playlist_id", { length: 21 }).notNull(),
     order: smallint("order").notNull(),
     createdAt: timestamp("created_at", { mode: "string" })

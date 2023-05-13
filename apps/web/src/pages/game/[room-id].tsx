@@ -120,27 +120,6 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
     },
   };
 
-  const markdown = `
-\`\`\`ts
-type lul = "hello";
-const test: Type = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-const test = "hello";
-\`\`\``;
-
   return (
     <div className="flex w-[800px] flex-col justify-center">
       <Players players={data.players} host={data.host} />
@@ -156,31 +135,33 @@ const test = "hello";
             <h1 className="scroll-m-20 text-center text-2xl font-semibold tracking-tight">
               <Balancer>{data.question.question}</Balancer>
             </h1>
-            <div className="prose prose-invert prose-pre:bg-transparent prose-pre:p-0 mt-4">
-              <ReactMarkdown
-                components={{
-                  code({ inline, className, children, ...properties }) {
-                    const match = /language-(\w+)/.exec(className || "");
-                    return !inline && match ? (
-                      <SyntaxHighlighter
-                        {...properties}
-                        style={nord}
-                        language={match[1]}
-                        PreTag="div"
-                      >
-                        {String(children).replace(/\n$/, "")}
-                      </SyntaxHighlighter>
-                    ) : (
-                      <code {...properties} className={className}>
-                        {children}
-                      </code>
-                    );
-                  },
-                }}
-              >
-                {markdown}
-              </ReactMarkdown>
-            </div>
+            {data.question.markdown && (
+              <div className="prose prose-invert prose-pre:bg-transparent prose-pre:p-0 mt-4">
+                <ReactMarkdown
+                  components={{
+                    code({ inline, className, children, ...properties }) {
+                      const match = /language-(\w+)/.exec(className || "");
+                      return !inline && match ? (
+                        <SyntaxHighlighter
+                          {...properties}
+                          style={nord}
+                          language={match[1]}
+                          PreTag="div"
+                        >
+                          {String(children).replace(/\n$/, "")}
+                        </SyntaxHighlighter>
+                      ) : (
+                        <code {...properties} className={className}>
+                          {children}
+                        </code>
+                      );
+                    },
+                  }}
+                >
+                  {data.question.markdown}
+                </ReactMarkdown>
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
