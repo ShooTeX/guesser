@@ -127,7 +127,7 @@ const Playing = ({ data, roomId }: PlayingProperties) => {
   return (
     <div className="flex w-[800px] flex-col justify-center">
       <Players players={data.players} host={data.host} />
-      <div className="flex min-h-full items-center justify-center">
+      <div className="flex items-center justify-center p-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={data.question.id}
@@ -324,7 +324,7 @@ export default function Game() {
 
   return (
     <div
-      className="flex h-screen w-full flex-col items-center justify-center"
+      className="flex min-h-screen w-full flex-col items-center justify-center p-4"
       ref={constraintsReference}
     >
       {data.host.id === user?.id && data.hostInfo && controlsOpen && (
