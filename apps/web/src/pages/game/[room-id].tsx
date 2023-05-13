@@ -24,7 +24,7 @@ import Balancer from "react-wrap-balancer";
 import { groupBy, pipe } from "remeda";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { nord } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const copyToClipboard = async (value: string) => {
   await navigator.clipboard.writeText(value);
@@ -130,6 +130,15 @@ const test = "hello";
 const test = "hello";
 const test = "hello";
 const test = "hello";
+const test = "hello";
+const test = "hello";
+const test = "hello";
+const test = "hello";
+const test = "hello";
+const test = "hello";
+const test = "hello";
+const test = "hello";
+const test = "hello";
 \`\`\``;
 
   return (
@@ -155,7 +164,7 @@ const test = "hello";
                     return !inline && match ? (
                       <SyntaxHighlighter
                         {...properties}
-                        style={oneDark}
+                        style={nord}
                         language={match[1]}
                         PreTag="div"
                       >
