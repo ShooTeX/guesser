@@ -58,7 +58,7 @@ export const DashboardLayout = ({
 
       <div className="grid min-h-screen grid-cols-4 xl:grid-cols-6">
         <aside className="border-r border-r-slate-200 pb-12 dark:border-r-slate-700">
-          <div className="pointer-events-none px-8 py-6">
+          <div className="px-8 py-6">
             <Logo />
           </div>
           <div className="space-y-4">
