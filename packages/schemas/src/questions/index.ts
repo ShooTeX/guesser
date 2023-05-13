@@ -16,7 +16,7 @@ export const questionSchema = z.object({
   question: z.string().min(1),
   markdown: z
     .string()
-    .nullable()
+    .nullish()
     .transform((value) => (value === null ? undefined : value)),
   order: z.number().finite().nonnegative().min(0).max(32_767),
   playlistId: z.string().length(21),
