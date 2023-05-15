@@ -15,7 +15,12 @@ const user = z.object({
 
 const outcome = z.object({
   id: z.string(),
-  title: z.string(),
+  title: z
+    .string()
+    .trim()
+    .max(25)
+    // eslint-disable-next-line unicorn/prefer-top-level-await
+    .catch(({ input }) => input.slice(0, 25)),
   channel_points: z.number(),
   users: z.number(),
 });
@@ -25,7 +30,12 @@ const predictionStatus = z.enum(["ACTIVE", "CANCELED", "LOCKED", "RESOLVED"]);
 const prediction = z.object({
   id: z.string(),
   broadcaster_id: z.string().optional(),
-  title: z.string(),
+  title: z
+    .string()
+    .trim()
+    .max(45)
+    // eslint-disable-next-line unicorn/prefer-top-level-await
+    .catch(({ input }) => input.slice(0, 45)),
   status: predictionStatus,
   outcomes: z.array(outcome).min(2).max(10),
   prediction_window: z.number().finite().min(30).max(1800),
